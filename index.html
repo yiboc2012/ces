@@ -1,15 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5400421340387046"
-     crossorigin="anonymous"></script>    
-
-    
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5400421340387046" crossorigin="anonymous"></script>  
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>Fixed OpenSSL Decryptor</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,1,0" rel="stylesheet"/>
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #e2e8f0; }
@@ -38,32 +35,15 @@
                 <div class="space-y-4">
                     <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Base64 Ciphertext</label>
-                        <textarea class="w-full bg-slate-900 border border-slate-600 rounded-lg p-3 font-mono text-xs text-slate-300 transition-colors" id="input-data" placeholder="Paste U2FsdGVkX1... string here" rows="6">U2FsdGVkX18TCvJ+S8wUdYOI7cgVrG2jqkCsy5gFqO4kyZ/5UZJ3lv+ArOyJIUpnfKiIn/ZmRb7vA/VsspxoCgIhY2xNzEgDoArRW4EYyh0/UC76ma3r3wsF9iA6mOtZ2DkE+r/yQCBkvFei+qWr4fCdzTrgT5ati3nQUZ3lNoFCS02ehtE+WAHvn3FIms3o0J18kcZaAf1f8it5pWuLlOJeuz4ApYezB4HRj0UoBUQmlslzBa3dHAtTAde8gdpKUZZDRlCD0VOruglFmHnBO9KeZPhegIYBI90BY1Qzbmze689Et4tksGvCNv0hSD0WN4e+TuiHITAyp04sOkjzFxujOhla8uxVPvEL8JmENZKh9nkhb2M/F81B2GECY40DLslEnAW0UXtJD2avKYvOnZQ8q7Pjc2fyLgDOsgbSz4nRX6qfAhP/DpXYaFl0ebkV+cPupr8tLGGa25LT5SIhFjzyoGj22sJfXdb4ybzkU/iPwpDuPTiuSg38xw7KIQgf0i5Z03uU2+kvOS73vv0RjQ==</textarea>
+                        <textarea class="w-full bg-slate-900 border border-slate-600 rounded-lg p-3 font-mono text-xs text-slate-300 transition-colors" id="input-data" rows="6">U2FsdGVkX18TCvJ+S8wUdYOI7cgVrG2jqkCsy5gFqO4kyZ/5UZJ3lv+ArOyJIUpnfKiIn/ZmRb7vA/VsspxoCgIhY2xNzEgDoArRW4EYyh0/UC76ma3r3wsF9iA6mOtZ2DkE+r/yQCBkvFei+qWr4fCdzTrgT5ati3nQUZ3lNoFCS02ehtE+WAHvn3FIms3o0J18kcZaAf1f8it5pWuLlOJeuz4ApYezB4HRj0UoBUQmlslzBa3dHAtTAde8gdpKUZZDRlCD0VOruglFmHnBO9KeZPhegIYBI90BY1Qzbmze689Et4tksGvCNv0hSD0WN4e+TuiHITAyp04sOkjzFxujOhla8uxVPvEL8JmENZKh9nkhb2M/F81B2GECY40DLslEnAW0UXtJD2avKYvOnZQ8q7Pjc2fyLgDOsgbSz4nRX6qfAhP/DpXYaFl0ebkV+cPupr8tLGGa25LT5SIhFjzyoGj22sJfXdb4ybzkU/iPwpDuPTiuSg38xw7KIQgf0i5Z03uU2+kvOS73vv0RjQ==</textarea>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Password</label>
-                        <input class="w-full bg-slate-900 border border-slate-600 rounded-lg p-3 font-mono text-sm text-white" id="input-pass" placeholder="Enter password" type="text" value="628b8b51-dc22-4eaa-a124-9c165cf134e4"/>
+                        <input class="w-full bg-slate-900 border border-slate-600 rounded-lg p-3 font-mono text-sm text-white" id="input-pass" type="text" value="628b8b51-dc22-4eaa-a124-9c165cf134e4"/>
                     </div>
                     <button class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg shadow-lg transition-transform active:scale-95 flex items-center justify-center gap-2" onclick="decrypt()">
                         <span class="material-symbols-outlined">key</span> Decrypt
                     </button>
-                </div>
-            </div>
-            <div class="bg-slate-800/50 rounded-xl border border-slate-700/50 p-4">
-                <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Debug Info (Compare with Python)</h3>
-                <div class="space-y-2 font-mono text-[10px] sm:text-xs">
-                    <div class="flex justify-between border-b border-slate-700 pb-1">
-                        <span class="text-slate-500">Salt (Hex)</span>
-                        <span class="text-blue-400" id="dbg-salt">...</span>
-                    </div>
-                    <div class="flex justify-between border-b border-slate-700 pb-1">
-                        <span class="text-slate-500">Key (Hex)</span>
-                        <span class="text-yellow-400 break-all pl-4 text-right" id="dbg-key">...</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-slate-500">IV (Hex)</span>
-                        <span class="text-purple-400" id="dbg-iv">...</span>
-                    </div>
                 </div>
             </div>
         </div>
@@ -79,81 +59,35 @@
         </div>
     </div>
 </main>
+
+<footer class="p-8 text-center border-t border-slate-800 bg-slate-900 space-y-2">
+    <div class="text-slate-400 text-sm font-medium">
+        © 2026 OpenSSL Decryptor. All rights reserved.
+    </div>
+    <a href="Terms.html" class="text-slate-500 hover:text-blue-400 text-xs transition-colors">Terms and Conditions</a>
+</footer>
+
 <script>
-    // --- ROBUST BINARY MD5 IMPLEMENTATION ---
-    // A pure JS MD5 that explicitly handles Uint8Array input and returns Uint8Array output.
-    // Based on Joseph Myers' high-performance MD5 implementation.
     const MD5 = (function() {
         function md5cycle(x, k) {
             var a = x[0], b = x[1], c = x[2], d = x[3];
-            a = ff(a, b, c, d, k[0], 7, -680876936);
-            d = ff(d, a, b, c, k[1], 12, -389564586);
-            c = ff(c, d, a, b, k[2], 17, 606105819);
-            b = ff(b, c, d, a, k[3], 22, -1044525330);
-            a = ff(a, b, c, d, k[4], 7, -176418897);
-            d = ff(d, a, b, c, k[5], 12, 1200080426);
-            c = ff(c, d, a, b, k[6], 17, -1473231341);
-            b = ff(b, c, d, a, k[7], 22, -45705983);
-            a = ff(a, b, c, d, k[8], 7, 1770035416);
-            d = ff(d, a, b, c, k[9], 12, -1958414417);
-            c = ff(c, d, a, b, k[10], 17, -42063);
-            b = ff(b, c, d, a, k[11], 22, -1990404162);
-            a = ff(a, b, c, d, k[12], 7, 1804603682);
-            d = ff(d, a, b, c, k[13], 12, -40341101);
-            c = ff(c, d, a, b, k[14], 17, -1502002290);
-            b = ff(b, c, d, a, k[15], 22, 1236535329);
-            a = gg(a, b, c, d, k[1], 5, -165796510);
-            d = gg(d, a, b, c, k[6], 9, -1069501632);
-            c = gg(c, d, a, b, k[11], 14, 643717713);
-            b = gg(b, c, d, a, k[0], 20, -373897302);
-            a = gg(a, b, c, d, k[5], 5, -701558691);
-            d = gg(d, a, b, c, k[10], 9, 38016083);
-            c = gg(c, d, a, b, k[15], 14, -660478335);
-            b = gg(b, c, d, a, k[4], 20, -405537848);
-            a = gg(a, b, c, d, k[9], 5, 568446438);
-            d = gg(d, a, b, c, k[14], 9, -1019803690);
-            c = gg(c, d, a, b, k[3], 14, -187363961);
-            b = gg(b, c, d, a, k[8], 20, 1163531501);
-            a = gg(a, b, c, d, k[13], 5, -1444681467);
-            d = gg(d, a, b, c, k[2], 9, -51403784);
-            c = gg(c, d, a, b, k[7], 14, 1735328473);
-            b = gg(b, c, d, a, k[12], 20, -1926607734);
-            a = hh(a, b, c, d, k[5], 4, -378558);
-            d = hh(d, a, b, c, k[8], 11, -2022574463);
-            c = hh(c, d, a, b, k[11], 16, 1839030562);
-            b = hh(b, c, d, a, k[14], 23, -35309556);
-            a = hh(a, b, c, d, k[1], 4, -1530992060);
-            d = hh(d, a, b, c, k[4], 11, 1272893353);
-            c = hh(c, d, a, b, k[7], 16, -155497632);
-            b = hh(b, c, d, a, k[10], 23, -1094730640);
-            a = hh(a, b, c, d, k[13], 4, 681279174);
-            d = hh(d, a, b, c, k[0], 11, -358537222);
-            c = hh(c, d, a, b, k[3], 16, -722521979);
-            b = hh(b, c, d, a, k[6], 23, 76029189);
-            a = hh(a, b, c, d, k[9], 4, -640364487);
-            d = hh(d, a, b, c, k[12], 11, -421815835);
-            c = hh(c, d, a, b, k[15], 16, 530742520);
-            b = hh(b, c, d, a, k[2], 23, -995338651);
-            a = ii(a, b, c, d, k[0], 6, -198630844);
-            d = ii(d, a, b, c, k[7], 10, 1126891415);
-            c = ii(c, d, a, b, k[14], 15, -1416354905);
-            b = ii(b, c, d, a, k[5], 21, -57434055);
-            a = ii(a, b, c, d, k[12], 6, 1700485571);
-            d = ii(d, a, b, c, k[3], 10, -1894986606);
-            c = ii(c, d, a, b, k[10], 15, -1051523);
-            b = ii(b, c, d, a, k[1], 21, -2054922799);
-            a = ii(a, b, c, d, k[8], 6, 1873313359);
-            d = ii(d, a, b, c, k[15], 10, -30611744);
-            c = ii(c, d, a, b, k[6], 15, -1560198380);
-            b = ii(b, c, d, a, k[13], 21, 1309151649);
-            a = ii(a, b, c, d, k[4], 6, -145523070);
-            d = ii(d, a, b, c, k[11], 10, -1120210379);
-            c = ii(c, d, a, b, k[2], 15, 718787259);
-            b = ii(b, c, d, a, k[9], 21, -343485551);
-            x[0] = add32(a, x[0]);
-            x[1] = add32(b, x[1]);
-            x[2] = add32(c, x[2]);
-            x[3] = add32(d, x[3]);
+            a = ff(a, b, c, d, k[0], 7, -680876936); d = ff(d, a, b, c, k[1], 12, -389564586); c = ff(c, d, a, b, k[2], 17, 606105819); b = ff(b, c, d, a, k[3], 22, -1044525330);
+            a = ff(a, b, c, d, k[4], 7, -176418897); d = ff(d, a, b, c, k[5], 12, 1200080426); c = ff(c, d, a, b, k[6], 17, -1473231341); b = ff(b, c, d, a, k[7], 22, -45705983);
+            a = ff(a, b, c, d, k[8], 7, 1770035416); d = ff(d, a, b, c, k[9], 12, -1958414417); c = ff(c, d, a, b, k[10], 17, -42063); b = ff(b, c, d, a, k[11], 22, -1990404162);
+            a = ff(a, b, c, d, k[12], 7, 1804603682); d = ff(d, a, b, c, k[13], 12, -40341101); c = ff(c, d, a, b, k[14], 17, -1502002290); b = ff(b, c, d, a, k[15], 22, 1236535329);
+            a = gg(a, b, c, d, k[1], 5, -165796510); d = gg(d, a, b, c, k[6], 9, -1069501632); c = gg(c, d, a, b, k[11], 14, 643717713); b = gg(b, c, d, a, k[0], 20, -373897302);
+            a = gg(a, b, c, d, k[5], 5, -701558691); d = gg(d, a, b, c, k[10], 9, 38016083); c = gg(c, d, a, b, k[15], 14, -660478335); b = gg(b, c, d, a, k[4], 20, -405537848);
+            a = gg(a, b, c, d, k[9], 5, 568446438); d = gg(d, a, b, c, k[14], 9, -1019803690); c = gg(c, d, a, b, k[3], 14, -187363961); b = gg(b, c, d, a, k[8], 20, 1163531501);
+            a = gg(a, b, c, d, k[13], 5, -1444681467); d = gg(d, a, b, c, k[2], 9, -51403784); c = gg(c, d, a, b, k[7], 14, 1735328473); b = gg(b, c, d, a, k[12], 20, -1926607734);
+            a = hh(a, b, c, d, k[5], 4, -378558); d = hh(d, a, b, c, k[8], 11, -2022574463); c = hh(c, d, a, b, k[11], 16, 1839030562); b = hh(b, c, d, a, k[14], 23, -35309556);
+            a = hh(a, b, c, d, k[1], 4, -1530992060); d = hh(d, a, b, c, k[4], 11, 1272893353); c = hh(c, d, a, b, k[7], 16, -155497632); b = hh(b, c, d, a, k[10], 23, -1094730640);
+            a = hh(a, b, c, d, k[13], 4, 681279174); d = hh(d, a, b, c, k[0], 11, -358537222); c = hh(c, d, a, b, k[3], 16, -722521979); b = hh(b, c, d, a, k[6], 23, 76029189);
+            a = hh(a, b, c, d, k[9], 4, -640364487); d = hh(d, a, b, c, k[12], 11, -421815835); c = hh(c, d, a, b, k[15], 16, 530742520); b = hh(b, c, d, a, k[2], 23, -995338651);
+            a = ii(a, b, c, d, k[0], 6, -198630844); d = ii(d, a, b, c, k[7], 10, 1126891415); c = ii(c, d, a, b, k[14], 15, -1416354905); b = ii(b, c, d, a, k[5], 21, -57434055);
+            a = ii(a, b, c, d, k[12], 6, 1700485571); d = ii(d, a, b, c, k[3], 10, -1894986606); c = ii(c, d, a, b, k[10], 15, -1051523); b = ii(b, c, d, a, k[1], 21, -2054922799);
+            a = ii(a, b, c, d, k[8], 6, 1873313359); d = ii(d, a, b, c, k[15], 10, -30611744); c = ii(c, d, a, b, k[6], 15, -1560198380); b = ii(b, c, d, a, k[13], 21, 1309151649);
+            a = ii(a, b, c, d, k[4], 6, -145523070); d = ii(d, a, b, c, k[11], 10, -1120210379); c = ii(c, d, a, b, k[2], 15, 718787259); b = ii(b, c, d, a, k[9], 21, -343485551);
+            x[0] = add32(a, x[0]); x[1] = add32(b, x[1]); x[2] = add32(c, x[2]); x[3] = add32(d, x[3]);
         }
         function cmn(q, a, b, x, s, t) { a = add32(add32(a, q), add32(x, t)); return add32((a << s) | (a >>> (32 - s)), b); }
         function ff(a, b, c, d, x, s, t) { return cmn((b & c) | ((~b) & d), a, b, x, s, t); }
@@ -161,130 +95,74 @@
         function hh(a, b, c, d, x, s, t) { return cmn(b ^ c ^ d, a, b, x, s, t); }
         function ii(a, b, c, d, x, s, t) { return cmn(c ^ (b | (~d)), a, b, x, s, t); }
         function add32(a, b) { return (a + b) & 0xFFFFFFFF; }
-        
         function r_md5(data) {
-            // data must be Uint8Array
-            var n = data.length,
-                state = [1732584193, -271733879, -1732584194, 271733878],
-                i, len = n * 8;
-            
-            // Prepare padding
-            // We need enough space for padding + length
+            var n = data.length, state = [1732584193, -271733879, -1732584194, 271733878], i, len = n * 8;
             var nWords = Math.ceil((n + 9) / 64) * 16;
             var words = new Int32Array(nWords);
-            
-            // Copy data to words
             for (i = 0; i < n; i++) words[i >>> 2] |= data[i] << ((i % 4) * 8);
-            
-            // Padding
             words[n >>> 2] |= 0x80 << ((n % 4) * 8);
-            words[nWords - 2] = len;
-            words[nWords - 1] = 0; // High 32-bits of length (assume < 2^32 bits)
+            words[nWords - 2] = len; words[nWords - 1] = 0;
             for (i = 0; i < nWords; i += 16) md5cycle(state, words.subarray(i, i + 16));
             var output = new Uint8Array(16);
             for (i = 0; i < 4; i++) {
-                output[i * 4] = state[i] & 0xFF;
-                output[i * 4 + 1] = (state[i] >>> 8) & 0xFF;
-                output[i * 4 + 2] = (state[i] >>> 16) & 0xFF;
-                output[i * 4 + 3] = (state[i] >>> 24) & 0xFF;
+                output[i * 4] = state[i] & 0xFF; output[i * 4 + 1] = (state[i] >>> 8) & 0xFF;
+                output[i * 4 + 2] = (state[i] >>> 16) & 0xFF; output[i * 4 + 3] = (state[i] >>> 24) & 0xFF;
             }
             return output;
         }
         return r_md5;
     })();
-    // --- UTILS ---
+
     const toHex = buf => Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
-    
-    // Exact logic of OpenSSL EVP_BytesToKey
+
     function evpBytesToKey(password, salt, keyLen, ivLen) {
-        let derived = new Uint8Array(0);
-        let block = new Uint8Array(0);
-        const targetLen = keyLen + ivLen;
+        let derived = new Uint8Array(0); let block = new Uint8Array(0); const targetLen = keyLen + ivLen;
         while (derived.length < targetLen) {
-            // Hash = MD5(PrevHash + Password + Salt)
-            // Note: PrevHash is empty for first block
-            const inputLen = block.length + password.length + salt.length;
-            const input = new Uint8Array(inputLen);
-            
-            input.set(block, 0);
-            input.set(password, block.length);
-            input.set(salt, block.length + password.length);
-            block = MD5(input); // Must return 16 bytes Uint8Array
-            // Append to result
+            const inputLen = block.length + password.length + salt.length; const input = new Uint8Array(inputLen);
+            input.set(block, 0); input.set(password, block.length); input.set(salt, block.length + password.length);
+            block = MD5(input);
             const temp = new Uint8Array(derived.length + block.length);
-            temp.set(derived);
-            temp.set(block, derived.length);
-            derived = temp;
+            temp.set(derived); temp.set(block, derived.length); derived = temp;
         }
-        return {
-            key: derived.slice(0, keyLen),
-            iv: derived.slice(keyLen, keyLen + ivLen)
-        };
+        return { key: derived.slice(0, keyLen), iv: derived.slice(keyLen, keyLen + ivLen) };
     }
+
     async function decrypt() {
         const inputData = document.getElementById('input-data').value.replace(/\s/g, '');
         const passwordStr = document.getElementById('input-pass').value;
         const outBox = document.getElementById('output-text');
         const statusBox = document.getElementById('status-msg');
-        
-        // UI Reset
-        statusBox.classList.add('hidden');
-        outBox.value = "";
+        statusBox.classList.add('hidden'); outBox.value = "";
         try {
             if(!inputData) throw new Error("Missing encrypted data");
-            
-            // 1. Decode Base64
-            let binaryString;
-            try { binaryString = window.atob(inputData); } catch(e) { throw new Error("Invalid Base64 format"); }
-            
+            let binaryString; try { binaryString = window.atob(inputData); } catch(e) { throw new Error("Invalid Base64 format"); }
             const bytes = new Uint8Array(binaryString.length);
             for (let i = 0; i < binaryString.length; i++) bytes[i] = binaryString.charCodeAt(i);
-            // 2. Parse "Salted__" Header
             const header = new TextDecoder().decode(bytes.slice(0, 8));
-            if (header !== "Salted__") throw new Error("Missing 'Salted__' header. Is this OpenSSL format?");
-            const salt = bytes.slice(8, 16);
-            const ciphertext = bytes.slice(16);
-            
-            // 3. Update Debug
-            document.getElementById('dbg-salt').textContent = toHex(salt);
-            // 4. Derive Key (AES-256 = 32 bytes, IV = 16 bytes)
+            if (header !== "Salted__") throw new Error("Missing 'Salted__' header.");
+            const salt = bytes.slice(8, 16); const ciphertext = bytes.slice(16);
             const passwordBytes = new TextEncoder().encode(passwordStr);
             const { key: keyBytes, iv: ivBytes } = evpBytesToKey(passwordBytes, salt, 32, 16);
-            
-            document.getElementById('dbg-key').textContent = toHex(keyBytes);
-            document.getElementById('dbg-iv').textContent = toHex(ivBytes);
-            // 5. Decrypt
             const key = await window.crypto.subtle.importKey("raw", keyBytes, { name: "AES-CBC" }, false, ["decrypt"]);
-            
-            const decrypted = await window.crypto.subtle.decrypt(
-                { name: "AES-CBC", iv: ivBytes },
-                key,
-                ciphertext
-            );
-            // 6. Success
+            const decrypted = await window.crypto.subtle.decrypt({ name: "AES-CBC", iv: ivBytes }, key, ciphertext);
             outBox.value = new TextDecoder().decode(decrypted);
-            showStatus("Success! Data decrypted.", "success");
+            showStatus("Success!", "success");
         } catch (e) {
-            console.error(e);
-            let msg = e.message;
-            if (e.name === "OperationError") msg = "Wrong Password (Padding Check Failed)";
+            let msg = e.name === "OperationError" ? "Wrong Password" : e.message;
             showStatus(msg, "error");
         }
     }
+
     function showStatus(msg, type) {
         const el = document.getElementById('status-msg');
-        el.textContent = msg;
-        el.classList.remove('hidden', 'border-green-500', 'border-red-500');
+        el.textContent = msg; el.classList.remove('hidden', 'border-green-500', 'border-red-500');
         el.classList.add(type === 'success' ? 'border-green-500' : 'border-red-500');
     }
+
     function copyToClipboard() {
         const el = document.getElementById('output-text');
-        if (el.value) {
-            navigator.clipboard.writeText(el.value);
-            showStatus("Copied to clipboard", "success");
-        }
+        if (el.value) { navigator.clipboard.writeText(el.value); showStatus("Copied", "success"); }
     }
 </script>
 </body>
-
 </html>
