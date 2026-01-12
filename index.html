@@ -2,72 +2,165 @@
 <html lang="en">
 <head>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5400421340387046" crossorigin="anonymous"></script>  
+    
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Fixed OpenSSL Decryptor</title>
+    <meta name="description" content="Securely decrypt OpenSSL salted AES-256-CBC ciphertext online. 100% client-side tool with detailed technical guides on cryptography and key derivation.">
+    <title>OpenSSL Decryptor | Secure Online AES Decryption & Technical Guide</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,1,0" rel="stylesheet"/>
+    
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #e2e8f0; }
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #e2e8f0; scroll-behavior: smooth; }
         .font-mono { font-family: 'Roboto Mono', monospace; }
-        textarea:focus, input:focus { ring: 2px; ring-color: #3b82f6; outline: none; border-color: #3b82f6; }
+        .prose h2 { color: #ffffff; font-size: 1.75rem; font-weight: 700; margin-top: 3rem; margin-bottom: 1rem; border-left: 4px solid #3b82f6; padding-left: 1rem; }
+        .prose h3 { color: #f8fafc; font-size: 1.35rem; font-weight: 600; margin-top: 2rem; }
+        .prose p { color: #94a3b8; margin-bottom: 1.25rem; line-height: 1.7; }
+        .code-block { background: #000; padding: 1.25rem; border-radius: 8px; font-family: 'Roboto Mono', monospace; font-size: 0.875rem; color: #34d399; margin: 1.5rem 0; border: 1px solid #1e293b; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; margin: 2rem 0; background: #1e293b; border-radius: 12px; overflow: hidden; }
+        th, td { text-align: left; padding: 1rem; border-bottom: 1px solid #334155; }
+        th { color: #ffffff; background: #334155; font-weight: 600; }
+        .tool-card { background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%); border: 1px solid #334155; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
-<header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50">
+
+<header class="bg-slate-900/80 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
         <div class="flex items-center gap-3">
             <span class="material-symbols-outlined text-green-500 text-3xl">lock_open</span>
-            <div>
-                <h1 class="text-xl font-bold text-white">OpenSSL Decryptor <span class="text-green-500 text-sm font-normal ml-2">(Fixed Version)</span></h1>
-            </div>
+            <h1 class="text-xl font-bold text-white tracking-tight">OpenSSL <span class="text-blue-500">Decryptor</span></h1>
         </div>
+        <nav class="hidden md:flex gap-8 text-sm font-medium text-slate-400">
+            <a href="#tool" class="hover:text-white transition-colors">Decryptor</a>
+            <a href="#how-to" class="hover:text-white transition-colors">How to Use</a>
+            <a href="#tech" class="hover:text-white transition-colors">Tech Specs</a>
+            <a href="#faq" class="hover:text-white transition-colors">FAQ</a>
+        </nav>
     </div>
 </header>
+
 <main class="flex-grow p-4 md:p-8">
-    <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div class="space-y-6">
-            <div class="bg-slate-800 rounded-xl border border-slate-700 p-6 shadow-lg">
-                <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                    <span class="material-symbols-outlined text-slate-400">input</span> Input Data
+    <div class="max-w-6xl mx-auto">
+        
+        <div class="mb-10 text-center py-4 bg-slate-800/20 border border-slate-800 rounded-lg">
+            <p class="text-[10px] text-slate-600 uppercase tracking-widest mb-2">Advertisement</p>
+            </div>
+
+        <section id="tool" class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-20 scroll-mt-24">
+            <div class="tool-card rounded-2xl p-6 md:p-8 shadow-2xl">
+                <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-blue-400">shield</span> Input Ciphertext
                 </h2>
-                <div class="space-y-4">
+                <div class="space-y-5">
                     <div>
-                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Base64 Ciphertext</label>
-                        <textarea class="w-full bg-slate-900 border border-slate-600 rounded-lg p-3 font-mono text-xs text-slate-300 transition-colors" id="input-data" rows="6">U2FsdGVkX18TCvJ+S8wUdYOI7cgVrG2jqkCsy5gFqO4kyZ/5UZJ3lv+ArOyJIUpnfKiIn/ZmRb7vA/VsspxoCgIhY2xNzEgDoArRW4EYyh0/UC76ma3r3wsF9iA6mOtZ2DkE+r/yQCBkvFei+qWr4fCdzTrgT5ati3nQUZ3lNoFCS02ehtE+WAHvn3FIms3o0J18kcZaAf1f8it5pWuLlOJeuz4ApYezB4HRj0UoBUQmlslzBa3dHAtTAde8gdpKUZZDRlCD0VOruglFmHnBO9KeZPhegIYBI90BY1Qzbmze689Et4tksGvCNv0hSD0WN4e+TuiHITAyp04sOkjzFxujOhla8uxVPvEL8JmENZKh9nkhb2M/F81B2GECY40DLslEnAW0UXtJD2avKYvOnZQ8q7Pjc2fyLgDOsgbSz4nRX6qfAhP/DpXYaFl0ebkV+cPupr8tLGGa25LT5SIhFjzyoGj22sJfXdb4ybzkU/iPwpDuPTiuSg38xw7KIQgf0i5Z03uU2+kvOS73vv0RjQ==</textarea>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">Base64 Encrypted Data</label>
+                        <textarea class="w-full bg-slate-950 border border-slate-700 rounded-xl p-4 font-mono text-sm text-blue-300 focus:border-blue-500 transition-all outline-none" id="input-data" rows="7" placeholder="Paste your U2FsdGVkX1... data here"></textarea>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Password</label>
-                        <input class="w-full bg-slate-900 border border-slate-600 rounded-lg p-3 font-mono text-sm text-white" id="input-pass" type="text" value="628b8b51-dc22-4eaa-a124-9c165cf134e4"/>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">Password / Passphrase</label>
+                        <input class="w-full bg-slate-950 border border-slate-700 rounded-xl p-4 font-mono text-sm text-white focus:border-blue-500 transition-all outline-none" id="input-pass" type="password" placeholder="The key used to encrypt the data"/>
                     </div>
-                    <button class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg shadow-lg transition-transform active:scale-95 flex items-center justify-center gap-2" onclick="decrypt()">
-                        <span class="material-symbols-outlined">key</span> Decrypt
+                    <button class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-900/20 transition-all active:scale-[0.98] flex items-center justify-center gap-3" onclick="decrypt()">
+                        <span class="material-symbols-outlined">lock_open</span> Decrypt Securely
                     </button>
                 </div>
             </div>
-        </div>
-        <div class="flex flex-col h-full">
-            <div class="bg-black rounded-xl border border-slate-700 shadow-2xl flex flex-col h-full overflow-hidden relative">
-                <div class="bg-slate-900 px-4 py-2 border-b border-slate-800 flex justify-between items-center">
-                    <span class="text-xs font-bold text-slate-400 uppercase">Decrypted Content</span>
-                    <button class="text-xs text-blue-400 hover:text-white transition-colors" onclick="copyToClipboard()">Copy</button>
+
+            <div class="bg-black rounded-2xl border border-slate-800 shadow-2xl flex flex-col relative overflow-hidden min-h-[400px]">
+                <div class="bg-slate-900/50 px-5 py-3 border-b border-slate-800 flex justify-between items-center">
+                    <span class="text-xs font-bold text-slate-500 tracking-widest">DECRYPTED PLAINTEXT</span>
+                    <button class="text-xs bg-slate-800 hover:bg-slate-700 text-blue-400 px-4 py-1.5 rounded-lg transition-colors" onclick="copyToClipboard()">Copy Result</button>
                 </div>
-                <textarea class="flex-grow w-full bg-black p-4 font-mono text-sm text-green-400 resize-none focus:outline-none" id="output-text" placeholder="Result will appear here..." readonly=""></textarea>
-                <div class="hidden absolute top-4 right-4 max-w-xs bg-slate-800 text-white text-xs p-3 rounded shadow-xl border-l-4" id="status-msg"></div>
+                <textarea class="flex-grow w-full bg-black p-6 font-mono text-sm text-green-400 resize-none focus:outline-none" id="output-text" placeholder="Decrypted content will appear here..." readonly></textarea>
+                <div class="hidden absolute top-4 right-4 max-w-xs bg-slate-800 text-white text-xs p-3 rounded-lg shadow-2xl border-l-4" id="status-msg"></div>
             </div>
-        </div>
+        </section>
+
+        <article class="max-w-4xl mx-auto prose">
+            <section id="how-to" class="scroll-mt-24">
+                <h2>How to use the Online OpenSSL Decryptor</h2>
+                <p>This tool is designed to decrypt messages encrypted using the standard OpenSSL command line interface. Typically, such messages are created using the following command:</p>
+                <div class="code-block">
+                    # Example Encryption Command:<br>
+                    echo "My Secret Text" | openssl enc -aes-256-cbc -a -salt -pass pass:your_password
+                </div>
+                <p>To decrypt, simply paste the resulting Base64 string into the input box above, provide the password, and our <strong>client-side algorithm</strong> will retrieve the original text instantly.</p>
+            </section>
+
+            
+
+            <section id="tech" class="scroll-mt-24 bg-slate-800/30 p-8 rounded-2xl border border-slate-800 mt-12">
+                <h2>Technical Specifications</h2>
+                <p>Understanding the standard parameters is key to successful decryption. This tool supports the following cryptography specifications:</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Standard</td>
+                            <td>AES-256-CBC (Advanced Encryption Standard)</td>
+                        </tr>
+                        <tr>
+                            <td>KDF Loop</td>
+                            <td>EVP_BytesToKey (MD5-based derivation)</td>
+                        </tr>
+                        <tr>
+                            <td>Magic Header</td>
+                            <td>"Salted__" (8 bytes)</td>
+                        </tr>
+                        <tr>
+                            <td>Salt Length</td>
+                            <td>8 bytes random salt</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p>The <code>EVP_BytesToKey</code> method used here is the legacy OpenSSL key derivation function. It generates a 32-byte key and a 16-byte IV from your passphrase and the salt extracted from the ciphertext header.</p>
+            </section>
+
+            <section id="faq" class="scroll-mt-24 mt-12 mb-20">
+                <h2>Common Troubleshooting (FAQ)</h2>
+                <div class="space-y-8">
+                    <div>
+                        <h3 class="text-blue-400">1. Why do I get a "Wrong Password" or "Padding Error"?</h3>
+                        <p>In AES-CBC decryption, if the derived key is incorrect, the final block of data will result in a garbage value. Since OpenSSL uses PKCS#7 padding, the browser detects that the padding is invalid and stops the process for security. Double-check your passphrase.</p>
+                    </div>
+                    <div>
+                        <h3 class="text-blue-400">2. Is it safe to enter my password here?</h3>
+                        <p>Absolutely. We follow a <strong>"Zero-Knowledge"</strong> architecture. Unlike other websites that process data on their servers, our logic runs 100% in your local browser. Your password and data are never transmitted over the network.</p>
+                    </div>
+                    <div>
+                        <h3 class="text-blue-400">3. Does this support the new -pbkdf2 flag?</h3>
+                        <p>This specific version focuses on the legacy OpenSSL default (KDF via MD5). Newer versions of OpenSSL use PBKDF2 with SHA256. If your data was encrypted with <code>-pbkdf2</code>, you will need to use our PBKDF2-compatible tool.</p>
+                    </div>
+                </div>
+            </section>
+        </article>
     </div>
 </main>
 
-<footer class="p-8 text-center border-t border-slate-800 bg-slate-900 space-y-2">
-    <div class="text-slate-400 text-sm font-medium">
-        © 2026 OpenSSL Decryptor. All rights reserved.
+<footer class="p-10 border-t border-slate-800 bg-slate-950 mt-10">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left">
+        <div class="space-y-1">
+            <p class="text-slate-200 font-bold text-lg">OpenSSL Decryptor</p>
+            <p class="text-slate-500 text-sm">© 2026 OpenSSL Decryptor. All rights reserved.</p>
+        </div>
+        <div class="flex flex-wrap justify-center gap-6 text-sm">
+            <a href="Terms.html" class="text-slate-400 hover:text-blue-400 transition-colors">Terms of Service</a>
+            <a href="Privacy.html" class="text-slate-400 hover:text-blue-400 transition-colors">Privacy Policy</a>
+            <a href="mailto:yiboc2012@outlook.com" class="text-slate-400 hover:text-blue-400 transition-colors">Contact Support</a>
+        </div>
     </div>
-    <a href="Terms.html" class="text-slate-500 hover:text-blue-400 text-xs transition-colors">Terms and Conditions</a>
 </footer>
 
 <script>
+    // --- ROBUST CRYPTO LOGIC ---
     const MD5 = (function() {
         function md5cycle(x, k) {
             var a = x[0], b = x[1], c = x[2], d = x[3];
@@ -113,8 +206,6 @@
         return r_md5;
     })();
 
-    const toHex = buf => Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
-
     function evpBytesToKey(password, salt, keyLen, ivLen) {
         let derived = new Uint8Array(0); let block = new Uint8Array(0); const targetLen = keyLen + ivLen;
         while (derived.length < targetLen) {
@@ -134,21 +225,22 @@
         const statusBox = document.getElementById('status-msg');
         statusBox.classList.add('hidden'); outBox.value = "";
         try {
-            if(!inputData) throw new Error("Missing encrypted data");
+            if(!inputData) throw new Error("Please enter ciphertext");
+            if(!passwordStr) throw new Error("Please enter password");
             let binaryString; try { binaryString = window.atob(inputData); } catch(e) { throw new Error("Invalid Base64 format"); }
             const bytes = new Uint8Array(binaryString.length);
             for (let i = 0; i < binaryString.length; i++) bytes[i] = binaryString.charCodeAt(i);
             const header = new TextDecoder().decode(bytes.slice(0, 8));
-            if (header !== "Salted__") throw new Error("Missing 'Salted__' header.");
+            if (header !== "Salted__") throw new Error("Invalid OpenSSL header (Missing 'Salted__')");
             const salt = bytes.slice(8, 16); const ciphertext = bytes.slice(16);
             const passwordBytes = new TextEncoder().encode(passwordStr);
             const { key: keyBytes, iv: ivBytes } = evpBytesToKey(passwordBytes, salt, 32, 16);
             const key = await window.crypto.subtle.importKey("raw", keyBytes, { name: "AES-CBC" }, false, ["decrypt"]);
             const decrypted = await window.crypto.subtle.decrypt({ name: "AES-CBC", iv: ivBytes }, key, ciphertext);
             outBox.value = new TextDecoder().decode(decrypted);
-            showStatus("Success!", "success");
+            showStatus("Decryption Successful", "success");
         } catch (e) {
-            let msg = e.name === "OperationError" ? "Wrong Password" : e.message;
+            let msg = e.name === "OperationError" ? "Wrong Password (Padding Failed)" : e.message;
             showStatus(msg, "error");
         }
     }
@@ -161,7 +253,7 @@
 
     function copyToClipboard() {
         const el = document.getElementById('output-text');
-        if (el.value) { navigator.clipboard.writeText(el.value); showStatus("Copied", "success"); }
+        if (el.value) { navigator.clipboard.writeText(el.value); showStatus("Copied to clipboard", "success"); }
     }
 </script>
 </body>
