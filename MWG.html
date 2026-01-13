@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MakerWorld Planner | 2026 Goals</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        
+        :root {
+            --mw-green: #00ae42;
+            --mw-green-glow: rgba(0, 174, 66, 0.3);
+            --bg-dark: #09090b;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-dark);
+            color: #fafafa;
+        }
+
+        .maker-green { color: var(--mw-green); }
+        .bg-maker-green { background-color: var(--mw-green); }
+        
+        .glass-panel {
+            background: rgba(24, 24, 27, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glow-button {
+            transition: all 0.3s ease;
+        }
+
+        .glow-button:hover {
+            box-shadow: 0 0 20px var(--mw-green-glow);
+            transform: translateY(-1px);
+        }
+
+        .input-field {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.2s ease;
+        }
+
+        .input-field:focus {
+            border-color: var(--mw-green);
+            background: rgba(0, 174, 66, 0.05);
+            outline: none;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #00ae42 0%, #a3e635 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        @keyframes pulse-slow {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+
+        .animate-pulse-slow {
+            animation: pulse-slow 4s infinite ease-in-out;
+        }
+
+        .grid-bg {
+            background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+    </style>
+</head>
+<body class="min-h-screen grid-bg">
+
+    <!-- SETUP PAGE -->
+    <div id="setupPage" class="container mx-auto px-4 py-16 max-w-2xl animate-fade-in">
+        <div class="text-center mb-10">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold uppercase tracking-widest mb-4">
+                <i data-lucide="sparkles" class="w-3 h-3"></i> 2026 Planner
+            </div>
+            <h1 class="text-5xl font-extrabold tracking-tight mb-2">MAKER<span id="headerYearTitle" class="maker-green">PLAN</span></h1>
+            <p class="text-slate-400">Plan out your printing goals for the year ahead.</p>
+        </div>
+
+        <div class="glass-panel rounded-[2rem] p-8 md:p-10">
+            <form id="goalForm" class="space-y-8">
+                <!-- Profile & Year -->
+                <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="md:col-span-2">
+                        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4 flex items-center gap-2">
+                            <i data-lucide="user" class="w-4 h-4"></i> User Name
+                        </h3>
+                        <input type="text" id="username" required placeholder="Your Maker Name" class="input-field w-full px-5 py-4 rounded-2xl text-lg font-semibold">
+                    </div>
+                    <div>
+                        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4 flex items-center gap-2">
+                            <i data-lucide="calendar" class="w-4 h-4"></i> Year
+                        </h3>
+                        <input type="number" id="planYear" required value="2026" class="input-field w-full px-5 py-4 rounded-2xl text-lg font-semibold text-center">
+                    </div>
+                </section>
+
+                <!-- Printer Selection -->
+                <section>
+                    <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4 flex items-center gap-2">
+                        <i data-lucide="printer" class="w-4 h-4"></i> Your Printer
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <select id="printerModel" onchange="toggleOtherPrinter()" class="input-field w-full px-5 py-4 rounded-2xl appearance-none bg-zinc-900">
+                            <option value="" disabled selected>Main Printer</option>
+                            <optgroup label="Bambu Lab">
+                                <option value="Bambu Lab X1-Carbon">X1-Carbon</option>
+                                <option value="Bambu Lab P1S">P1S</option>
+                                <option value="Bambu Lab A1">A1 / A1 Mini</option>
+                            </optgroup>
+                            <optgroup label="Maker Models">
+                                <option value="H2D">H2D</option>
+                                <option value="H2C">H2C</option>
+                                <option value="H2S">H2S</option>
+                                <option value="P2S">P2S</option>
+                            </optgroup>
+                            <option value="Other">Other (Type below)</option>
+                        </select>
+                        <div class="flex p-1 bg-zinc-900/50 rounded-2xl border border-white/5">
+                            <label class="flex-1 cursor-pointer group">
+                                <input type="radio" name="newPrinterPlan" value="yes" class="hidden peer" checked>
+                                <div class="h-full flex items-center justify-center rounded-xl peer-checked:bg-maker-green peer-checked:text-white text-slate-500 transition-all text-sm font-bold">GETTING NEW</div>
+                            </label>
+                            <label class="flex-1 cursor-pointer group">
+                                <input type="radio" name="newPrinterPlan" value="no" class="hidden peer">
+                                <div class="h-full flex items-center justify-center rounded-xl peer-checked:bg-white/10 peer-checked:text-white text-slate-500 transition-all text-sm font-bold">KEEPING SAME</div>
+                            </label>
+                        </div>
+                    </div>
+                    <div id="otherPrinterContainer" class="hidden">
+                        <input type="text" id="customPrinter" placeholder="What printer are you using?" class="input-field w-full px-5 py-4 rounded-2xl">
+                    </div>
+                </section>
+
+                <!-- Targets -->
+                <section>
+                    <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4 flex items-center gap-2">
+                        <i data-lucide="target" class="w-4 h-4"></i> Goals
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="relative">
+                            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-600">HOURS</span>
+                            <input type="number" id="targetHours" placeholder="Print Time" class="input-field w-full pl-5 pr-12 py-4 rounded-2xl">
+                        </div>
+                        <div class="relative">
+                            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-600">SUBS</span>
+                            <input type="number" id="targetFollowers" placeholder="Followers" class="input-field w-full pl-5 pr-12 py-4 rounded-2xl">
+                        </div>
+                        <div class="relative">
+                            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-600">FILES</span>
+                            <input type="number" id="targetUploads" placeholder="Uploads" class="input-field w-full pl-5 pr-12 py-4 rounded-2xl">
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Big Project -->
+                <section>
+                    <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4 flex items-center gap-2">
+                        <i data-lucide="star" class="w-4 h-4"></i> Your Big Project
+                    </h3>
+                    <textarea id="bigProject" rows="2" placeholder="What's the coolest thing you want to print this year?" class="input-field w-full px-5 py-4 rounded-2xl resize-none"></textarea>
+                </section>
+
+                <button type="button" onclick="generateVision()" class="glow-button w-full py-5 bg-maker-green text-white font-black text-lg rounded-2xl flex items-center justify-center gap-3">
+                    CREATE MY PLAN
+                    <i data-lucide="chevron-right" class="w-6 h-6"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- VISION PAGE -->
+    <div id="visionPage" class="hidden container mx-auto px-4 py-12 max-w-5xl animate-fade-in">
+        <div class="flex items-center justify-between mb-8">
+            <button onclick="backToEdit()" class="group flex items-center gap-2 text-slate-400 hover:text-white transition-colors font-bold text-sm">
+                <i data-lucide="arrow-left" class="w-4 h-4 group-hover:-translate-x-1 transition-transform"></i> EDIT PLAN
+            </button>
+            <div class="text-right">
+                <p class="text-[10px] font-black text-maker-green tracking-widest uppercase">Plan Status</p>
+                <p class="text-xs text-white flex items-center gap-2 justify-end">Ready <span class="w-2 h-2 bg-maker-green rounded-full animate-pulse"></span></p>
+            </div>
+        </div>
+
+        <div class="glass-panel rounded-[3rem] overflow-hidden shadow-2xl">
+            <!-- Hero Banner -->
+            <div class="relative p-12 md:p-20 overflow-hidden border-b border-white/5">
+                <div class="absolute inset-0 bg-gradient-to-br from-emerald-900/20 to-transparent pointer-events-none"></div>
+                <div class="absolute top-0 right-0 w-96 h-96 bg-maker-green/10 blur-[120px] rounded-full animate-pulse-slow"></div>
+                
+                <div class="relative z-10">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-12 h-1 bg-maker-green"></div>
+                        <span class="text-sm font-black tracking-[0.4em] uppercase opacity-60">My Goals for <span id="displayYearText">2026</span></span>
+                    </div>
+                    <h2 class="text-6xl md:text-8xl font-black mb-6 tracking-tighter leading-none">
+                        KEEP <br> <span class="gradient-text">MAKING.</span>
+                    </h2>
+                    <div class="flex items-center gap-4">
+                        <div class="px-5 py-2 bg-white/5 border border-white/10 backdrop-blur rounded-full">
+                            <span class="text-slate-400 text-xs font-bold mr-2 uppercase">MAKER:</span>
+                            <span id="displayUsername" class="text-white font-black uppercase"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Content -->
+            <div class="p-8 md:p-12">
+                <!-- Top Metrics -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+                    <div class="p-6 bg-white/5 rounded-3xl border border-white/5">
+                        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Time Goal</p>
+                        <p class="text-3xl font-black tracking-tight"><span id="displayHours" class="text-white"></span><span class="text-xs ml-1 text-slate-600 font-bold uppercase">h</span></p>
+                    </div>
+                    <div class="p-6 bg-white/5 rounded-3xl border border-white/5">
+                        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Follower Goal</p>
+                        <p class="text-3xl font-black tracking-tight"><span id="displayFollowers" class="text-white"></span></p>
+                    </div>
+                    <div class="p-6 bg-white/5 rounded-3xl border border-white/5">
+                        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Model Goal</p>
+                        <p class="text-3xl font-black tracking-tight"><span id="displayUploads" class="text-white"></span></p>
+                    </div>
+                    <div class="p-6 bg-emerald-500/10 rounded-3xl border border-emerald-500/20">
+                        <p class="text-[10px] font-bold text-emerald-500 uppercase tracking-widest mb-1">Plan</p>
+                        <p class="text-3xl font-black tracking-tight text-white">ACTIVE</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Left: Description -->
+                    <div class="lg:col-span-2 space-y-8">
+                        <div class="p-10 bg-zinc-900 rounded-[2.5rem] relative overflow-hidden group">
+                            <div class="absolute top-0 right-0 p-8 opacity-10">
+                                <i data-lucide="printer" class="w-32 h-32"></i>
+                            </div>
+                            <h3 class="text-2xl font-black mb-4 flex items-center gap-3">
+                                <span class="w-8 h-8 rounded-lg bg-maker-green flex items-center justify-center text-white">
+                                    <i data-lucide="check" class="w-4 h-4"></i>
+                                </span>
+                                The Game Plan
+                            </h3>
+                            <p class="text-slate-400 text-lg leading-relaxed mb-6">
+                                For <span class="displayYearInline text-white font-bold">2026</span>, the goal is to get even better at designing and printing. 
+                                By using the <span id="displayPrinter" class="text-white font-bold"></span>, you'll be turning your ideas into real models for the community to enjoy.
+                            </p>
+                            <div id="upgradeStatus" class="inline-flex items-center gap-3 px-4 py-2 bg-white/5 rounded-xl border border-white/10">
+                                <!-- Dynamic status here -->
+                            </div>
+                        </div>
+
+                        <div class="p-10 bg-maker-green rounded-[2.5rem] text-white">
+                            <h3 class="text-2xl font-black mb-2 flex items-center gap-3">
+                                <i data-lucide="award" class="w-6 h-6"></i>
+                                Your Big Project
+                            </h3>
+                            <p class="text-emerald-950/70 font-bold text-sm uppercase tracking-widest mb-6">What you're building next</p>
+                            <div class="bg-black/20 p-8 rounded-2xl backdrop-blur-sm border border-white/10">
+                                <p id="displayBigProject" class="text-3xl font-black italic leading-tight">Nothing yet.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Info -->
+                    <div class="space-y-4">
+                        <div class="p-8 bg-white/5 rounded-[2rem] border border-white/5">
+                            <h4 class="text-xs font-black text-slate-500 uppercase tracking-[0.2em] mb-6">Printer Info</h4>
+                            <div class="space-y-6">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 rounded-2xl bg-zinc-800 flex items-center justify-center border border-white/10">
+                                        <i data-lucide="printer" class="w-6 h-6 text-maker-green"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-[10px] font-bold text-slate-500 uppercase">Main Printer</p>
+                                        <p id="fleetName" class="font-black text-white"></p>
+                                    </div>
+                                </div>
+                                <div class="h-1 w-full bg-zinc-800 rounded-full overflow-hidden">
+                                    <div class="h-full bg-maker-green w-3/4"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-8 bg-zinc-900 border border-emerald-500/20 rounded-[2rem] text-center">
+                            <div class="w-12 h-12 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i data-lucide="heart" class="w-6 h-6 text-emerald-500"></i>
+                            </div>
+                            <p class="text-xs font-bold text-slate-400 mb-1">SUPPORTED BY</p>
+                            <p class="text-sm font-black text-white uppercase">MakerWorld Community</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer with License -->
+            <div class="p-8 bg-black/40 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-[9px] font-black text-slate-600 tracking-[0.3em] uppercase">
+                <div class="flex flex-col md:flex-row gap-4 items-center">
+                    <span>PLAN YEAR: <span id="footerYear">2026</span></span>
+                    <span class="text-slate-500 flex items-center gap-1"><i data-lucide="copyright" class="w-3 h-3"></i> CC BY-NC-SA 4.0</span>
+                </div>
+                <span>Happy Printing!</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        function toggleOtherPrinter() {
+            const select = document.getElementById('printerModel');
+            const otherContainer = document.getElementById('otherPrinterContainer');
+            if (select.value === 'Other') {
+                otherContainer.classList.remove('hidden');
+                otherContainer.classList.add('animate-fade-in');
+            } else {
+                otherContainer.classList.add('hidden');
+            }
+        }
+
+        function generateVision() {
+            const username = document.getElementById('username').value;
+            const year = document.getElementById('planYear').value || "2026";
+            const hours = document.getElementById('targetHours').value;
+            const followers = document.getElementById('targetFollowers').value;
+            const uploads = document.getElementById('targetUploads').value || 0;
+            const selectPrinter = document.getElementById('printerModel').value;
+            const customPrinter = document.getElementById('customPrinter').value;
+            const bigProject = document.getElementById('bigProject').value || "Undisclosed Masterpiece";
+            const isUpgrading = document.querySelector('input[name="newPrinterPlan"]:checked').value === 'yes';
+
+            const printerModel = selectPrinter === 'Other' ? (customPrinter || "Custom Vision") : selectPrinter;
+
+            if (!username || !hours || !followers) {
+                alert("Please fill in your name and core goals!");
+                return;
+            }
+
+            // Update UI Elements
+            document.getElementById('displayUsername').innerText = username;
+            document.getElementById('headerYearTitle').innerText = year;
+            document.getElementById('displayYearText').innerText = year;
+            document.getElementById('footerYear').innerText = year;
+            document.querySelectorAll('.displayYearInline').forEach(el => el.innerText = year);
+            
+            document.getElementById('displayHours').innerText = Number(hours).toLocaleString();
+            document.getElementById('displayFollowers').innerText = Number(followers).toLocaleString();
+            document.getElementById('displayUploads').innerText = Number(uploads).toLocaleString();
+            document.getElementById('displayPrinter').innerText = printerModel;
+            document.getElementById('fleetName').innerText = printerModel;
+            document.getElementById('displayBigProject').innerText = `"${bigProject}"`;
+
+            const upgradeBadge = document.getElementById('upgradeStatus');
+            if (isUpgrading) {
+                upgradeBadge.innerHTML = '<i data-lucide="plus" class="w-4 h-4 text-emerald-400"></i> <span class="text-xs font-black text-emerald-400">ADDING NEW PRINTERS THIS YEAR</span>';
+            } else {
+                upgradeBadge.innerHTML = '<i data-lucide="smile" class="w-4 h-4 text-blue-400"></i> <span class="text-xs font-black text-blue-400">KEEPING MY CURRENT SETUP</span>';
+            }
+
+            // Smooth Transition
+            document.getElementById('setupPage').classList.add('hidden');
+            document.getElementById('visionPage').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            lucide.createIcons();
+        }
+
+        function backToEdit() {
+            document.getElementById('visionPage').classList.add('hidden');
+            document.getElementById('setupPage').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
