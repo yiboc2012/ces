@@ -7,31 +7,24 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap');
         
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f4f4f5;
         }
 
-        .makerworld-green {
-            color: #00ae42;
-        }
-
-        .bg-makerworld-green {
-            background-color: #00ae42;
-        }
-
-        .report-gradient {
-            background: linear-gradient(135deg, #00ae42 0%, #007a2e 100%);
-        }
-
+        .makerworld-green { color: #00ae42; }
+        .bg-makerworld-green { background-color: #00ae42; }
+        .report-gradient { background: linear-gradient(135deg, #00ae42 0%, #007a2e 100%); }
+        
         .card-shadow {
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
         }
 
+        /* Print Styles */
         @media print {
-            .no-print { display: none; }
+            .no-print { display: none !important; }
             body { background: white; }
             .report-page { 
                 height: 100vh; 
@@ -40,8 +33,12 @@
                 margin: 0;
                 padding: 0;
             }
+            #reportPage { display: block !important; }
+            #setupPage { display: none !important; }
+            footer { display: none !important; }
         }
 
+        /* Animation */
         .animate-fade-in {
             animation: fadeIn 0.5s ease-out forwards;
         }
@@ -52,10 +49,9 @@
         }
     </style>
 </head>
-<body class="min-h-screen text-slate-800">
+<body class="min-h-screen text-slate-800 flex flex-col">
 
-    <!-- PAGE 1: INPUT FORM -->
-    <div id="setupPage" class="container mx-auto px-4 py-12 max-w-2xl animate-fade-in">
+    <div id="setupPage" class="flex-grow container mx-auto px-4 py-12 max-w-2xl animate-fade-in">
         <div class="bg-white rounded-3xl p-8 card-shadow">
             <div class="flex items-center gap-3 mb-8">
                 <div class="bg-makerworld-green p-3 rounded-2xl text-white">
@@ -69,51 +65,46 @@
 
             <form id="reportForm" class="space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Year Info -->
                     <div class="col-span-2">
                         <label class="block text-sm font-semibold mb-2">Report Year</label>
                         <input type="number" id="reportYear" required placeholder="e.g. 2024" value="2024" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-green-500 transition-all">
                     </div>
 
-                    <!-- User Info -->
                     <div class="col-span-2">
                         <label class="block text-sm font-semibold mb-2">Maker Name</label>
                         <input type="text" id="username" required placeholder="e.g. MakerPro_99" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-green-500 transition-all">
                     </div>
 
-                    <!-- Print Stats -->
                     <div>
                         <label class="block text-sm font-semibold mb-2">Total Print Time (Hours)</label>
-                        <input type="number" id="printTime" required placeholder="e.g. 1450" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-green-500 transition-all">
+                        <input type="number" id="printTime" min="0" required placeholder="e.g. 1450" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-green-500 transition-all">
                     </div>
 
                     <div>
                         <label class="block text-sm font-semibold mb-2">New Followers Gained</label>
-                        <input type="number" id="followers" required placeholder="e.g. 240" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-green-500 transition-all">
+                        <input type="number" id="followers" min="0" required placeholder="e.g. 240" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-green-500 transition-all">
                     </div>
 
-                    <!-- Boosts & Points -->
                     <div>
                         <label class="block text-sm font-semibold mb-2">Boosts Received ⚡</label>
-                        <input type="number" id="boosts" placeholder="e.g. 15" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-green-500 transition-all">
+                        <input type="number" id="boosts" min="0" placeholder="e.g. 15" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-green-500 transition-all">
                     </div>
 
                     <div>
                         <label class="block text-sm font-semibold mb-2">Points Earned 🪙</label>
-                        <input type="number" id="points" placeholder="e.g. 4500" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-green-500 transition-all">
+                        <input type="number" id="points" min="0" placeholder="e.g. 4500" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-green-500 transition-all">
                     </div>
 
-                    <!-- Printer Info -->
                     <div class="col-span-2">
                         <label class="block text-sm font-semibold mb-2">Did you get a new printer this year?</label>
                         <div class="flex gap-4">
                             <label class="flex-1 cursor-pointer">
                                 <input type="radio" name="newPrinter" value="yes" class="hidden peer" checked>
-                                <div class="p-3 text-center rounded-xl border-2 border-slate-100 peer-checked:border-green-500 peer-checked:bg-green-50 transition-all">Yes, upgraded!</div>
+                                <div class="p-3 text-center rounded-xl border-2 border-slate-100 peer-checked:border-green-500 peer-checked:bg-green-50 transition-all font-medium">Yes, upgraded!</div>
                             </label>
                             <label class="flex-1 cursor-pointer">
                                 <input type="radio" name="newPrinter" value="no" class="hidden peer">
-                                <div class="p-3 text-center rounded-xl border-2 border-slate-100 peer-checked:border-green-500 peer-checked:bg-green-50 transition-all">No, still loyal</div>
+                                <div class="p-3 text-center rounded-xl border-2 border-slate-100 peer-checked:border-green-500 peer-checked:bg-green-50 transition-all font-medium">No, still loyal</div>
                             </label>
                         </div>
                     </div>
@@ -138,25 +129,23 @@
                         </select>
                     </div>
 
-                    <!-- Hidden Custom Printer Input -->
                     <div id="otherPrinterContainer" class="col-span-2 hidden">
                         <label class="block text-sm font-semibold mb-2">Type your printer name</label>
                         <input type="text" id="customPrinter" placeholder="e.g. Custom Voron 2.4" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-green-500 transition-all">
                     </div>
 
-                    <!-- Extra Stats -->
                     <div>
                         <label class="block text-sm font-semibold mb-2">Models Uploaded</label>
-                        <input type="number" id="uploads" placeholder="e.g. 12" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-green-500 transition-all">
+                        <input type="number" id="uploads" min="0" placeholder="e.g. 12" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-green-500 transition-all">
                     </div>
 
                     <div>
                         <label class="block text-sm font-semibold mb-2">Filament Used (kg)</label>
-                        <input type="number" id="filament" placeholder="e.g. 25" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-green-500 transition-all">
+                        <input type="number" id="filament" min="0" placeholder="e.g. 25" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-green-500 transition-all">
                     </div>
                 </div>
 
-                <button type="button" onclick="generateReport()" class="w-full py-4 bg-makerworld-green text-white font-bold rounded-2xl hover:bg-green-600 transition-all transform hover:scale-[1.02] mt-4 flex items-center justify-center gap-2">
+                <button type="button" onclick="generateReport()" class="w-full py-4 bg-makerworld-green text-white font-bold rounded-2xl hover:bg-green-600 transition-all transform hover:scale-[1.01] mt-4 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl">
                     Create My Annual Report
                     <i data-lucide="arrow-right" class="w-5 h-5"></i>
                 </button>
@@ -164,60 +153,54 @@
         </div>
     </div>
 
-    <!-- PAGE 2: THE REPORT -->
-    <div id="reportPage" class="hidden container mx-auto px-4 py-12 max-w-4xl animate-fade-in">
-        <!-- Controls -->
+    <div id="reportPage" class="hidden flex-grow container mx-auto px-4 py-12 max-w-4xl animate-fade-in">
         <div class="flex justify-start items-center mb-6 no-print">
-            <button onclick="backToEdit()" class="px-4 py-2 text-slate-600 font-medium hover:text-green-600 flex items-center gap-2 transition-colors">
+            <button onclick="backToEdit()" class="px-4 py-2 bg-white rounded-lg shadow-sm text-slate-600 font-medium hover:text-green-600 hover:shadow-md flex items-center gap-2 transition-all">
                 <i data-lucide="chevron-left" class="w-4 h-4"></i> Edit Stats
             </button>
         </div>
 
-        <!-- The Document Layout -->
-        <div id="captureArea" class="bg-white rounded-3xl overflow-hidden card-shadow">
+        <div id="captureArea" class="report-page bg-white rounded-3xl overflow-hidden card-shadow">
             
-            <!-- Hero Header -->
             <div class="report-gradient p-12 text-white text-center relative overflow-hidden">
-                <div class="absolute -top-10 -right-10 opacity-10">
+                <div class="absolute -top-10 -right-10 opacity-10 rotate-12">
                     <i data-lucide="box" class="w-64 h-64"></i>
                 </div>
                 <div class="relative z-10">
                     <p class="uppercase tracking-[0.2em] font-semibold opacity-80 mb-2">Your Year on MakerWorld</p>
                     <h2 class="text-6xl font-black mb-4"><span id="displayYear">2024</span> REPORT</h2>
-                    <div class="inline-block px-4 py-2 bg-white/20 backdrop-blur rounded-full text-lg">
+                    <div class="inline-block px-6 py-2 bg-white/20 backdrop-blur-md rounded-full text-lg border border-white/30">
                         Maker: <span id="displayUsername" class="font-bold"></span>
                     </div>
                 </div>
             </div>
 
-            <!-- Stats Grid -->
-            <div class="p-10">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-                    <div class="text-center p-6 bg-slate-50 rounded-3xl border border-slate-100">
-                        <i data-lucide="clock" class="w-6 h-6 mx-auto mb-2 text-makerworld-green"></i>
+            <div class="p-8 md:p-10">
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-12">
+                    <div class="text-center p-6 bg-slate-50 rounded-3xl border border-slate-100 flex flex-col items-center justify-center">
+                        <i data-lucide="clock" class="w-6 h-6 mb-2 text-makerworld-green"></i>
                         <h4 class="text-[10px] uppercase text-slate-500 font-bold tracking-wider">Print Time</h4>
-                        <p class="text-2xl font-black"><span id="displayTime">0</span>h</p>
+                        <p class="text-2xl font-black text-slate-800"><span id="displayTime">0</span>h</p>
                     </div>
-                    <div class="text-center p-6 bg-slate-50 rounded-3xl border border-slate-100">
-                        <i data-lucide="zap" class="w-6 h-6 mx-auto mb-2 text-yellow-500"></i>
+                    <div class="text-center p-6 bg-slate-50 rounded-3xl border border-slate-100 flex flex-col items-center justify-center">
+                        <i data-lucide="zap" class="w-6 h-6 mb-2 text-yellow-500"></i>
                         <h4 class="text-[10px] uppercase text-slate-500 font-bold tracking-wider">Boosts</h4>
-                        <p class="text-2xl font-black"><span id="displayBoosts">0</span></p>
+                        <p class="text-2xl font-black text-slate-800"><span id="displayBoosts">0</span></p>
                     </div>
-                    <div class="text-center p-6 bg-slate-50 rounded-3xl border border-slate-100">
-                        <i data-lucide="users" class="w-6 h-6 mx-auto mb-2 text-blue-500"></i>
+                    <div class="text-center p-6 bg-slate-50 rounded-3xl border border-slate-100 flex flex-col items-center justify-center">
+                        <i data-lucide="users" class="w-6 h-6 mb-2 text-blue-500"></i>
                         <h4 class="text-[10px] uppercase text-slate-500 font-bold tracking-wider">Followers</h4>
-                        <p class="text-2xl font-black">+<span id="displayFollowers">0</span></p>
+                        <p class="text-2xl font-black text-slate-800">+<span id="displayFollowers">0</span></p>
                     </div>
-                    <div class="text-center p-6 bg-slate-50 rounded-3xl border border-slate-100">
-                        <i data-lucide="layers" class="w-6 h-6 mx-auto mb-2 text-orange-500"></i>
+                    <div class="text-center p-6 bg-slate-50 rounded-3xl border border-slate-100 flex flex-col items-center justify-center">
+                        <i data-lucide="layers" class="w-6 h-6 mb-2 text-orange-500"></i>
                         <h4 class="text-[10px] uppercase text-slate-500 font-bold tracking-wider">Uploads</h4>
-                        <p class="text-2xl font-black"><span id="displayUploads">0</span></p>
+                        <p class="text-2xl font-black text-slate-800"><span id="displayUploads">0</span></p>
                     </div>
                 </div>
 
-                <!-- Featured Story -->
-                <div class="flex flex-col md:flex-row gap-8 items-center bg-slate-900 rounded-3xl p-10 text-white mb-12">
-                    <div class="flex-1">
+                <div class="flex flex-col md:flex-row gap-8 items-center bg-slate-900 rounded-3xl p-8 md:p-10 text-white mb-12 relative overflow-hidden">
+                    <div class="flex-1 z-10">
                         <h3 class="text-3xl font-bold mb-4">The Workhorse</h3>
                         <p class="text-slate-400 leading-relaxed mb-6">
                             In <span id="storyYear">2024</span>, your creativity was powered by the <span id="displayPrinter" class="text-makerworld-green font-bold"></span>. 
@@ -228,14 +211,13 @@
                             <span class="text-sm font-bold tracking-tight">UPGRADED FLEET THIS YEAR</span>
                         </div>
                     </div>
-                    <div class="w-full md:w-1/3 flex justify-center">
+                    <div class="w-full md:w-1/3 flex justify-center z-10">
                         <div class="w-32 h-32 bg-makerworld-green/10 rounded-full border-2 border-makerworld-green/30 flex items-center justify-center">
                             <i data-lucide="printer" class="w-16 h-16 text-makerworld-green"></i>
                         </div>
                     </div>
                 </div>
 
-                <!-- Rewards & Resources -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div class="p-8 border-2 border-slate-50 rounded-3xl bg-slate-50/50">
                         <h4 class="font-bold text-lg mb-4 flex items-center gap-2">
@@ -262,13 +244,28 @@
                 </div>
             </div>
 
-            <!-- Bottom Branding -->
             <div class="bg-slate-50 p-6 flex justify-between items-center text-[10px] text-slate-400 font-bold uppercase tracking-widest border-t border-slate-100">
                 <span>MW-CERTIFIED-ANNUAL-<span id="footerYear">2024</span></span>
                 <span>MakerWorld Community Rewards</span>
             </div>
         </div>
     </div>
+
+    <footer class="text-center py-6 text-slate-400 text-sm no-print">
+        <div class="mb-2">
+            <a href="https://ces-git-main-yibo-chens-projects.vercel.app/MWAR.html" class="hover:text-green-600 font-medium transition-colors">MakerWorld Report</a> © 2025 by 
+            <a href="https://kevinyibchen.com" class="hover:text-green-600 font-medium transition-colors">yibo chen</a>
+        </div>
+        <div class="flex items-center justify-center gap-1 opacity-70 hover:opacity-100 transition-opacity">
+            <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="flex items-center gap-1">
+                Licensed under CC BY-NC-SA 4.0
+                <img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" alt="CC" class="h-4 w-4">
+                <img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" alt="BY" class="h-4 w-4">
+                <img src="https://mirrors.creativecommons.org/presskit/icons/nc.svg" alt="NC" class="h-4 w-4">
+                <img src="https://mirrors.creativecommons.org/presskit/icons/sa.svg" alt="SA" class="h-4 w-4">
+            </a>
+        </div>
+    </footer>
 
     <script>
         lucide.createIcons();
@@ -278,6 +275,7 @@
             const otherContainer = document.getElementById('otherPrinterContainer');
             if (select.value === 'Other') {
                 otherContainer.classList.remove('hidden');
+                document.getElementById('customPrinter').focus();
             } else {
                 otherContainer.classList.add('hidden');
             }
@@ -300,15 +298,17 @@
 
             if (!username || !printTime || !followers) {
                 const errorBox = document.createElement('div');
-                errorBox.className = "fixed bottom-4 left-1/2 -translate-x-1/2 bg-red-600 text-white px-6 py-3 rounded-full shadow-lg z-50";
-                errorBox.innerText = "Please fill in the required stats!";
+                errorBox.className = "fixed bottom-10 left-1/2 -translate-x-1/2 bg-red-600 text-white px-6 py-3 rounded-full shadow-xl z-50 font-bold animate-fade-in";
+                errorBox.innerHTML = '<i class="inline mr-2" data-lucide="alert-circle"></i> Please fill in the required stats!';
                 document.body.appendChild(errorBox);
+                lucide.createIcons();
                 setTimeout(() => errorBox.remove(), 3000);
                 return;
             }
 
             // Update Report UI
             document.getElementById('displayYear').innerText = year;
+            document.getElementById('titleYear').innerText = year; // Update header too
             document.getElementById('storyYear').innerText = year;
             document.getElementById('footerYear').innerText = year;
             document.getElementById('displayUsername').innerText = username;
@@ -332,15 +332,19 @@
             
             if (printTime > 3000 || boosts > 50) {
                 rankEl.innerText = "MakerWorld Legend";
+                rankEl.className = "text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-amber-600";
                 descEl.innerText = "Your influence is undeniable. Between your massive print hours and community boosts, you're a cornerstone of the MakerWorld ecosystem.";
             } else if (printTime > 1000) {
                 rankEl.innerText = "Master Artisan";
+                rankEl.className = "text-2xl font-black text-slate-800";
                 descEl.innerText = "A heavy hitter with serious output. Your workspace is clearly optimized for maximum creativity.";
             } else if (printTime > 300) {
                 rankEl.innerText = "Dedicated Creator";
+                rankEl.className = "text-2xl font-black text-slate-800";
                 descEl.innerText = "You're consistently producing high-quality work and growing your presence in the community.";
             } else {
                 rankEl.innerText = "Rising Innovator";
+                rankEl.className = "text-2xl font-black text-slate-800";
                 descEl.innerText = "The journey is just beginning. Every successful print is a step toward mastering the world of 3D manufacturing.";
             }
 
@@ -349,6 +353,7 @@
             document.getElementById('reportPage').classList.remove('hidden');
             window.scrollTo(0, 0);
             
+            // Re-render icons for new elements
             lucide.createIcons();
         }
 
@@ -358,6 +363,5 @@
             window.scrollTo(0, 0);
         }
     </script>
-    <a href="https://ces-git-main-yibo-chens-projects.vercel.app/MWAR.html">MakerWorld Report</a> © 2025 by <a href="https://kevinyibchen.com">yibo chen</a> is licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a><img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/nc.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/sa.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;">
 </body>
 </html>
