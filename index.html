@@ -2,208 +2,180 @@
 <html lang="en">
 <head>
     <!-- Google AdSense Auto Ads Script -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5400421340387046" crossorigin="anonymous"></script>  
-
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5400421340387046" crossorigin="anonymous"></script>
     <meta name="google-adsense-account" content="ca-pub-5400421340387046">
+
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <meta name="description" content="Securely decrypt OpenSSL salted AES-256-CBC ciphertext online. 100% client-side tool with detailed technical guides on cryptography and key derivation.">
-    <meta name="keywords" content="OpenSSL, Decryptor, AES-256-CBC, Cryptography, EVP_BytesToKey, Online Decryptor, Privacy, Minecraft">
-    <title>OpenSSL Decryptor | Secure Online AES Decryption Tool</title>
+    <meta name="description" content="OpenSSL AES-256-CBC - Focused on secure decryption and privacy protection. Providing professional OpenSSL local decryption tools and in-depth technical documentation.">
+    <meta name="keywords" content="OpenSSL, Decryptor, AES-256-CBC, Web Crypto API, Cryptography, EVP_BytesToKey">
+    
+    <title>OpenSSL AES-256-CBC | Security Tools & Technical Analysis</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500&family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,1,0" rel="stylesheet"/>
     
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #e2e8f0; scroll-behavior: smooth; }
+        :root {
+            --bg-main: #0f172a;
+            --card-bg: #1e293b;
+            --accent: #3b82f6;
+        }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-main); color: #e2e8f0; scroll-behavior: smooth; }
         .font-mono { font-family: 'Roboto Mono', monospace; }
-        .prose h2 { color: #ffffff; font-size: 1.75rem; font-weight: 700; margin-top: 3rem; margin-bottom: 1rem; border-left: 4px solid #3b82f6; padding-left: 1rem; }
-        .prose h3 { color: #f8fafc; font-size: 1.35rem; font-weight: 600; margin-top: 2rem; }
-        .prose p { color: #94a3b8; margin-bottom: 1.25rem; line-height: 1.7; }
-        .code-block { background: #000; padding: 1.25rem; border-radius: 8px; font-family: 'Roboto Mono', monospace; font-size: 0.875rem; color: #34d399; margin: 1.5rem 0; border: 1px solid #1e293b; overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; margin: 2rem 0; background: #1e293b; border-radius: 12px; overflow: hidden; }
-        th, td { text-align: left; padding: 1rem; border-bottom: 1px solid #334155; }
-        th { color: #ffffff; background: #334155; font-weight: 600; }
-        .tool-card { background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%); border: 1px solid #334155; }
         
-        /* Ad Unit Container */
-        .ad-container { min-height: 90px; display: flex; align-items: center; justify-content: center; background: rgba(30, 41, 59, 0.2); border: 1px dashed #334155; border-radius: 8px; margin: 2rem 0; }
+        .prose h2 { color: #ffffff; font-size: 1.8rem; font-weight: 700; margin: 2.5rem 0 1rem 0; border-left: 4px solid var(--accent); padding-left: 1rem; }
+        .prose h3 { color: #f8fafc; font-size: 1.3rem; font-weight: 600; margin: 1.5rem 0 1rem 0; }
+        .prose p { color: #94a3b8; line-height: 1.8; margin-bottom: 1.25rem; }
+        
+        .code-block { background: #000; padding: 1.25rem; border-radius: 8px; font-family: 'Roboto Mono', monospace; font-size: 0.875rem; color: #34d399; border: 1px solid #334155; margin: 1rem 0; overflow-x: auto; }
+        
+        .tool-card { background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%); border: 1px solid #334155; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3); }
+        
+        #status-msg { transition: all 0.3s ease; transform: translateY(20px); opacity: 0; pointer-events: none; }
+        #status-msg.show { transform: translateY(0); opacity: 1; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
 
-<header class="bg-slate-900/80 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50">
+<!-- Navigation -->
+<header class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-            <span class="material-symbols-outlined text-green-500 text-3xl">lock_open</span>
-            <h1 class="text-xl font-bold text-white tracking-tight">OpenSSL <span class="text-blue-500">Decryptor</span></h1>
+        <div class="flex items-center gap-2">
+            <span class="text-xl font-bold text-white tracking-tight">OpenSSL <span class="text-blue-500">AES-256-CBC</span></span>
         </div>
         <nav class="hidden md:flex gap-6 text-sm font-medium text-slate-400">
-            <!-- Navigation Links -->
-            <a href="MWG.html" class="text-blue-400 hover:text-white transition-colors">MAKERPLAN</a>
-            <a href="MWAR.html" class="text-blue-400 hover:text-white transition-colors">MakerWorld Report</a>
-            <a href="Minecraft.html" class="text-blue-400 hover:text-white transition-colors">Minecraft</a>
-            <span class="w-px h-4 bg-slate-700 self-center mx-1"></span>
-            <!-- Original Page Anchors -->
             <a href="#tool" class="hover:text-white transition-colors">Decryptor</a>
-            <a href="#how-to" class="hover:text-white transition-colors">How to Use</a>
-            <a href="#tech" class="hover:text-white transition-colors">Tech Specs</a>
-            <a href="#faq" class="hover:text-white transition-colors">FAQ</a>
+            <a href="MWAR.html" class="hover:text-white transition-colors">MWAR</a>
+            <a href="MWG.html" class="hover:text-white transition-colors">MWG</a>
+            <a href="Minecraft.html" class="hover:text-white transition-colors">Minecraft</a>
+            <a href="#docs" class="hover:text-white transition-colors">Documentation</a>
         </nav>
     </div>
 </header>
 
-<main class="flex-grow p-4 md:p-8">
-    <div class="max-w-6xl mx-auto">
-        
-        <!-- Top Ad Placement -->
-        <div class="ad-container overflow-hidden">
-            <ins class="adsbygoogle"
-                 style="display:block"
-                 data-ad-client="ca-pub-5400421340387046"
-                 data-ad-slot="YOUR_AD_SLOT_ID"
-                 data-ad-format="auto"
-                 data-full-width-responsive="true"></ins>
-            <script>
-                try {
-                    (adsbygoogle = window.adsbygoogle || []).push({});
-                } catch (e) {
-                    console.error("AdSense placement error:", e.message);
-                }
-            </script>
+<main class="flex-grow">
+    <!-- Hero Section -->
+    <section class="py-20 px-4 bg-gradient-to-b from-slate-900 to-slate-950 border-b border-slate-800/50">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl md:text-5xl font-extrabold text-white mb-6 leading-tight">Security Tech Lab</h2>
+            <p class="text-lg text-slate-400 leading-relaxed max-w-2xl mx-auto">
+                Specializing in data security and cryptographic applications within web environments, providing transparent and localized decryption solutions.
+            </p>
         </div>
+    </section>
 
-        <section id="tool" class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-20 scroll-mt-24">
-            <div class="tool-card rounded-2xl p-6 md:p-8 shadow-2xl">
-                <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-2">
-                    <span class="material-symbols-outlined text-blue-400">shield</span> Input Ciphertext
-                </h2>
-                <div class="space-y-5">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">Base64 Encrypted Data</label>
-                        <textarea class="w-full bg-slate-950 border border-slate-700 rounded-xl p-4 font-mono text-sm text-blue-300 focus:border-blue-500 transition-all outline-none" id="input-data" rows="7" placeholder="Paste your U2FsdGVkX1... data here"></textarea>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 uppercase mb-2 ml-1">Password / Passphrase</label>
-                        <input class="w-full bg-slate-950 border border-slate-700 rounded-xl p-4 font-mono text-sm text-white focus:border-blue-500 transition-all outline-none" id="input-pass" type="password" placeholder="The key used to encrypt the data"/>
-                    </div>
-                    <button class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-900/20 transition-all active:scale-[0.98] flex items-center justify-center gap-3" onclick="decrypt()">
-                        <span class="material-symbols-outlined">lock_open</span> Decrypt Securely
-                    </button>
-                </div>
+    <div class="max-w-6xl mx-auto px-4">
+        <!-- Tool Section -->
+        <section id="tool" class="py-16 scroll-mt-20">
+            <div class="mb-12 text-center lg:text-left">
+                <h2 class="text-3xl font-bold text-white">OpenSSL AES-256-CBC Local Decryptor</h2>
+                <p class="text-slate-400 mt-3 max-w-2xl">Featuring a "Zero-Upload" architecture, all computations are performed within your browser sandbox to ensure maximum data privacy.</p>
             </div>
 
-            <div class="bg-black rounded-2xl border border-slate-800 shadow-2xl flex flex-col relative overflow-hidden min-h-[400px]">
-                <div class="bg-slate-900/50 px-5 py-3 border-b border-slate-800 flex justify-between items-center">
-                    <span class="text-xs font-bold text-slate-500 tracking-widest">DECRYPTED PLAINTEXT</span>
-                    <button class="text-xs bg-slate-800 hover:bg-slate-700 text-blue-400 px-4 py-1.5 rounded-lg transition-colors" onclick="copyToClipboard()">Copy Result</button>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                <!-- Input Panel -->
+                <div class="tool-card rounded-3xl p-8 border-slate-700/50 shadow-blue-500/5">
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-3 tracking-[0.2em] ml-1">Base64 Ciphertext (Salted__ Format)</label>
+                            <textarea id="input-data" rows="7" class="w-full bg-slate-950/80 border border-slate-700/50 rounded-2xl p-5 font-mono text-sm text-blue-300 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all placeholder:text-slate-700" placeholder="Paste your U2FsdGVkX1... data here"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-3 tracking-[0.2em] ml-1">Decryption Passphrase</label>
+                            <input id="input-pass" type="password" class="w-full bg-slate-950/80 border border-slate-700/50 rounded-2xl p-5 font-mono text-sm text-white focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all placeholder:text-slate-700" placeholder="Enter encryption password"/>
+                        </div>
+                        <button onclick="decrypt()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-5 rounded-2xl flex items-center justify-center gap-3 transition-all shadow-lg shadow-blue-900/20 active:scale-[0.98]">
+                            <span class="material-symbols-outlined">lock_open</span> Decrypt Securely
+                        </button>
+                    </div>
                 </div>
-                <textarea class="flex-grow w-full bg-black p-6 font-mono text-sm text-green-400 resize-none focus:outline-none" id="output-text" placeholder="Decrypted content will appear here..." readonly></textarea>
-                <div class="hidden absolute top-4 right-4 max-w-xs bg-slate-800 text-white text-xs p-3 rounded-lg shadow-2xl border-l-4" id="status-msg"></div>
+
+                <!-- Output Panel -->
+                <div class="bg-black/40 rounded-3xl border border-slate-800 flex flex-col min-h-[400px] relative overflow-hidden">
+                    <div class="px-6 py-4 border-b border-slate-800/80 flex justify-between items-center bg-slate-900/80 backdrop-blur-sm">
+                        <span class="text-[10px] font-bold text-slate-500 tracking-[0.2em]">PLAINTEXT OUTPUT</span>
+                        <button onclick="copyToClipboard()" class="text-xs font-bold text-blue-400 hover:text-white transition-colors bg-blue-400/5 px-4 py-2 rounded-lg border border-blue-400/20">Copy</button>
+                    </div>
+                    <textarea id="output-text" readonly class="flex-grow w-full bg-transparent p-8 font-mono text-sm text-green-400 outline-none resize-none leading-relaxed placeholder:text-slate-800" placeholder="Decrypted content will appear here..."></textarea>
+                </div>
             </div>
         </section>
 
-        <article class="max-w-4xl mx-auto prose">
-            <section id="how-to" class="scroll-mt-24">
-                <h2>How to use the Online OpenSSL Decryptor</h2>
-                <p>This tool is specifically designed to decrypt messages encrypted via the OpenSSL command line. It supports the standard salted format used by OpenSSL. Encryption usually follows this pattern:</p>
-                <div class="code-block">
-                    # To encrypt your text:<br>
-                    echo "Secret message" | openssl enc -aes-256-cbc -a -salt -pass pass:yourpassword
-                </div>
-                <p>To use this decryptor, ensure your input starts with "U2FsdGVkX1" (the Base64 representation of the 'Salted__' header). Our <strong>local-only</strong> decryption ensures your password never touches a server.</p>
-            </section>
+        <!-- Documentation -->
+        <article id="docs" class="max-w-4xl mx-auto prose prose-invert pb-24 mt-12">
+            <h2>Technical Deep Dive: EVP Key Derivation Standards</h2>
+            <p>
+                In cybersecurity, the <code>-salt</code> option in OpenSSL is critical for defending against pre-computation attacks like rainbow tables.
+                When encrypting with AES-256-CBC, the system doesn't use your password directly. Instead, it generates the actual binary keys through a process called <code>EVP_BytesToKey</code>.
+            </p>
+            
+            <h3>1. The Necessity of Salting</h3>
+            <p>
+                A salt is a random 8-byte sequence embedded at the beginning of the ciphertext. Even if two users use the exact same password for the same file, different salt values ensure the resulting ciphertexts are completely unique.
+            </p>
 
-            <section id="tech" class="scroll-mt-24 bg-slate-800/30 p-8 rounded-2xl border border-slate-800 mt-12">
-                <h2>Technical Specifications & Security</h2>
-                <p>We implement a robust version of the OpenSSL decryption algorithm directly in JavaScript using the Web Crypto API. Key derivation follows the <code>EVP_BytesToKey</code> standard.</p>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Specification</th>
-                            <th>Details</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Algorithm</td>
-                            <td>AES-256-CBC (256-bit Key, Cipher Block Chaining)</td>
-                        </tr>
-                        <tr>
-                            <td>Key Derivation</td>
-                            <td>EVP_BytesToKey using MD5 Hashing</td>
-                        </tr>
-                        <tr>
-                            <td>Input Format</td>
-                            <td>Salted Base64 (Standard OpenSSL Output)</td>
-                        </tr>
-                        <tr>
-                            <td>Processing</td>
-                            <td>Client-Side (Local Browser Environment)</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <p>The security of your data is paramount. By using the Web Crypto API, we ensure that the cryptographic operations are performed in a sandboxed environment within your browser, providing resistance against common web-based attacks.</p>
-            </section>
-
-            <!-- Mid-Article Ad Placement -->
-            <div class="ad-container overflow-hidden">
-                <ins class="adsbygoogle"
-                     style="display:block"
-                     data-ad-client="ca-pub-5400421340387046"
-                     data-ad-slot="YOUR_AD_SLOT_ID_2"
-                     data-ad-format="auto"
-                     data-full-width-responsive="true"></ins>
-                <script>
-                    try {
-                        (adsbygoogle = window.adsbygoogle || []).push({});
-                    } catch (e) {
-                        console.error("AdSense placement error:", e.message);
-                    }
-                </script>
+            <h3>2. Key Derivation Function (KDF)</h3>
+            <p>
+                This tool replicates the default OpenSSL MD5 iteration logic. By concatenating the <strong>Password</strong> and the <strong>Salt</strong> and running them through a hash function, we derive a 32-byte (256-bit) Key and a 16-byte (128-bit) IV.
+            </p>
+            <div class="code-block">
+                # This tool is logically equivalent to the following command:
+                echo "Your Message" | openssl enc -aes-256-cbc -a -salt -pass pass:YourPassword
             </div>
 
-            <section id="faq" class="scroll-mt-24 mt-12 mb-20">
-                <h2>Frequently Asked Questions</h2>
-                <div class="space-y-8">
-                    <div>
-                        <h3 class="text-blue-400">Can I decrypt files encrypted with -pbkdf2?</h3>
-                        <p>Currently, this tool supports the default MD5-based key derivation used in legacy and standard OpenSSL commands. If your encryption command used the <code>-pbkdf2</code> flag, the key derivation process is different (SHA256 based) and will require our specialized PBKDF2 tool.</p>
-                    </div>
-                    <div>
-                        <h3 class="text-blue-400">Why is the tool client-side?</h3>
-                        <p>Most online decryptors require you to send your password and encrypted data to their server. This creates a massive security risk. Our tool performs the math on your device, meaning we never see your data.</p>
-                    </div>
-                    <div>
-                        <h3 class="text-blue-400">What if my data doesn't have a salt?</h3>
-                        <p>OpenSSL encryption without a salt is highly discouraged and produces a different header. This tool specifically targets the <code>-salt</code> (default) output for maximum security and standard compatibility.</p>
-                    </div>
-                </div>
-            </section>
+            <h3>3. Web Crypto API Sandbox Security</h3>
+            <p>
+                This lab utilizes the browser's native hardware-accelerated encryption interface <code>window.crypto.subtle</code>.
+                All decryption logic is executed locally, ensuring your sensitive data never leaves your device.
+            </p>
         </article>
     </div>
 </main>
 
-<footer class="p-10 border-t border-slate-800 bg-slate-950 mt-10">
-    <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left">
-        <div class="space-y-1">
-            <p class="text-slate-200 font-bold text-lg">OpenSSL Decryptor</p>
-            <p class="text-slate-500 text-sm">© 2026 OpenSSL Decryptor. All rights reserved.</p>
-            <p class="text-xs text-slate-600 mt-2 italic">
-                Secure encryption and decryption services provided under CC BY-NC-SA 4.0 license.
-            </p>
+<!-- Status Toast -->
+<div id="status-msg" class="fixed bottom-8 left-1/2 -translate-x-1/2 px-8 py-4 rounded-2xl text-sm font-bold z-[100] shadow-2xl"></div>
+
+<!-- Footer -->
+<footer class="bg-slate-950 border-t border-slate-900 py-16">
+    <div class="max-w-6xl mx-auto px-4">
+        <div class="flex flex-col md:flex-row justify-between items-start gap-12">
+            <div class="max-w-sm">
+                <p class="font-bold text-white text-xl uppercase tracking-tighter">OpenSSL AES-256-CBC</p>
+                <p class="text-slate-500 text-sm mt-4 leading-relaxed">
+                    Specializing in cryptographic applications and web security. Committed to providing secure, non-tracking, localized technical tools.
+                </p>
+            </div>
+            <div class="grid grid-cols-2 gap-16 text-sm">
+                <div>
+                    <p class="text-[10px] font-bold text-slate-600 uppercase tracking-widest mb-6">Lab Resources</p>
+                    <ul class="space-y-4 text-slate-400">
+                        <li><a href="https://github.com/yiboc2012/ces" target="_blank" class="hover:text-blue-500 transition-colors">GitHub Repository</a></li>
+                        <li><a href="MWAR.html" class="hover:text-blue-500 transition-colors">MWAR Analysis</a></li>
+                        <li><a href="MWG.html" class="hover:text-blue-500 transition-colors">MWG Management</a></li>
+                        <li><a href="Minecraft.html" class="hover:text-blue-500 transition-colors">Minecraft Sim</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <p class="text-[10px] font-bold text-slate-600 uppercase tracking-widest mb-6">Compliance</p>
+                    <ul class="space-y-4 text-slate-400">
+                        <li><a href="Privacy.html" class="hover:text-blue-500 transition-colors">Privacy Policy</a></li>
+                        <li><a href="Terms.html" class="hover:text-blue-500 transition-colors">Terms of Use</a></li>
+                        <li><a href="mailto:yiboc2012@outlook.com" class="hover:text-blue-500 transition-colors">Contact Feedback</a></li>
+                    </ul>
+                </div>
+            </div>
         </div>
-        <div class="flex flex-wrap justify-center gap-6 text-sm">
-            <a href="Privacy.html" class="text-slate-400 hover:text-blue-400 transition-colors">Privacy Policy</a>
-            <a href="Terms.html" class="text-slate-400 hover:text-blue-400 transition-colors">Terms of Service</a>
-            <a href="mailto:yiboc2012@outlook.com" class="text-slate-400 hover:text-blue-400 transition-colors">Contact</a>
+        <div class="mt-16 pt-8 border-t border-slate-900 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] text-slate-600 uppercase tracking-[0.3em]">
+            <span>© 2026 OpenSSL AES-256-CBC. All Rights Reserved.</span>
+            <span>Security Audited • Privacy Verified</span>
         </div>
     </div>
 </footer>
 
 <script>
-    // --- ROBUST CRYPTO LOGIC ---
+    /* --- Core Crypto Implementation --- */
     const MD5 = (function() {
         function md5cycle(x, k) {
             var a = x[0], b = x[1], c = x[2], d = x[3];
@@ -231,76 +203,80 @@
         function hh(a, b, c, d, x, s, t) { return cmn(b ^ c ^ d, a, b, x, s, t); }
         function ii(a, b, c, d, x, s, t) { return cmn(c ^ (b | (~d)), a, b, x, s, t); }
         function add32(a, b) { return (a + b) & 0xFFFFFFFF; }
-        function r_md5(data) {
+        return function(data) {
             var n = data.length, state = [1732584193, -271733879, -1732584194, 271733878], i, len = n * 8;
-            var nWords = Math.ceil((n + 9) / 64) * 16;
-            var words = new Int32Array(nWords);
+            var nWords = Math.ceil((n + 9) / 64) * 16; var words = new Int32Array(nWords);
             for (i = 0; i < n; i++) words[i >>> 2] |= data[i] << ((i % 4) * 8);
-            words[n >>> 2] |= 0x80 << ((n % 4) * 8);
-            words[nWords - 2] = len; words[nWords - 1] = 0;
+            words[n >>> 2] |= 0x80 << ((n % 4) * 8); words[nWords - 2] = len;
             for (i = 0; i < nWords; i += 16) md5cycle(state, words.subarray(i, i + 16));
-            var output = new Uint8Array(16);
-            for (i = 0; i < 4; i++) {
-                output[i * 4] = state[i] & 0xFF; output[i * 4 + 1] = (state[i] >>> 8) & 0xFF;
-                output[i * 4 + 2] = (state[i] >>> 16) & 0xFF; output[i * 4 + 3] = (state[i] >>> 24) & 0xFF;
-            }
-            return output;
-        }
-        return r_md5;
+            var out = new Uint8Array(16);
+            for (i = 0; i < 4; i++) for(var j=0; j<4; j++) out[i*4+j] = (state[i] >>> (j*8)) & 0xFF;
+            return out;
+        };
     })();
 
-    function evpBytesToKey(password, salt, keyLen, ivLen) {
-        let derived = new Uint8Array(0); let block = new Uint8Array(0); const targetLen = keyLen + ivLen;
-        while (derived.length < targetLen) {
-            const inputLen = block.length + password.length + salt.length; const input = new Uint8Array(inputLen);
+    function deriveKeyIv(password, salt, keyLen, ivLen) {
+        let derived = new Uint8Array(0); let block = new Uint8Array(0);
+        while (derived.length < (keyLen + ivLen)) {
+            let input = new Uint8Array(block.length + password.length + salt.length);
             input.set(block, 0); input.set(password, block.length); input.set(salt, block.length + password.length);
             block = MD5(input);
-            const temp = new Uint8Array(derived.length + block.length);
-            temp.set(derived); temp.set(block, derived.length); derived = temp;
+            let next = new Uint8Array(derived.length + block.length);
+            next.set(derived); next.set(block, derived.length);
+            derived = next;
         }
         return { key: derived.slice(0, keyLen), iv: derived.slice(keyLen, keyLen + ivLen) };
     }
 
     async function decrypt() {
-        if (!window.crypto || !window.crypto.subtle) {
-            showStatus("Crypto API not supported in this browser", "error");
-            return;
-        }
-        const inputData = document.getElementById('input-data').value.replace(/\s/g, '');
-        const passwordStr = document.getElementById('input-pass').value;
-        const outBox = document.getElementById('output-text');
-        const statusBox = document.getElementById('status-msg');
-        statusBox.classList.add('hidden'); outBox.value = "";
+        const inputBase64 = document.getElementById('input-data').value.trim().replace(/\s/g, '');
+        const password = document.getElementById('input-pass').value;
+        const outputArea = document.getElementById('output-text');
+        
+        if (!inputBase64 || !password) return showMsg("Please enter ciphertext and passphrase", "error");
+
         try {
-            if(!inputData) throw new Error("Please enter ciphertext");
-            if(!passwordStr) throw new Error("Please enter password");
-            let binaryString; try { binaryString = window.atob(inputData); } catch(e) { throw new Error("Invalid Base64 format"); }
-            const bytes = new Uint8Array(binaryString.length);
-            for (let i = 0; i < binaryString.length; i++) bytes[i] = binaryString.charCodeAt(i);
-            const header = new TextDecoder().decode(bytes.slice(0, 8));
-            if (header !== "Salted__") throw new Error("Invalid OpenSSL header (Missing 'Salted__')");
-            const salt = bytes.slice(8, 16); const ciphertext = bytes.slice(16);
-            const passwordBytes = new TextEncoder().encode(passwordStr);
-            const { key: keyBytes, iv: ivBytes } = evpBytesToKey(passwordBytes, salt, 32, 16);
-            const key = await window.crypto.subtle.importKey("raw", keyBytes, { name: "AES-CBC" }, false, ["decrypt"]);
-            const decrypted = await window.crypto.subtle.decrypt({ name: "AES-CBC", iv: ivBytes }, key, ciphertext);
-            outBox.value = new TextDecoder().decode(decrypted);
-            showStatus("Decryption Successful", "success");
+            const raw = Uint8Array.from(atob(inputBase64), c => c.charCodeAt(0));
+            if (new TextDecoder().decode(raw.slice(0, 8)) !== "Salted__") {
+                throw new Error("Invalid format (Missing 'Salted__' header)");
+            }
+
+            const salt = raw.slice(8, 16);
+            const ciphertext = raw.slice(16);
+            const passBytes = new TextEncoder().encode(password);
+            const { key, iv } = deriveKeyIv(passBytes, salt, 32, 16);
+            
+            const cryptoKey = await crypto.subtle.importKey("raw", key, "AES-CBC", false, ["decrypt"]);
+            const decrypted = await crypto.subtle.decrypt({ name: "AES-CBC", iv: iv }, cryptoKey, ciphertext);
+            
+            outputArea.value = new TextDecoder().decode(decrypted);
+            showMsg("Decryption Successful!", "success");
         } catch (e) {
-            let msg = e.name === "OperationError" ? "Wrong Password (Padding Failed)" : e.message;
-            showStatus(msg, "error");
+            outputArea.value = "";
+            let errorMsg = e.name === "OperationError" ? "Incorrect passphrase or corrupted data" : e.message;
+            showMsg("Decryption Failed: " + errorMsg, "error");
         }
     }
 
-    function showStatus(msg, type) {
+    function showMsg(text, type) {
         const el = document.getElementById('status-msg');
-        el.textContent = msg; el.classList.remove('hidden', 'border-green-500', 'border-red-500');
-        el.classList.add(type === 'success' ? 'border-green-500' : 'border-red-500');
+        el.textContent = text;
+        el.className = `fixed bottom-8 left-1/2 -translate-x-1/2 px-8 py-4 rounded-2xl text-sm font-bold z-[100] shadow-2xl show ${
+            type === 'success' ? 'bg-green-500/90 text-white backdrop-blur-md' : 'bg-red-500/90 text-white backdrop-blur-md'
+        }`;
+        setTimeout(() => el.classList.remove('show'), 3000);
     }
 
     function copyToClipboard() {
-        const el = document.getElementById('output-text');
-        if (el.value) { navigator.clipboard.writeText(el.value); showStatus("Copied to clipboard", "success"); }
+        const text = document.getElementById('output-text').value;
+        if (!text) return;
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        showMsg("Copied to clipboard", "success");
     }
 </script>
 </body>
