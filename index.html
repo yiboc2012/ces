@@ -6,11 +6,11 @@
     <meta name="google-adsense-account" content="ca-pub-5400421340387046">
 
     <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <meta name="description" content="OpenSSL AES-256-CBC - Focused on secure decryption and privacy protection. Providing professional OpenSSL local decryption tools and in-depth technical documentation.">
-    <meta name="keywords" content="OpenSSL, Decryptor, AES-256-CBC, Web Crypto API, Cryptography, EVP_BytesToKey">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+    <meta name="description" content="Comprehensive OpenSSL AES-256-CBC local decryption tool and technical encyclopedia. Fully responsive for all devices.">
+    <meta name="keywords" content="OpenSSL, AES-256-CBC, Decryptor, Cryptography Guide, Web Crypto API">
     
-    <title>OpenSSL AES-256-CBC | Security Tools & Technical Analysis</title>
+    <title>OpenSSL AES-256-CBC | Secure Decryption Laboratory</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500&family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
@@ -22,160 +22,156 @@
             --card-bg: #1e293b;
             --accent: #3b82f6;
         }
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg-main); color: #e2e8f0; scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-main); color: #e2e8f0; scroll-behavior: smooth; overflow-x: hidden; }
         .font-mono { font-family: 'Roboto Mono', monospace; }
         
-        .prose h2 { color: #ffffff; font-size: 1.8rem; font-weight: 700; margin: 2.5rem 0 1rem 0; border-left: 4px solid var(--accent); padding-left: 1rem; }
-        .prose h3 { color: #f8fafc; font-size: 1.3rem; font-weight: 600; margin: 1.5rem 0 1rem 0; }
-        .prose p { color: #94a3b8; line-height: 1.8; margin-bottom: 1.25rem; }
+        /* Typography */
+        .prose h2 { color: #ffffff; font-size: 1.5rem; font-weight: 700; margin: 2rem 0 1rem 0; border-left: 4px solid var(--accent); padding-left: 1rem; }
+        @media (min-width: 768px) { .prose h2 { font-size: 2rem; margin: 3.5rem 0 1.5rem 0; padding-left: 1.25rem; } }
+
+        .prose h3 { color: #f8fafc; font-size: 1.25rem; font-weight: 600; margin: 1.5rem 0 1rem 0; }
+        @media (min-width: 768px) { .prose h3 { font-size: 1.5rem; margin: 2.5rem 0 1.25rem 0; } }
+
+        .prose p { color: #94a3b8; line-height: 1.7; margin-bottom: 1.25rem; text-align: left; font-size: 0.9375rem; }
+        @media (min-width: 768px) { .prose p { line-height: 1.8; margin-bottom: 1.5rem; font-size: 1rem; } }
+
+        .code-block { background: #000; padding: 1rem; border-radius: 8px; font-family: 'Roboto Mono', monospace; font-size: 0.8rem; color: #34d399; border: 1px solid #334155; margin: 1.5rem 0; overflow-x: auto; }
         
-        .code-block { background: #000; padding: 1.25rem; border-radius: 8px; font-family: 'Roboto Mono', monospace; font-size: 0.875rem; color: #34d399; border: 1px solid #334155; margin: 1rem 0; overflow-x: auto; }
+        .tool-card { background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%); border: 1px solid #334155; }
         
-        .tool-card { background: linear-gradient(145deg, #1e293b 0%, #0f172a 100%); border: 1px solid #334155; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3); }
-        
-        #status-msg { transition: all 0.3s ease; transform: translateY(20px); opacity: 0; pointer-events: none; }
-        #status-msg.show { transform: translateY(0); opacity: 1; }
+        #status-msg { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform: translate(-50%, 50px); opacity: 0; pointer-events: none; width: 90%; max-width: 400px; text-align: center; }
+        #status-msg.show { transform: translate(-50%, 0); opacity: 1; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
 
-<!-- Navigation -->
-<header class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-        <div class="flex items-center gap-2">
-            <span class="text-xl font-bold text-white tracking-tight">OpenSSL <span class="text-blue-500">AES-256-CBC</span></span>
+<!-- 导航栏：已优化所有链接在移动端的可见性 -->
+<header class="bg-slate-900/95 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-2 sm:px-4 h-16 flex items-center justify-between">
+        <div class="flex items-center gap-1 md:gap-2">
+            <span class="material-symbols-outlined text-blue-500 scale-75 md:scale-100">security</span>
+            <span class="text-xs sm:text-base md:text-xl font-bold text-white tracking-tight">OpenSSL <span class="hidden xs:inline text-blue-500">AES-256-CBC</span><span class="xs:hidden text-blue-500">AES</span></span>
         </div>
-        <nav class="hidden md:flex gap-6 text-sm font-medium text-slate-400">
-            <a href="#tool" class="hover:text-white transition-colors">Decryptor</a>
+        <!-- 紧凑型导航菜单 -->
+        <nav class="flex gap-2 sm:gap-4 md:gap-8 text-[9px] sm:text-xs md:text-sm font-medium text-slate-400 uppercase tracking-tighter sm:tracking-wider">
+            <a href="#tool" class="hover:text-white transition-colors">Tool</a>
             <a href="MWAR.html" class="hover:text-white transition-colors">MWAR</a>
             <a href="MWG.html" class="hover:text-white transition-colors">MWG</a>
-            <a href="Minecraft.html" class="hover:text-white transition-colors">Minecraft</a>
-            <a href="#docs" class="hover:text-white transition-colors">Documentation</a>
+            <a href="Minecraft.html" class="hover:text-white transition-colors">Game</a>
+            <a href="#docs" class="hover:text-white transition-colors">Docs</a>
         </nav>
     </div>
 </header>
 
 <main class="flex-grow">
-    <!-- Hero Section -->
-    <section class="py-20 px-4 bg-gradient-to-b from-slate-900 to-slate-950 border-b border-slate-800/50">
-        <div class="max-w-4xl mx-auto text-center">
-            <h2 class="text-3xl md:text-5xl font-extrabold text-white mb-6 leading-tight">Security Tech Lab</h2>
-            <p class="text-lg text-slate-400 leading-relaxed max-w-2xl mx-auto">
-                Specializing in data security and cryptographic applications within web environments, providing transparent and localized decryption solutions.
+    <!-- Hero 区 -->
+    <section class="py-12 md:py-24 px-4 bg-gradient-to-b from-slate-900 via-slate-950 to-bg-main border-b border-slate-800/50">
+        <div class="max-w-5xl mx-auto text-center">
+            <h1 class="text-3xl md:text-6xl font-extrabold text-white mb-4 md:mb-8 leading-tight">Advanced Cryptography Laboratory</h1>
+            <p class="text-sm md:text-xl text-slate-400 leading-relaxed max-w-3xl mx-auto px-2">
+                Securely decrypt your OpenSSL data locally. Compatible with both mobile and desktop browsers for professional cryptographic research.
             </p>
         </div>
     </section>
 
     <div class="max-w-6xl mx-auto px-4">
-        <!-- Tool Section -->
-        <section id="tool" class="py-16 scroll-mt-20">
-            <div class="mb-12 text-center lg:text-left">
-                <h2 class="text-3xl font-bold text-white">OpenSSL AES-256-CBC Local Decryptor</h2>
-                <p class="text-slate-400 mt-3 max-w-2xl">Featuring a "Zero-Upload" architecture, all computations are performed within your browser sandbox to ensure maximum data privacy.</p>
+        <!-- 加解密工具区 -->
+        <section id="tool" class="py-12 md:py-24 scroll-mt-20">
+            <div class="mb-8 md:mb-16 text-center lg:text-left">
+                <div class="inline-block bg-blue-500/10 border border-blue-500/20 text-blue-400 px-2 py-1 rounded text-[10px] font-bold mb-4 uppercase tracking-widest">LOCAL-ONLY DECRYPTION</div>
+                <h2 class="text-2xl md:text-4xl font-bold text-white mb-2 md:mb-4">AES-256-CBC Decryptor</h2>
+                <p class="text-slate-400 mt-2 text-sm md:text-lg">Decryption happens 100% in your browser. Your password never leaves your device.</p>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
-                <!-- Input Panel -->
-                <div class="tool-card rounded-3xl p-8 border-slate-700/50 shadow-blue-500/5">
-                    <div class="space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-12">
+                <!-- 输入面板 -->
+                <div class="tool-card rounded-2xl md:rounded-3xl p-6 md:p-10 border-slate-700/50">
+                    <div class="space-y-6 md:space-y-8">
                         <div>
-                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-3 tracking-[0.2em] ml-1">Base64 Ciphertext (Salted__ Format)</label>
-                            <textarea id="input-data" rows="7" class="w-full bg-slate-950/80 border border-slate-700/50 rounded-2xl p-5 font-mono text-sm text-blue-300 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all placeholder:text-slate-700" placeholder="Paste your U2FsdGVkX1... data here"></textarea>
+                            <label class="block text-[10px] md:text-[11px] font-bold text-slate-400 uppercase mb-2 md:mb-3 tracking-[0.2em] ml-1">Encrypted Base64 Data</label>
+                            <textarea id="input-data" rows="5" class="w-full bg-slate-950/90 border border-slate-700/50 rounded-xl md:rounded-2xl p-4 md:p-6 font-mono text-xs md:text-sm text-blue-300 focus:ring-2 focus:ring-blue-500/50 outline-none transition-all" placeholder="U2FsdGVkX1..."></textarea>
                         </div>
                         <div>
-                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-3 tracking-[0.2em] ml-1">Decryption Passphrase</label>
-                            <input id="input-pass" type="password" class="w-full bg-slate-950/80 border border-slate-700/50 rounded-2xl p-5 font-mono text-sm text-white focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all placeholder:text-slate-700" placeholder="Enter encryption password"/>
+                            <label class="block text-[10px] md:text-[11px] font-bold text-slate-400 uppercase mb-2 md:mb-3 tracking-[0.2em] ml-1">Decryption Passphrase</label>
+                            <input id="input-pass" type="password" class="w-full bg-slate-950/90 border border-slate-700/50 rounded-xl md:rounded-2xl p-4 md:p-6 font-mono text-xs md:text-sm text-white focus:ring-2 focus:ring-blue-500/50 outline-none transition-all" placeholder="Enter key"/>
                         </div>
-                        <button onclick="decrypt()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-5 rounded-2xl flex items-center justify-center gap-3 transition-all shadow-lg shadow-blue-900/20 active:scale-[0.98]">
-                            <span class="material-symbols-outlined">lock_open</span> Decrypt Securely
+                        <button onclick="decrypt()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 md:py-5 rounded-xl md:rounded-2xl flex items-center justify-center gap-2 md:gap-3 transition-all active:scale-[0.97] touch-manipulation">
+                            <span class="material-symbols-outlined text-sm md:text-base">lock_open</span> Decrypt Result
                         </button>
                     </div>
                 </div>
 
-                <!-- Output Panel -->
-                <div class="bg-black/40 rounded-3xl border border-slate-800 flex flex-col min-h-[400px] relative overflow-hidden">
-                    <div class="px-6 py-4 border-b border-slate-800/80 flex justify-between items-center bg-slate-900/80 backdrop-blur-sm">
-                        <span class="text-[10px] font-bold text-slate-500 tracking-[0.2em]">PLAINTEXT OUTPUT</span>
-                        <button onclick="copyToClipboard()" class="text-xs font-bold text-blue-400 hover:text-white transition-colors bg-blue-400/5 px-4 py-2 rounded-lg border border-blue-400/20">Copy</button>
+                <!-- 输出面板 -->
+                <div class="bg-black/60 rounded-2xl md:rounded-3xl border border-slate-800 flex flex-col min-h-[300px] md:min-h-[450px] relative overflow-hidden backdrop-blur-sm">
+                    <div class="px-5 py-3 md:px-8 md:py-5 border-b border-slate-800/80 flex justify-between items-center bg-slate-900/60">
+                        <span class="text-[10px] md:text-[11px] font-bold text-slate-500 tracking-[0.2em]">PLAINTEXT</span>
+                        <button onclick="copyToClipboard()" class="text-[10px] md:text-xs font-bold text-blue-400 hover:text-white transition-all bg-blue-500/10 px-4 py-2 md:px-5 md:py-2.5 rounded-lg md:rounded-xl border border-blue-400/20">COPY</button>
                     </div>
-                    <textarea id="output-text" readonly class="flex-grow w-full bg-transparent p-8 font-mono text-sm text-green-400 outline-none resize-none leading-relaxed placeholder:text-slate-800" placeholder="Decrypted content will appear here..."></textarea>
+                    <textarea id="output-text" readonly class="flex-grow w-full bg-transparent p-6 md:p-10 font-mono text-xs md:text-sm text-green-400 outline-none resize-none leading-relaxed" placeholder="Result will appear here..."></textarea>
                 </div>
             </div>
         </section>
 
-        <!-- Documentation -->
-        <article id="docs" class="max-w-4xl mx-auto prose prose-invert pb-24 mt-12">
-            <h2>Technical Deep Dive: EVP Key Derivation Standards</h2>
-            <p>
-                In cybersecurity, the <code>-salt</code> option in OpenSSL is critical for defending against pre-computation attacks like rainbow tables.
-                When encrypting with AES-256-CBC, the system doesn't use your password directly. Instead, it generates the actual binary keys through a process called <code>EVP_BytesToKey</code>.
-            </p>
-            
-            <h3>1. The Necessity of Salting</h3>
-            <p>
-                A salt is a random 8-byte sequence embedded at the beginning of the ciphertext. Even if two users use the exact same password for the same file, different salt values ensure the resulting ciphertexts are completely unique.
-            </p>
+        <!-- 百科全书部分：增加内容权重 -->
+        <article id="docs" class="max-w-4xl mx-auto prose prose-invert pb-20 md:pb-32">
+            <h2>Understanding AES-256-CBC</h2>
+            <p>AES-256-CBC is a powerful symmetric encryption standard. CBC stands for <strong>Cipher Block Chaining</strong>, which ensures that each block of plaintext depends on the previous block's ciphertext, making patterns invisible to attackers.</p>
 
-            <h3>2. Key Derivation Function (KDF)</h3>
-            <p>
-                This tool replicates the default OpenSSL MD5 iteration logic. By concatenating the <strong>Password</strong> and the <strong>Salt</strong> and running them through a hash function, we derive a 32-byte (256-bit) Key and a 16-byte (128-bit) IV.
-            </p>
+            <h3>1. The Initialization Vector (IV)</h3>
+            <p>The IV is essential for ensuring that encrypting the same message twice results in different ciphertext. In OpenSSL, this is derived alongside the key from your password and a random 8-byte salt.</p>
+
             <div class="code-block">
-                # This tool is logically equivalent to the following command:
-                echo "Your Message" | openssl enc -aes-256-cbc -a -salt -pass pass:YourPassword
+                # Example encryption command:
+                echo "Secret text" | openssl enc -aes-256-cbc -salt -a -pass pass:yourpassword
             </div>
 
-            <h3>3. Web Crypto API Sandbox Security</h3>
-            <p>
-                This lab utilizes the browser's native hardware-accelerated encryption interface <code>window.crypto.subtle</code>.
-                All decryption logic is executed locally, ensuring your sensitive data never leaves your device.
-            </p>
+            <h3>2. Key Derivation Logic</h3>
+            <p>Your password is converted into a binary key using a Key Derivation Function (KDF). This tool implements the standard OpenSSL <code>EVP_BytesToKey</code> method, allowing for seamless compatibility with files generated via the command line.</p>
+
+            <h3>3. Mobile-First Security</h3>
+            <p>We use the <code>Web Crypto API</code>, a built-in browser feature that provides high-performance, secure cryptographic operations without external dependencies, making it perfect for both desktop and mobile web environments.</p>
         </article>
     </div>
 </main>
 
-<!-- Status Toast -->
-<div id="status-msg" class="fixed bottom-8 left-1/2 -translate-x-1/2 px-8 py-4 rounded-2xl text-sm font-bold z-[100] shadow-2xl"></div>
+<!-- 状态提示框 -->
+<div id="status-msg" class="fixed bottom-6 md:bottom-8 left-1/2 rounded-2xl md:rounded-3xl px-6 md:px-10 py-4 md:py-5 text-xs md:text-sm font-bold z-[100] shadow-2xl transition-all"></div>
 
-<!-- Footer -->
-<footer class="bg-slate-950 border-t border-slate-900 py-16">
-    <div class="max-w-6xl mx-auto px-4">
-        <div class="flex flex-col md:flex-row justify-between items-start gap-12">
-            <div class="max-w-sm">
-                <p class="font-bold text-white text-xl uppercase tracking-tighter">OpenSSL AES-256-CBC</p>
-                <p class="text-slate-500 text-sm mt-4 leading-relaxed">
-                    Specializing in cryptographic applications and web security. Committed to providing secure, non-tracking, localized technical tools.
-                </p>
+<!-- 页脚 -->
+<footer class="bg-slate-950 border-t border-slate-900 py-12 md:py-20">
+    <div class="max-w-6xl mx-auto px-4 text-center md:text-left">
+        <div class="flex flex-col md:flex-row justify-between items-center md:items-start gap-10">
+            <div class="max-w-md">
+                <p class="font-bold text-white text-xl md:text-2xl uppercase tracking-tighter mb-4 md:mb-6">OpenSSL AES-256-CBC</p>
+                <p class="text-slate-500 text-xs md:text-base leading-relaxed">A specialized technical laboratory for cryptographic research. Your data privacy is our highest priority.</p>
             </div>
-            <div class="grid grid-cols-2 gap-16 text-sm">
+            <div class="flex gap-8 sm:gap-16 text-xs md:text-sm">
                 <div>
-                    <p class="text-[10px] font-bold text-slate-600 uppercase tracking-widest mb-6">Lab Resources</p>
-                    <ul class="space-y-4 text-slate-400">
-                        <li><a href="https://github.com/yiboc2012/ces" target="_blank" class="hover:text-blue-500 transition-colors">GitHub Repository</a></li>
-                        <li><a href="MWAR.html" class="hover:text-blue-500 transition-colors">MWAR Analysis</a></li>
-                        <li><a href="MWG.html" class="hover:text-blue-500 transition-colors">MWG Management</a></li>
-                        <li><a href="Minecraft.html" class="hover:text-blue-500 transition-colors">Minecraft Sim</a></li>
+                    <p class="text-[10px] font-bold text-slate-600 uppercase tracking-widest mb-4">Resources</p>
+                    <ul class="space-y-3 text-slate-400">
+                        <li><a href="https://github.com/yiboc2012/ces" target="_blank" class="hover:text-blue-500 transition-colors">GitHub</a></li>
+                        <li><a href="MWAR.html" class="hover:text-blue-500 transition-colors">MWAR</a></li>
+                        <li><a href="MWG.html" class="hover:text-blue-500 transition-colors">MWG</a></li>
                     </ul>
                 </div>
                 <div>
-                    <p class="text-[10px] font-bold text-slate-600 uppercase tracking-widest mb-6">Compliance</p>
-                    <ul class="space-y-4 text-slate-400">
+                    <p class="text-[10px] font-bold text-slate-600 uppercase tracking-widest mb-4">Legal</p>
+                    <ul class="space-y-3 text-slate-400">
                         <li><a href="Privacy.html" class="hover:text-blue-500 transition-colors">Privacy Policy</a></li>
-                        <li><a href="Terms.html" class="hover:text-blue-500 transition-colors">Terms of Use</a></li>
-                        <li><a href="mailto:yiboc2012@outlook.com" class="hover:text-blue-500 transition-colors">Contact Feedback</a></li>
+                        <li><a href="Terms.html" class="hover:text-blue-500 transition-colors">Terms</a></li>
+                        <li><a href="mailto:yiboc2012@outlook.com" class="hover:text-blue-500 transition-colors">Contact</a></li>
                     </ul>
                 </div>
             </div>
         </div>
-        <div class="mt-16 pt-8 border-t border-slate-900 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] text-slate-600 uppercase tracking-[0.3em]">
-            <span>© 2026 OpenSSL AES-256-CBC. All Rights Reserved.</span>
-            <span>Security Audited • Privacy Verified</span>
+        <div class="mt-12 md:mt-20 pt-8 border-t border-slate-900 text-[9px] md:text-[11px] text-slate-600 uppercase tracking-[0.3em]">
+            © 2026 OpenSSL AES-256-CBC. Client-Side Secure Decryption.
         </div>
     </div>
 </footer>
 
 <script>
-    /* --- Core Crypto Implementation --- */
+    /* --- MD5 & EVP 核心算法实现 --- */
     const MD5 = (function() {
         function md5cycle(x, k) {
             var a = x[0], b = x[1], c = x[2], d = x[3];
@@ -233,7 +229,7 @@
         const password = document.getElementById('input-pass').value;
         const outputArea = document.getElementById('output-text');
         
-        if (!inputBase64 || !password) return showMsg("Please enter ciphertext and passphrase", "error");
+        if (!inputBase64 || !password) return showMsg("Please enter both ciphertext and password", "error");
 
         try {
             const raw = Uint8Array.from(atob(inputBase64), c => c.charCodeAt(0));
@@ -250,21 +246,21 @@
             const decrypted = await crypto.subtle.decrypt({ name: "AES-CBC", iv: iv }, cryptoKey, ciphertext);
             
             outputArea.value = new TextDecoder().decode(decrypted);
-            showMsg("Decryption Successful!", "success");
+            showMsg("Success: Decrypted locally.", "success");
         } catch (e) {
             outputArea.value = "";
-            let errorMsg = e.name === "OperationError" ? "Incorrect passphrase or corrupted data" : e.message;
-            showMsg("Decryption Failed: " + errorMsg, "error");
+            let errorMsg = e.name === "OperationError" ? "Incorrect password or corrupted data" : e.message;
+            showMsg("Error: " + errorMsg, "error");
         }
     }
 
     function showMsg(text, type) {
         const el = document.getElementById('status-msg');
         el.textContent = text;
-        el.className = `fixed bottom-8 left-1/2 -translate-x-1/2 px-8 py-4 rounded-2xl text-sm font-bold z-[100] shadow-2xl show ${
-            type === 'success' ? 'bg-green-500/90 text-white backdrop-blur-md' : 'bg-red-500/90 text-white backdrop-blur-md'
+        el.className = `fixed bottom-6 md:bottom-8 left-1/2 rounded-2xl md:rounded-3xl px-6 md:px-10 py-4 md:py-5 text-xs md:text-sm font-bold z-[100] shadow-2xl show ${
+            type === 'success' ? 'bg-green-600/90 text-white backdrop-blur-lg' : 'bg-red-600/90 text-white backdrop-blur-lg'
         }`;
-        setTimeout(() => el.classList.remove('show'), 3000);
+        setTimeout(() => el.classList.remove('show'), 4000);
     }
 
     function copyToClipboard() {
