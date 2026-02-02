@@ -56,7 +56,7 @@ In an era of increasing data centralization, this laboratory advocates for **Loc
 | File | Description |
 | :--- | :--- |
 | `index.html` | Core Laboratory Interface & Decryption Tool |
-| `MWAR.html` | MakerWorld Analytics Module |
+| `MWAR.html` | MakerWorld Plan |
 | `MWG.html` | MakerPlan Optimization Engine |
 | `Minecraft.html` | Voxel Engine Simulation Environment |
 | `Privacy.html` | Compliance & Data Protection Policy |
