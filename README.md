@@ -23,10 +23,8 @@ A data-driven analytics engine designed for 3D printing creators.
 * Visualizes engagement metrics and model performance.
 * Helps creators optimize their community presence through historical data analysis.
 
-### 3. MWG (MakerPlan Optimization)
-A production scheduling and material forecasting engine for additive manufacturing.
-* Real-time interface for batch production planning.
-* Predictive modeling for filament consumption to reduce industrial waste.
+### 3. MWG (MakerPlan)
+Plan your year
 
 ### 4. Voxel Simulation (Graphics Engineering)
 A high-performance Minecraft-style voxel engine built for the web.
