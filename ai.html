@@ -1,347 +1,324 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { 
-  Send, 
-  Bot, 
-  User, 
-  Loader2, 
-  Search, 
-  ExternalLink, 
-  Trash2, 
-  Settings2,
-  AlertCircle,
-  Menu,
-  X,
-  MessageSquare
-} from 'lucide-react';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini AI Chatbot</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass-header { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }
+        @keyframes bounce-slow { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+        .dot-bounce { animation: bounce-slow 0.6s infinite alternate; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 h-screen overflow-hidden flex">
 
-/**
- * GEMINI API INTEGRATION CONSTANTS
- */
-const apiKey = ""; // Environment provides this at runtime
-const MODEL_NAME = "gemini-2.5-flash-preview-09-2025";
-const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${apiKey}`;
-
-/**
- * SYSTEM INSTRUCTION: Sets the persona and capabilities
- */
-const SYSTEM_PROMPT = `You are a helpful, creative, and smart AI assistant named Gemini. 
-You can use Google Search grounding to provide accurate and real-time information. 
-When providing information from search, always mention your sources if available.
-Keep responses concise but thorough. Use Markdown for formatting.`;
-
-const App = () => {
-  // State Management
-  const [messages, setMessages] = useState([
-    { role: 'model', parts: [{ text: "Hello! I'm Gemini. How can I help you today?" }], id: 'init' }
-  ]);
-  const [input, setInput] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [error, setError] = useState(null);
-  
-  const scrollRef = useRef(null);
-  const inputRef = useRef(null);
-
-  // Auto-scroll to bottom on new messages
-  useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
-  }, [messages, isLoading]);
-
-  /**
-   * Exponential Backoff Wrapper
-   */
-  const fetchWithRetry = async (payload, maxRetries = 5) => {
-    for (let i = 0; i < maxRetries; i++) {
-      try {
-        const response = await fetch(API_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          // Don't retry on 400s (client error) unless it's rate limiting
-          if (response.status !== 429 && response.status < 500) {
-            throw new Error(errorData.error?.message || "API request failed");
-          }
-          throw new Error("Server error or rate limit");
-        }
-
-        return await response.json();
-      } catch (err) {
-        if (i === maxRetries - 1) throw err;
-        const delay = Math.pow(2, i) * 1000;
-        await new Promise(resolve => setTimeout(resolve, delay));
-      }
-    }
-  };
-
-  const handleSendMessage = async (e) => {
-    e?.preventDefault();
-    if (!input.trim() || isLoading) return;
-
-    const userMessage = {
-      role: 'user',
-      parts: [{ text: input }],
-      id: Date.now().toString()
-    };
-
-    setMessages(prev => [...prev, userMessage]);
-    setInput('');
-    setIsLoading(true);
-    setError(null);
-
-    // Prepare Payload with multi-turn history
-    // We filter the IDs to match API expectations (role and parts)
-    const history = messages.map(({ role, parts }) => ({ role, parts }));
-    
-    const payload = {
-      contents: [...history, { role: 'user', parts: [{ text: input }] }],
-      systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
-      tools: [{ google_search: {} }],
-      generationConfig: {
-        temperature: 0.7,
-        maxOutputTokens: 2048,
-      }
-    };
-
-    try {
-      const data = await fetchWithRetry(payload);
-      
-      const candidate = data.candidates?.[0];
-      const modelText = candidate?.content?.parts?.[0]?.text || "I'm sorry, I couldn't generate a response.";
-      const groundingMetadata = candidate?.groundingMetadata;
-
-      const modelResponse = {
-        role: 'model',
-        parts: [{ text: modelText }],
-        grounding: groundingMetadata?.groundingAttributions?.map(attr => ({
-          title: attr.web?.title,
-          uri: attr.web?.uri
-        })),
-        id: (Date.now() + 1).toString()
-      };
-
-      setMessages(prev => [...prev, modelResponse]);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setIsLoading(false);
-      inputRef.current?.focus();
-    }
-  };
-
-  const clearChat = () => {
-    setMessages([{ role: 'model', parts: [{ text: "Chat cleared. How can I help you now?" }], id: 'cleared' }]);
-    setError(null);
-  };
-
-  return (
-    <div className="flex h-screen bg-slate-50 text-slate-900 font-sans overflow-hidden">
-      {/* Sidebar - Desktop */}
-      <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-slate-200 transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-        <div className="flex flex-col h-full p-4">
-          <div className="flex items-center gap-3 mb-8 px-2">
-            <div className="bg-indigo-600 p-2 rounded-xl text-white">
-              <Bot size={24} />
+    <!-- Sidebar -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-slate-200 transform -translate-x-full transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 flex flex-col p-4">
+        <div class="flex items-center gap-3 mb-8 px-2">
+            <div class="bg-indigo-600 p-2 rounded-xl text-white">
+                <i data-lucide="bot" class="w-6 h-6"></i>
             </div>
-            <h1 className="text-xl font-bold tracking-tight">Gemini AI</h1>
-          </div>
-
-          <nav className="flex-1 space-y-2 overflow-y-auto">
-            <button 
-              onClick={clearChat}
-              className="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors group"
-            >
-              <Trash2 size={18} className="group-hover:text-red-500 transition-colors" />
-              Clear Conversation
-            </button>
-            <div className="pt-4 pb-2 px-3 text-xs font-semibold text-slate-400 uppercase tracking-wider">
-              Capabilities
-            </div>
-            <div className="px-3 py-2 flex items-center gap-3 text-sm text-slate-500 bg-indigo-50 border border-indigo-100 rounded-lg">
-              <Search size={16} className="text-indigo-500" />
-              Google Grounding Active
-            </div>
-          </nav>
-
-          <div className="mt-auto p-2 border-t border-slate-100">
-             <div className="flex items-center gap-3 px-2 py-3 rounded-lg hover:bg-slate-50 transition-colors">
-               <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center">
-                 <User size={18} className="text-slate-500" />
-               </div>
-               <div className="flex-1 overflow-hidden">
-                 <p className="text-xs font-medium truncate">Guest User</p>
-                 <p className="text-[10px] text-slate-400">Personal Account</p>
-               </div>
-             </div>
-          </div>
+            <h1 class="text-xl font-bold tracking-tight">Gemini AI</h1>
         </div>
-      </aside>
 
-      {/* Main Content */}
-      <main className="flex-1 flex flex-col h-full w-full relative">
-        {/* Header */}
-        <header className="h-16 flex items-center justify-between px-4 bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-10">
-          <div className="flex items-center gap-3">
-            <button 
-              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-              className="lg:hidden p-2 hover:bg-slate-100 rounded-lg transition-colors"
-            >
-              {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
+        <nav class="flex-1 space-y-2">
+            <button onclick="clearChat()" class="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors group">
+                <i data-lucide="trash-2" class="w-4.5 h-4.5 group-hover:text-red-500"></i>
+                Clear Conversation
             </button>
-            <div className="lg:hidden bg-indigo-600 p-1.5 rounded-lg text-white">
-              <Bot size={18} />
+            <div class="pt-4 pb-2 px-3 text-xs font-semibold text-slate-400 uppercase tracking-wider">Capabilities</div>
+            <div class="px-3 py-2 flex items-center gap-3 text-sm text-slate-500 bg-indigo-50 border border-indigo-100 rounded-lg">
+                <i data-lucide="search" class="w-4 h-4 text-indigo-500"></i>
+                Google Grounding Active
             </div>
-            <span className="font-semibold text-slate-700">Chat Assistant</span>
-          </div>
-          
-          <div className="flex items-center gap-2">
-            <span className="hidden sm:inline-flex items-center px-2 py-1 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold uppercase tracking-wide">
-              Gemini 2.5 Flash
-            </span>
-            <button className="p-2 hover:bg-slate-100 rounded-full transition-colors">
-              <Settings2 size={20} className="text-slate-500" />
-            </button>
-          </div>
+        </nav>
+
+        <div class="mt-auto p-2 border-t border-slate-100">
+            <div class="flex items-center gap-3 px-2 py-3 rounded-lg hover:bg-slate-50 transition-colors">
+                <div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-slate-500">
+                    <i data-lucide="user" class="w-4 h-4"></i>
+                </div>
+                <div class="flex-1 overflow-hidden">
+                    <p class="text-xs font-medium truncate">Guest User</p>
+                    <p class="text-[10px] text-slate-400">Personal Account</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Overlay for mobile -->
+    <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40 hidden lg:hidden"></div>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col h-full w-full relative">
+        <!-- Header -->
+        <header class="h-16 flex items-center justify-between px-4 glass-header border-b border-slate-200 sticky top-0 z-10">
+            <div class="flex items-center gap-3">
+                <button onclick="toggleSidebar()" class="lg:hidden p-2 hover:bg-slate-100 rounded-lg">
+                    <i data-lucide="menu" class="w-5 h-5"></i>
+                </button>
+                <div class="lg:hidden bg-indigo-600 p-1.5 rounded-lg text-white">
+                    <i data-lucide="bot" class="w-4 h-4"></i>
+                </div>
+                <span class="font-semibold text-slate-700">Chat Assistant</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="hidden sm:inline-flex items-center px-2 py-1 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold uppercase tracking-wide">
+                    Gemini 2.5 Flash
+                </span>
+                <button class="p-2 hover:bg-slate-100 rounded-full">
+                    <i data-lucide="settings-2" class="w-5 h-5 text-slate-500"></i>
+                </button>
+            </div>
         </header>
 
-        {/* Chat Area */}
-        <div 
-          ref={scrollRef}
-          className="flex-1 overflow-y-auto p-4 space-y-6 scroll-smooth"
-        >
-          {messages.map((msg) => (
-            <div 
-              key={msg.id} 
-              className={`flex w-full ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-            >
-              <div className={`flex gap-3 max-w-[85%] sm:max-w-[75%] ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
-                <div className={`flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center ${msg.role === 'user' ? 'bg-indigo-600' : 'bg-white border border-slate-200'}`}>
-                  {msg.role === 'user' ? <User size={16} className="text-white" /> : <Bot size={16} className="text-indigo-600" />}
-                </div>
-                
-                <div className="space-y-2">
-                  <div className={`p-4 rounded-2xl shadow-sm text-sm leading-relaxed ${
-                    msg.role === 'user' 
-                      ? 'bg-indigo-600 text-white rounded-tr-none' 
-                      : 'bg-white border border-slate-100 text-slate-800 rounded-tl-none'
-                  }`}>
-                    {msg.parts[0].text.split('\n').map((line, i) => (
-                      <p key={i} className={i > 0 ? 'mt-2' : ''}>{line}</p>
-                    ))}
-                  </div>
+        <!-- Chat Container -->
+        <div id="chat-container" class="flex-1 overflow-y-auto p-4 space-y-6 custom-scrollbar scroll-smooth">
+            <!-- Messages will be injected here -->
+        </div>
 
-                  {/* Grounding Sources */}
-                  {msg.grounding && msg.grounding.length > 0 && (
-                    <div className="mt-3 bg-white/50 border border-slate-200 rounded-xl p-3 animate-in fade-in slide-in-from-bottom-2 duration-300">
-                      <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 px-1">
-                        <Search size={10} /> Grounding Sources
-                      </div>
-                      <div className="flex flex-wrap gap-2">
-                        {msg.grounding.map((source, idx) => (
-                          <a 
-                            key={idx}
-                            href={source.uri} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1.5 px-2 py-1 bg-white border border-slate-200 rounded-md text-xs text-indigo-600 hover:border-indigo-400 hover:bg-indigo-50 transition-all shadow-xs"
-                          >
-                            <span className="truncate max-w-[120px]">{source.title || 'Source'}</span>
-                            <ExternalLink size={10} />
-                          </a>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
+        <!-- Error Container -->
+        <div id="error-container" class="hidden px-4 mb-2">
+            <div class="max-w-4xl mx-auto bg-red-50 border border-red-100 text-red-700 px-4 py-3 rounded-xl flex items-center gap-3 text-sm shadow-sm">
+                <i data-lucide="alert-circle" class="w-4 h-4 shrink-0"></i>
+                <span id="error-text">An error occurred</span>
+                <button onclick="retryLastMessage()" class="ml-auto underline font-medium hover:text-red-800">Retry</button>
             </div>
-          ))}
+        </div>
 
-          {isLoading && (
-            <div className="flex justify-start">
-              <div className="flex gap-3 max-w-[75%]">
-                <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center">
-                  <Bot size={16} className="text-indigo-600" />
-                </div>
-                <div className="bg-white border border-slate-100 p-4 rounded-2xl rounded-tl-none shadow-sm">
-                  <div className="flex gap-1">
-                    <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce"></span>
-                    <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce [animation-delay:0.2s]"></span>
-                    <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce [animation-delay:0.4s]"></span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {error && (
-            <div className="flex justify-center px-4">
-              <div className="bg-red-50 border border-red-100 text-red-700 px-4 py-3 rounded-xl flex items-center gap-3 text-sm animate-in zoom-in-95 duration-200 max-w-md w-full">
-                <AlertCircle size={18} className="flex-shrink-0" />
-                <span>{error}</span>
-                <button 
-                  onClick={() => handleSendMessage()}
-                  className="ml-auto underline font-medium hover:text-red-800"
-                >
-                  Retry
+        <!-- Input Area -->
+        <div class="p-4 glass-header border-t border-slate-200">
+            <form id="chat-form" onsubmit="handleSendMessage(event)" class="max-w-4xl mx-auto flex items-end gap-2 bg-white border border-slate-200 rounded-2xl p-2 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500/20 focus-within:border-indigo-500 transition-all">
+                <textarea
+                    id="chat-input"
+                    rows="1"
+                    placeholder="Ask Gemini anything..."
+                    class="flex-1 max-h-32 min-h-[40px] py-2 px-3 focus:outline-none resize-none bg-transparent text-sm"
+                    oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'"
+                ></textarea>
+                <button type="submit" id="send-button" class="p-2.5 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 shadow-lg shadow-indigo-600/20 disabled:bg-slate-100 disabled:text-slate-400 disabled:shadow-none transition-all">
+                    <i data-lucide="send" id="send-icon" class="w-4 h-4"></i>
+                    <i data-lucide="loader-2" id="loading-icon" class="w-4 h-4 animate-spin hidden"></i>
                 </button>
-              </div>
-            </div>
-          )}
+            </form>
+            <p class="text-[10px] text-center text-slate-400 mt-3">
+                Powered by Gemini 2.5 Flash. Model may display inaccurate info, verify important facts.
+            </p>
         </div>
+    </main>
 
-        {/* Input Area */}
-        <div className="p-4 bg-white/80 backdrop-blur-md border-t border-slate-200">
-          <form 
-            onSubmit={handleSendMessage}
-            className="max-w-4xl mx-auto flex items-end gap-2 bg-white border border-slate-200 rounded-2xl p-2 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500/20 focus-within:border-indigo-500 transition-all"
-          >
-            <textarea
-              ref={inputRef}
-              rows="1"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                  e.preventDefault();
-                  handleSendMessage();
+    <script>
+        /**
+         * API CONFIGURATION
+         */
+        const apiKey = ""; // Environment provides this at runtime
+        const MODEL_NAME = "gemini-2.5-flash-preview-09-2025";
+        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${apiKey}`;
+        const SYSTEM_PROMPT = `You are a helpful, creative, and smart AI assistant named Gemini. 
+        You can use Google Search grounding to provide accurate and real-time information. 
+        When providing information from search, always mention your sources if available.
+        Keep responses concise but thorough. Use Markdown-like spacing.`;
+
+        let messages = [
+            { role: 'model', parts: [{ text: "Hello! I'm Gemini. How can I help you today?" }] }
+        ];
+        let isLoading = false;
+        let lastInput = "";
+
+        // DOM Elements
+        const chatContainer = document.getElementById('chat-container');
+        const chatForm = document.getElementById('chat-form');
+        const chatInput = document.getElementById('chat-input');
+        const sendButton = document.getElementById('send-button');
+        const sendIcon = document.getElementById('send-icon');
+        const loadingIcon = document.getElementById('loading-icon');
+        const errorContainer = document.getElementById('error-container');
+        const errorText = document.getElementById('error-text');
+
+        // Initialize Lucide icons
+        window.addEventListener('load', () => {
+            lucide.createIcons();
+            renderMessages();
+            chatInput.focus();
+        });
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+
+        function clearChat() {
+            messages = [{ role: 'model', parts: [{ text: "Chat cleared. How can I help you now?" }] }];
+            renderMessages();
+            errorContainer.classList.add('hidden');
+        }
+
+        async function fetchWithRetry(payload, maxRetries = 5) {
+            for (let i = 0; i < maxRetries; i++) {
+                try {
+                    const response = await fetch(API_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload),
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        if (response.status !== 429 && response.status < 500) {
+                            throw new Error(errorData.error?.message || "API request failed");
+                        }
+                        throw new Error("Server error or rate limit");
+                    }
+                    return await response.json();
+                } catch (err) {
+                    if (i === maxRetries - 1) throw err;
+                    await new Promise(resolve => setTimeout(resolve, Math.pow(2, i) * 1000));
                 }
-              }}
-              placeholder="Ask Gemini anything..."
-              className="flex-1 max-h-32 min-h-[40px] py-2 px-3 focus:outline-none resize-none bg-transparent text-sm"
-            />
-            <button 
-              type="submit"
-              disabled={isLoading || !input.trim()}
-              className={`p-2.5 rounded-xl transition-all ${
-                isLoading || !input.trim() 
-                  ? 'bg-slate-100 text-slate-400' 
-                  : 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-lg shadow-indigo-600/20'
-              }`}
-            >
-              {isLoading ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}
-            </button>
-          </form>
-          <p className="text-[10px] text-center text-slate-400 mt-3">
-            Powered by Gemini 2.5 Flash. Model may display inaccurate info, verify important facts.
-          </p>
-        </div>
-      </main>
+            }
+        }
 
-      {/* Mobile Overlay */}
-      {isSidebarOpen && (
-        <div 
-          className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40 lg:hidden"
-          onClick={() => setIsSidebarOpen(false)}
-        />
-      )}
-    </div>
-  );
-};
+        function renderMessages() {
+            chatContainer.innerHTML = '';
+            messages.forEach((msg, idx) => {
+                const isUser = msg.role === 'user';
+                const wrapper = document.createElement('div');
+                wrapper.className = `flex w-full ${isUser ? 'justify-end' : 'justify-start'} animate-in fade-in slide-in-from-bottom-2 duration-300`;
+                
+                const content = `
+                    <div class="flex gap-3 max-w-[85%] sm:max-w-[75%] ${isUser ? 'flex-row-reverse' : 'flex-row'}">
+                        <div class="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center ${isUser ? 'bg-indigo-600' : 'bg-white border border-slate-200'}">
+                            <i data-lucide="${isUser ? 'user' : 'bot'}" class="w-4 h-4 ${isUser ? 'text-white' : 'text-indigo-600'}"></i>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="p-4 rounded-2xl shadow-sm text-sm leading-relaxed ${isUser ? 'bg-indigo-600 text-white rounded-tr-none' : 'bg-white border border-slate-100 text-slate-800 rounded-tl-none'}">
+                                ${msg.parts[0].text.split('\n').map(line => `<p class="${line ? 'mt-1' : 'mt-2'}">${line}</p>`).join('')}
+                            </div>
+                            ${msg.grounding ? renderGrounding(msg.grounding) : ''}
+                        </div>
+                    </div>
+                `;
+                wrapper.innerHTML = content;
+                chatContainer.appendChild(wrapper);
+            });
+            
+            // Add Loading Skeleton
+            if (isLoading) {
+                const loader = document.createElement('div');
+                loader.className = 'flex justify-start';
+                loader.innerHTML = `
+                    <div class="flex gap-3 max-w-[75%]">
+                        <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center">
+                            <i data-lucide="bot" class="w-4 h-4 text-indigo-600"></i>
+                        </div>
+                        <div class="bg-white border border-slate-100 p-4 rounded-2xl rounded-tl-none shadow-sm flex gap-1">
+                            <span class="w-1.5 h-1.5 bg-indigo-400 rounded-full dot-bounce"></span>
+                            <span class="w-1.5 h-1.5 bg-indigo-400 rounded-full dot-bounce" style="animation-delay: 0.2s"></span>
+                            <span class="w-1.5 h-1.5 bg-indigo-400 rounded-full dot-bounce" style="animation-delay: 0.4s"></span>
+                        </div>
+                    </div>
+                `;
+                chatContainer.appendChild(loader);
+            }
 
-export default App;
+            lucide.createIcons();
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function renderGrounding(sources) {
+            if (!sources || sources.length === 0) return '';
+            return `
+                <div class="mt-3 bg-white/50 border border-slate-200 rounded-xl p-3 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                    <div class="flex items-center gap-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 px-1">
+                        <i data-lucide="search" class="w-2.5 h-2.5"></i> Grounding Sources
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        ${sources.map(s => `
+                            <a href="${s.uri}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-2 py-1 bg-white border border-slate-200 rounded-md text-xs text-indigo-600 hover:border-indigo-400 hover:bg-indigo-50 transition-all shadow-xs">
+                                <span class="truncate max-w-[120px]">${s.title || 'Source'}</span>
+                                <i data-lucide="external-link" class="w-2.5 h-2.5"></i>
+                            </a>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        async function handleSendMessage(e) {
+            if (e) e.preventDefault();
+            const text = chatInput.value.trim() || lastInput;
+            if (!text || isLoading) return;
+
+            if (chatInput.value.trim()) {
+                messages.push({ role: 'user', parts: [{ text }] });
+                lastInput = text;
+            }
+            
+            chatInput.value = '';
+            chatInput.style.height = '';
+            setLoading(true);
+            errorContainer.classList.add('hidden');
+            renderMessages();
+
+            const payload = {
+                contents: messages.map(({role, parts}) => ({role, parts})),
+                systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+                tools: [{ google_search: {} }],
+                generationConfig: { temperature: 0.7, maxOutputTokens: 2048 }
+            };
+
+            try {
+                const data = await fetchWithRetry(payload);
+                const candidate = data.candidates?.[0];
+                const modelText = candidate?.content?.parts?.[0]?.text || "No response received.";
+                const grounding = candidate?.groundingMetadata?.groundingAttributions?.map(a => ({
+                    title: a.web?.title,
+                    uri: a.web?.uri
+                }));
+
+                messages.push({ role: 'model', parts: [{ text: modelText }], grounding });
+            } catch (err) {
+                errorText.innerText = err.message;
+                errorContainer.classList.remove('hidden');
+            } finally {
+                setLoading(false);
+                renderMessages();
+                chatInput.focus();
+            }
+        }
+
+        function retryLastMessage() {
+            handleSendMessage();
+        }
+
+        function setLoading(val) {
+            isLoading = val;
+            sendButton.disabled = val;
+            if (val) {
+                sendIcon.classList.add('hidden');
+                loadingIcon.classList.remove('hidden');
+            } else {
+                sendIcon.classList.remove('hidden');
+                loadingIcon.classList.add('hidden');
+            }
+        }
+
+        // Handle Enter key for sending
+        chatInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                chatForm.dispatchEvent(new Event('submit'));
+            }
+        });
+    </script>
+</body>
+</html>
