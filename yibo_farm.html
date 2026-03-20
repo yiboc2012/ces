@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yibo Farm 2026 | Yosemite Sanctuary</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@200;400;600&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f7f3f0;
+            --primary-text: #2c362b;
+            --accent-color: #9b7e4b;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--primary-text);
+            overflow-x: hidden;
+        }
+        h1, h2, h3 {
+            font-family: 'Crimson Pro', serif;
+        }
+        .landscape-art {
+            background: linear-gradient(to bottom, #dbeafe 0%, #f7f3f0 100%);
+            position: relative;
+            height: 70vh;
+        }
+        /* 模拟照片中的山脊线 */
+        .mountain-svg {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        .section-divider {
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--accent-color), transparent);
+            margin: 4rem auto;
+            max-width: 200px;
+            opacity: 0.3;
+        }
+        .phone-box {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(155, 126, 75, 0.2);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-up {
+            animation: fadeIn 1.2s ease forwards;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 极简页眉 -->
+    <nav class="p-8 flex justify-center sticky top-0 z-50 bg-[#f7f3f0]/80 backdrop-blur-sm">
+        <div class="text-2xl font-light tracking-[0.5em] uppercase">Yibo Farm</div>
+    </nav>
+
+    <!-- 顶部艺术区：山脉轮廓 -->
+    <section class="landscape-art flex items-center justify-center overflow-hidden">
+        <svg class="mountain-svg" viewBox="0 0 1440 600" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- 远山 (Sage Green) -->
+            <path d="M0,450 L150,380 C300,320 450,420 600,350 C750,280 900,150 1050,180 C1200,210 1350,350 1440,400 L1440,600 L0,600 Z" fill="#8ca084" opacity="0.4"/>
+            <!-- 中山 (Darker Green) -->
+            <path d="M0,520 L200,480 C400,440 600,550 800,490 C1000,430 1200,300 1440,380 L1440,600 L0,600 Z" fill="#4a5d4b" opacity="0.7"/>
+            <!-- 植被线条 -->
+            <path d="M0,580 C300,550 600,590 1440,560 L1440,600 L0,600 Z" fill="#2c362b"/>
+        </svg>
+
+        <div class="relative z-10 text-center px-4 animate-up">
+            <h1 class="text-6xl md:text-9xl font-extralight mb-6 tracking-tight">2026 Sanctuary</h1>
+            <p class="text-lg md:text-xl font-light tracking-widest text-stone-500 uppercase">Yosemite Boundary &bull; Private Estate</p>
+        </div>
+    </section>
+
+    <!-- 主要内容 -->
+    <main class="max-w-4xl mx-auto px-6 py-20 text-center">
+        
+        <div class="mb-16">
+            <h2 class="text-3xl md:text-5xl mb-10 leading-tight">The Art of Stillness</h2>
+            <p class="text-lg md:text-2xl font-light leading-relaxed text-stone-600 italic">
+                "Yibo Farm is not a business. It is a commitment to the land. 
+                In a world that never stops moving, we offer the rare privilege of standing still."
+            </p>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <div class="space-y-12 text-stone-700 text-lg md:text-xl font-light leading-relaxed max-w-2xl mx-auto">
+            <p>
+                As of 2026, we have completely phased out motorized access. The road ends at our gate. To visit Yibo Farm is to travel on your own two feet, carrying only what you need, and leaving only silence behind.
+            </p>
+            <p>
+                Our trails connect directly to the heart of the national park, yet they remain hidden from the maps of the modern world. There are no crowds here. No engines. No artificial lights.
+            </p>
+            <p class="font-semibold text-amber-900">
+                We do not accept walk-ins or online bookings. Each visit is personally arranged to ensure the preservation of our agricultural sanctuary.
+            </p>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- 预约区域 -->
+        <section class="py-20">
+            <h3 class="text-4xl mb-12">Inquire via Telephone</h3>
+            
+            <div class="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto">
+                <div class="phone-box p-10 rounded-3xl">
+                    <span class="block uppercase tracking-[0.3em] text-[10px] text-stone-400 mb-4 font-bold">Primary Line</span>
+                    <a href="tel:+19517221375" class="text-2xl md:text-3xl font-light hover:text-amber-800 transition tracking-tighter">
+                        +1 (951) 722-1375
+                    </a>
+                </div>
+                <div class="phone-box p-10 rounded-3xl">
+                    <span class="block uppercase tracking-[0.3em] text-[10px] text-stone-400 mb-4 font-bold">Alternative Line</span>
+                    <a href="tel:+19492965167" class="text-2xl md:text-3xl font-light hover:text-amber-800 transition tracking-tighter">
+                        +1 (949) 296-5167
+                    </a>
+                </div>
+            </div>
+
+            <div class="mt-20">
+                <p class="text-sm text-stone-400 uppercase tracking-widest leading-loose">
+                    Unauthorized vehicles will be turned away.<br>
+                    Please respect the privacy of the Yibo Farm residents.
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="py-12 bg-[#2c362b] text-[#f7f3f0] text-center">
+        <div class="text-[10px] tracking-[0.6em] uppercase opacity-60">
+            &copy; 2026 Yibo Farm &bull; All Rights Reserved &bull; Yosemite, CA
+        </div>
+    </footer>
+
+</body>
+</html>
