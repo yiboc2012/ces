@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberGuard SOC - Packet Defender v1.0</title>
+    <style>
+        :root {
+            --bg-color: #050b14;
+            --panel-bg: #0b1528;
+            --border-color: #1e3a67;
+            --text-main: #e2e8f0;
+            --accent-green: #00ff66;
+            --accent-red: #ff3366;
+            --accent-blue: #00d9ff;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        #soc-container {
+            display: grid;
+            grid-template-columns: 800px 320px;
+            gap: 20px;
+            background: var(--panel-bg);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 0 30px rgba(0, 217, 255, 0.15);
+        }
+
+        .header {
+            grid-column: span 2;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 22px;
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .instructions {
+            font-size: 12px;
+            color: #8a99ad;
+        }
+
+        canvas {
+            background-color: #02060d;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            cursor: crosshair;
+        }
+
+        .side-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .status-card {
+            background: rgba(2, 6, 13, 0.6);
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            border-radius: 4px;
+        }
+
+        .status-card h3 {
+            margin: 0 0 10px 0;
+            font-size: 14px;
+            color: var(--accent-blue);
+            text-transform: uppercase;
+        }
+
+        .metric {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        #metric-integrity { color: var(--accent-green); }
+        #metric-threats { color: var(--accent-red); }
+        #metric-score { color: #ffffff; }
+
+        #event-log {
+            flex-grow: 1;
+            background: #02060d;
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            font-size: 11px;
+            overflow-y: auto;
+            max-height: 280px;
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column-reverse;
+            gap: 6px;
+        }
+
+        .log-entry {
+            line-height: 1.4;
+            padding-bottom: 4px;
+            border-bottom: 1px solid rgba(30, 58, 103, 0.3);
+        }
+        .log-clean { color: var(--accent-green); }
+        .log-malicious { color: var(--accent-red); }
+        .log-system { color: #8a99ad; }
+
+        .btn-control {
+            background: transparent;
+            border: 1px solid var(--accent-blue);
+            color: var(--accent-blue);
+            padding: 10px;
+            font-family: inherit;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            border-radius: 4px;
+        }
+
+        .btn-control:hover {
+            background: rgba(0, 217, 255, 0.1);
+            box-shadow: 0 0 10px rgba(0, 217, 255, 0.3);
+        }
+    </style>
+</head>
+<body>
+
+<div id="soc-container">
+    <div class="header">
+        <div>
+            <h1>Firewall Packet Interceptor v1.0</h1>
+            <div class="instructions">INSTRUCTION: Click MALICIOUS (Red) packets to neutralize them. Allow CLEAN (Green) packets to pass to the Mainframe database.</div>
+        </div>
+        <button class="btn-control" id="btn-restart">Reset System Simulation</button>
+    </div>
+
+    <!-- Main Game Window -->
+    <canvas id="gameCanvas" width="800" height="500"></canvas>
+
+    <!-- SOC Intelligence Sidebar -->
+    <div class="side-panel">
+        <div class="status-card">
+            <h3>Mainframe Integrity</h3>
+            <div class="metric" id="metric-integrity">100%</div>
+            <div style="font-size:10px; color:#8a99ad;">Critical Breach at 0%</div>
+        </div>
+
+        <div class="status-card">
+            <h3>Threat Metrics</h3>
+            <div>Threats Neutralized: <span id="metric-threats" class="metric" style="font-size:16px;">0</span></div>
+            <div style="margin-top: 5px;">SecOps Score: <span id="metric-score" class="metric" style="font-size:16px;">0</span></div>
+        </div>
+
+        <div class="status-card" style="flex-grow: 1; display: flex; flex-direction: column;">
+            <h3>Live Firewall Log</h3>
+            <div id="event-log">
+                <div class="log-entry log-system">[SYS] Interceptor initialized. Awaiting network packets...</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+/**
+ * CYBER ATTACK PACKET-FILTERING MICRO-GAME
+ * Engineered for Security & Compliance Final Class Projects
+ */
+
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+// Game Configuration & Architecture State
+const config = {
+    packetSpawnInterval: 1200, // ms
+    baseSpeed: 1.5,
+    speedIncrement: 0.1,
+    cleanPacketRatio: 0.45 // Probability of a packet being safe
+};
+
+let gameState = {
+    score: 0,
+    threatsNeutralized: 0,
+    mainframeIntegrity: 100,
+    packets: [],
+    particles: [],
+    lastSpawnTime: 0,
+    isGameOver: false,
+    speedMultiplier: 1.0
+};
+
+// Packet Class - Handles properties and motion behavior
+class Packet {
+    constructor() {
+        this.radius = Math.floor(Math.random() * 8) + 14; // 14px to 22px
+        this.x = Math.random() * (canvas.width - this.radius * 2) + this.radius;
+        this.y = -this.radius;
+        this.speed = (Math.random() * 1.2 + config.baseSpeed) * gameState.speedMultiplier;
+        
+        // Determine vector types based on payload logic
+        this.isMalicious = Math.random() > config.cleanPacketRatio;
+        
+        if (this.isMalicious) {
+            const vectors = [
+                { type: "SQL Injection", label: "SQLi", desc: "Dropping high-risk malicious strings into database layer" },
+                { type: "Cross-Site Scripting", label: "XSS", desc: "Executing unverified script payloads on target endpoints" },
+                { type: "Ransomware Packet", label: "RNSM", desc: "Attempting asymmetric key generation on filesystem" },
+                { type: "Brute Force Token", label: "BRUTE", desc: "Repeated cryptographic credential validation bypass attempt" }
+            ];
+            this.metadata = vectors[Math.floor(Math.random() * vectors.length)];
+            this.color = '#ff3366';
+            this.glowColor = 'rgba(255, 51, 102, 0.5)';
+        } else {
+            const telemetry = [
+                { type: "TLS Handshake", label: "TLS", desc: "Secure cryptographic session verification complete" },
+                { type: "API Read Request", label: "GET", desc: "Validated RESTful transaction pulling structural JSON data" },
+                { type: "Database Commit", label: "COMMIT", desc: "Compliant log execution written to primary distributed cluster" }
+            ];
+            this.metadata = telemetry[Math.floor(Math.random() * telemetry.length)];
+            this.color = '#00ff66';
+            this.glowColor = 'rgba(0, 255, 102, 0.5)';
+        }
+        
+        // Sine wave oscillation parameters for matrix-like trajectory movement
+        this.oscillate = Math.random() > 0.5;
+        this.waveFrequency = Math.random() * 0.02 + 0.01;
+        this.waveAmplitude = Math.random() * 2 + 1;
+        this.seed = Math.random() * 100;
+    }
+
+    update() {
+        this.y += this.speed;
+        if (this.oscillate) {
+            this.x += Math.sin((this.y * this.waveFrequency) + this.seed) * this.waveAmplitude;
+        }
+
+        // Clamp inside canvas boundary walls
+        if (this.x - this.radius < 0) this.x = this.radius;
+        if (this.x + this.radius > canvas.width) this.x = canvas.width - this.radius;
+    }
+
+    draw() {
+        ctx.save();
+        
+        // Visual Glow Effects
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = this.glowColor;
+        
+        // Draw Main Packet Node Hexagon/Circle Composite
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Add Core Contrast Inner Core
+        ctx.fillStyle = '#02060d';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius - 4, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Draw Payload Text Label
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = this.color;
+        ctx.font = '9px monospace';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(this.metadata.label, this.x, this.y);
+
+        ctx.restore();
+    }
+}
+
+// Particle Class - Visual feedback mechanics for successful deep-packet destruction
+class Particle {
+    constructor(x, y, color) {
+        this.x = x;
+        this.y = y;
+        this.color = color;
+        this.radius = Math.random() * 3 + 1;
+        this.vx = (Math.random() - 0.5) * 6;
+        this.vy = (Math.random() - 0.5) * 6;
+        this.alpha = 1;
+        this.decay = Math.random() * 0.02 + 0.015;
+    }
+
+    update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.alpha -= this.decay;
+    }
+
+    draw() {
+        ctx.save();
+        ctx.globalAlpha = this.alpha;
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+    }
+}
+
+// Logging Engine Utility
+function logEvent(type, message) {
+    const logBox = document.getElementById('event-log');
+    const entry = document.createElement('div');
+    entry.className = `log-entry log-${type}`;
+    
+    const timestamp = new Date().toLocaleTimeString([], { hour12: false });
+    entry.innerText = `[${timestamp}] ${message}`;
+    
+    logBox.appendChild(entry);
+    
+    // Auto purge history limits to manage DOM performance footprints
+    if (logBox.children.length > 40) {
+        logBox.removeChild(logBox.firstChild);
+    }
+}
+
+// Core Compliance Dashboard Integration Hook Matrix
+function dispatchComplianceTelemetry(eventData) {
+    console.log("Telemetry dispatched to Compliance Engine:", eventData);
+    
+    // Hook point for updating an external UI frame or tracking object
+    if (window.parent && typeof window.parent.onGameTelemetry === 'function') {
+        window.parent.onGameTelemetry(eventData);
+    }
+}
+
+function spawnParticles(x, y, color, count = 12) {
+    for (let i = 0; i < count; i++) {
+        gameState.particles.push(new Particle(x, y, color));
+    }
+}
+
+// Game Reset Engine Initialization sequence
+function initGame() {
+    gameState = {
+        score: 0,
+        threatsNeutralized: 0,
+        mainframeIntegrity: 100,
+        packets: [],
+        particles: [],
+        lastSpawnTime: performance.now(),
+        isGameOver: false,
+        speedMultiplier: 1.0
+    };
+    
+    document.getElementById('metric-integrity').innerText = "100%";
+    document.getElementById('metric-integrity').style.color = "var(--accent-green)";
+    document.getElementById('metric-threats').innerText = "0";
+    document.getElementById('metric-score').innerText = "0";
+    
+    logEvent('system', 'Firewall policies reloaded. Threat definitions updated to v1.026.');
+}
+
+// Primary Interceptor Collision Handling Engine
+canvas.addEventListener('mousedown', function(e) {
+    if (gameState.isGameOver) return;
+
+    // Convert screen coordinates to local viewport metrics context bounding box
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+
+    for (let i = gameState.packets.length - 1; i >= 0; i--) {
+        const p = gameState.packets[i];
+        const distance = Math.hypot(p.x - mouseX, p.y - mouseY);
+
+        // Raycasting standard collision detection bounds intersection check
+        if (distance < p.radius + 6) { 
+            if (p.isMalicious) {
+                // Correct Threat Interception
+                gameState.threatsNeutralized++;
+                gameState.score += 150;
+                spawnParticles(p.x, p.y, p.color, 18);
+                logEvent('malicious', `BLOCKED: Firewalled ${p.metadata.type}. Attack pattern dropped safely.`);
+                
+                dispatchComplianceTelemetry({
+                    type: "THREAT_BLOCKED",
+                    scoreMutation: 150,
+                    integrity: gameState.mainframeIntegrity,
+                    frameworkImpact: "SOC 2 CC7.2 (Threat Detection)"
+                });
+            } else {
+                // False Positive - User accidentally intercepted clean corporate traffic
+                gameState.score = Math.max(0, gameState.score - 200);
+                gameState.mainframeIntegrity = Math.max(0, gameState.mainframeIntegrity - 10);
+                spawnParticles(p.x, p.y, '#ffffff', 8);
+                logEvent('clean', `FALSE POSITIVE: Intercepted clean ${p.metadata.type}. Valid user session terminated.`);
+                
+                dispatchComplianceTelemetry({
+                    type: "FALSE_POSITIVE",
+                    scoreMutation: -200,
+                    integrity: gameState.mainframeIntegrity,
+                    frameworkImpact: "ISO 27001 A.12.6.1 (Operational Error)"
+                });
+            }
+            
+            gameState.packets.splice(i, 1);
+            updateUI();
+            return; // Terminate checking loops once first packet collision has consumed the event frame
+        }
+    }
+});
+
+function updateUI() {
+    document.getElementById('metric-integrity').innerText = `${gameState.mainframeIntegrity}%`;
+    document.getElementById('metric-threats').innerText = gameState.threatsNeutralized;
+    document.getElementById('metric-score').innerText = gameState.score;
+
+    if (gameState.mainframeIntegrity > 60) {
+        document.getElementById('metric-integrity').style.color = "var(--accent-green)";
+    } else if (gameState.mainframeIntegrity > 25) {
+        document.getElementById('metric-integrity').style.color = "orange";
+    } else {
+        document.getElementById('metric-integrity').style.color = "var(--accent-red)";
+    }
+
+    if (gameState.mainframeIntegrity <= 0 && !gameState.isGameOver) {
+        triggerGameOver();
+    }
+}
+
+function triggerGameOver() {
+    gameState.isGameOver = true;
+    logEvent('malicious', "CRITICAL BREACH: Database compromised. Mainframe control lost. Initiate disaster recovery protocols.");
+    
+    dispatchComplianceTelemetry({
+        type: "SYSTEM_BREACHED",
+        finalScore: gameState.score,
+        status: "FAILED_AUDIT"
+    });
+}
+
+// Master Animation Loop Engine
+function gameLoop(currentTime) {
+    // Clear display buffer viewport canvas plane
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw Cyberpunk Decorative Terminal Net Grid Infrastructure Overlay
+    ctx.strokeStyle = 'rgba(30, 58, 103, 0.15)';
+    ctx.lineWidth = 1;
+    const gridSize = 40;
+    for (let x = 0; x < canvas.width; x += gridSize) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+    }
+    for (let y = 0; y < canvas.height; y += gridSize) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+    }
+
+    // Dynamic Progression Wave Scaling Logic Architecture
+    gameState.speedMultiplier = 1.0 + (gameState.threatsNeutralized * config.speedIncrement);
+
+    if (!gameState.isGameOver) {
+        // Continuous Time Delta Packet Spawning Pipeline Engine
+        if (currentTime - gameState.lastSpawnTime > config.packetSpawnInterval) {
+            gameState.packets.push(new Packet());
+            gameState.lastSpawnTime = currentTime;
+        }
+    }
+
+    // Handle Active Packet Pipeline Update/Draw States
+    for (let i = gameState.packets.length - 1; i >= 0; i--) {
+        const p = gameState.packets[i];
+        p.update();
+        p.draw();
+
+        // Process boundary breach rules evaluations
+        if (p.y - p.radius > canvas.height) {
+            if (p.isMalicious) {
+                // Malicious payload breached operational boundaries to target asset layer
+                gameState.mainframeIntegrity = Math.max(0, gameState.mainframeIntegrity - 20);
+                logEvent('malicious', `ALERT: ${p.metadata.type} breached the gateway. Mainframe impacted.`);
+                updateUI();
+                
+                dispatchComplianceTelemetry({
+                    type: "GATEWAY_BREACH",
+                    integrityDamage: 20,
+                    frameworkImpact: "NIST SP 800-53 (Incident Response Failure)"
+                });
+            } else {
+                // Clean data structural packet processed successfully through baseline routing
+                gameState.score += 50;
+                logEvent('clean', `SUCCESS: Compliant entry routing parsed for ${p.metadata.type}.`);
+                updateUI();
+            }
+            gameState.packets.splice(i, 1);
+        }
+    }
+
+    // Handle Active Vector Floating Animation Effects Particles Subsystems
+    for (let i = gameState.particles.length - 1; i >= 0; i--) {
+        const part = gameState.particles[i];
+        part.update();
+        part.draw();
+        if (part.alpha <= 0) {
+            gameState.particles.splice(i, 1);
+        }
+    }
+
+    // Draw Static Processing Baseline Bounding Target Line ("Mainframe Firewall Gateway Boundary")
+    ctx.strokeStyle = 'rgba(0, 217, 255, 0.4)';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(0, canvas.height - 20);
+    ctx.lineTo(canvas.width, canvas.height - 20);
+    ctx.stroke();
+    ctx.setLineDash([]); // Restore solid line transformations configurations baseline
+
+    // Render Game Over Display Interstitials
+    if (gameState.isGameOver) {
+        ctx.fillStyle = 'rgba(2, 6, 13, 0.85)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = '#ff3366';
+        ctx.font = 'bold 32px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText("CRITICAL COMPLIANCE FAILURE", canvas.width / 2, canvas.height / 2 - 20);
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '16px monospace';
+        ctx.fillText(`Final Security Score: ${gameState.score} | Threats Stopped: ${gameState.threatsNeutralized}`, canvas.width / 2, canvas.height / 2 + 20);
+        
+        ctx.fillStyle = '#8a99ad';
+        ctx.font = '12px monospace';
+        ctx.fillText("Click 'Reset System Simulation' in the control bar to re-initialize environment.", canvas.width / 2, canvas.height / 2 + 60);
+    }
+
+    requestAnimationFrame(gameLoop);
+}
+
+// Assign Context Controllers listeners to control triggers
+document.getElementById('btn-restart').addEventListener('click', initGame);
+
+// Run Application Execution Pipeline Context Loop
+initGame();
+requestAnimationFrame(gameLoop);
+</script>
+
+</body>
+</html>
