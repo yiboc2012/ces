@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevHub // Ultimate Sandbox Engine</title>
+    <style>
+        :root {
+            --bg-primary: #0a0e17;
+            --bg-secondary: #121824;
+            --bg-tertiary: #1a2333;
+            --accent: #00ff66;
+            --accent-dim: #00b347;
+            --text-main: #e2e8f0;
+            --text-muted: #6272a4;
+            --border: #28354d;
+            --error: #ff5555;
+        }
+
+        .light-theme {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #f1f5f9;
+            --accent: #2563eb;
+            --accent-dim: #1d4ed8;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #cbd5e1;
+            --error: #dc2626;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Fira Code', Consolas, Monaco, monospace;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: background-color 0.3s, color 0.3s;
+            overflow-x: hidden;
+        }
+
+        header {
+            background-color: var(--bg-secondary);
+            border-bottom: 2px solid var(--border);
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pulse-dot {
+            width: 12px;
+            height: 12px;
+            background-color: var(--accent);
+            border-radius: 50%;
+            animation: pulse 1.8s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(0, 255, 102, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(0, 255, 102, 0); }
+            100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(0, 255, 102, 0); }
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+        }
+
+        button {
+            background-color: var(--bg-tertiary);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s ease;
+        }
+
+        button:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background-color: rgba(0, 255, 102, 0.05);
+        }
+
+        .app-container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            flex: 1;
+            height: calc(100vh - 65px);
+        }
+
+        sidebar {
+            background-color: var(--bg-secondary);
+            border-right: 2px solid var(--border);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .nav-item {
+            padding: 12px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            background: transparent;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background-color: var(--bg-tertiary);
+            border-left-color: var(--accent);
+            color: var(--accent);
+        }
+
+        main {
+            padding: 25px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .workspace-panel {
+            display: none;
+            height: 100%;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .workspace-panel.active {
+            display: flex;
+        }
+
+        .grid-2x2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 20px;
+            flex: 1;
+        }
+
+        .editor-box {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .editor-header {
+            background-color: var(--bg-tertiary);
+            padding: 8px 15px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+            font-weight: bold;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            border: none;
+            resize: none;
+            padding: 15px;
+            color: #50fa7b;
+            font-family: inherit;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            outline: none;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            background: #ffffff;
+            border: none;
+        }
+
+        /* Module 2: Utilities styling */
+        .util-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .panel-card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .panel-title {
+            margin-bottom: 15px;
+            color: var(--accent);
+            font-size: 1.1rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 5px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            background-color: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            border-radius: 6px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: var(--accent);
+        }
+
+        .output-display {
+            background-color: var(--bg-primary);
+            padding: 15px;
+            border-radius: 6px;
+            min-height: 50px;
+            word-break: break-all;
+            border: 1px dashed var(--border);
+        }
+
+        /* Matrix Background Elements */
+        #matrix-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.04;
+            pointer-events: none;
+            z-index: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-area">
+            <div class="pulse-dot"></div>
+            <h2>DEVKIT // CORE v2.8</h2>
+        </div>
+        <div class="controls">
+            <button id="theme-toggle">TOGGLE VISUAL SPECTRUM</button>
+            <button id="clear-cache-btn">FLUSH ENGINE DATA</button>
+        </div>
+    </header>
+
+    <div class="app-container">
+        <sidebar>
+            <div class="nav-item active" data-target="compiler">Live Sandbox Matrix</div>
+            <div class="nav-item" data-target="crypto">Data Cryptography Engine</div>
+            <div class="nav-item" data-target="analytics">Regex & String Processor</div>
+            <div class="nav-item" data-target="system-logs">Runtime State Simulator</div>
+        </sidebar>
+
+        <main>
+            <canvas id="matrix-canvas"></canvas>
+
+            <!-- PANEL 1: HTML/CSS/JS WEBSPACE ENVIRONMENT -->
+            <div class="workspace-panel active" id="panel-compiler">
+                <div class="grid-2x2">
+                    <div class="editor-box">
+                        <div class="editor-header">HTML STRUCTURE SYSTEM</div>
+                        <textarea id="code-html" autocomplete="off" spellcheck="false"><div class="welcome-box">
+  <h1>Engine Vector Online</h1>
+  <p>Modify the multi-editor files simultaneously to compile code live inside an isolation sandbox layer.</p>
+  <button onclick="triggerFlash()">Execute Payload Loop</button>
+</div></textarea>
+                    </div>
+                    <div class="editor-box">
+                        <div class="editor-header">CSS DECORATION ARCHITECTURE</div>
+                        <textarea id="code-css" autocomplete="off" spellcheck="false">body {
+  background: radial-gradient(circle, #1e1b4b 0%, #0f172a 100%);
+  color: #00ffcc;
+  font-family: sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+.welcome-box {
+  text-align: center;
+  border: 2px solid #00ffcc;
+  padding: 30px;
+  border-radius: 12px;
+  background: rgba(0,0,0,0.4);
+  box-shadow: 0 0 20px rgba(0,255,204,0.3);
+}
+button {
+  background: #00ffcc;
+  color: #000;
+  border: none;
+  padding: 10px 20px;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+}</textarea>
+                    </div>
+                    <div class="editor-box">
+                        <div class="editor-header">JAVASCRIPT COMPUTE PIPELINE</div>
+                        <textarea id="code-js" autocomplete="off" spellcheck="false">function triggerFlash() {
+  document.body.style.background = '#00ffcc';
+  setTimeout(() => {
+     document.body.style.background = 'radial-gradient(circle, #1e1b4b 0%, #0f172a 100%)';
+  }, 200);
+  console.log('Local structural payload array instantiated');
+}</textarea>
+                    </div>
+                    <div class="editor-box">
+                        <div class="editor-header">LIVE SANDBOX ISOLATION FRAMEWAY</div>
+                        <iframe id="live-preview"></iframe>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PANEL 2: CRYPTO UTILITIES -->
+            <div class="workspace-panel" id="panel-crypto">
+                <div class="util-row">
+                    <div class="panel-card">
+                        <div class="panel-title">Base64 Transcoder Matrix</div>
+                        <div class="input-group">
+                            <label>Raw Structural Input Stream</label>
+                            <input type="text" id="b64-input" value="Secure cryptographic development array payload string.">
+                        </div>
+                        <div class="input-group">
+                            <button id="b64-encode-btn">Encode System Vector</button>
+                            <button id="b64-decode-btn">Decode System Vector</button>
+                        </div>
+                        <label>Computed Transcoder Array Manifestation</label>
+                        <div class="output-display" id="b64-output">...</div>
+                    </div>
+
+                    <div class="panel-card">
+                        <div class="panel-title">Hash Verification Pipeline</div>
+                        <div class="input-group">
+                            <label>Seed Data Matrix</label>
+                            <input type="text" id="hash-input" value="Core Kernel Cluster Engine Alpha">
+                        </div>
+                        <label>Simulated Hexadecimal SHA-Bit Manifestation</label>
+                        <div class="output-display" id="hash-output">Generating runtime seed loop values...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PANEL 3: REGEX & STRING PROCESSING -->
+            <div class="workspace-panel" id="panel-analytics">
+                <div class="panel-card">
+                    <div class="panel-title">Advanced Regex Pattern Matcher Engine</div>
+                    <div class="input-group">
+                        <label>Target Body Text Payload</label>
+                        <textarea id="regex-text-target" style="height: 100px; color: #f8f8f2;">System configuration logs compiled at 2026-05-20. Server node error detected on interface address 192.168.1.54 matching structural telemetry protocols.</textarea>
+                    </div>
+                    <div class="util-row">
+                        <div class="input-group">
+                            <label>Regular Expression Rule Matrix</label>
+                            <input type="text" id="regex-pattern" value="\d{4}-\d{2}-\d{2}">
+                        </div>
+                        <div class="input-group">
+                            <label>Global Pattern Flags</label>
+                            <input type="text" id="regex-flags" value="g">
+                        </div>
+                    </div>
+                    <label>Evaluation Array Processing Diagnostics</label>
+                    <div class="output-display" id="regex-output" style="color: #50fa7b;">Ready for execution pass.</div>
+                </div>
+            </div>
+
+            <!-- PANEL 4: STATE MANAGEMENT / ENGINE SIMULATOR -->
+            <div class="workspace-panel" id="panel-system-logs">
+                <div class="panel-card">
+                    <div class="panel-title">Live Node Telemetry Event Simulator</div>
+                    <div class="input-group">
+                        <button id="spawn-node-event">Inject Asynchronous Telemetry Node Interrupt</button>
+                    </div>
+                    <div class="output-display" id="telemetry-log-stream" style="height: 250px; overflow-y: scroll; font-size: 0.8rem; line-height: 1.6; color: #ffb86c; background: #000;">
+                        [SYSTEM INIT] Engine cycle operational pipeline generated.<br>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        // --- MULTI-THREAD MATRIX SIMULATOR CANVAS GRAPHIC ---
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+        let width = canvas.width = canvas.parentElement.offsetWidth;
+        let height = canvas.height = canvas.parentElement.offsetHeight;
+
+        const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789<>/[]{}+=-_*&^%$#@!';
+        const fontSize = 14;
+        const columns = Math.floor(width / fontSize);
+        const rainDrops = Array(columns).fill(1);
+
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(10, 14, 23, 0.05)';
+            ctx.fillRect(0, 0, width, height);
+            ctx.fillStyle = '#00ff66';
+            ctx.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < rainDrops.length; i++) {
+                const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+                ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
+                if (rainDrops[i] * fontSize > height && Math.random() > 0.975) {
+                    rainDrops[i] = 0;
+                }
+                rainDrops[i]++;
+            }
+        }
+        let matrixInterval = setInterval(drawMatrix, 33);
+
+        window.addEventListener('resize', () => {
+            width = canvas.width = canvas.parentElement.offsetWidth;
+            height = canvas.height = canvas.parentElement.offsetHeight;
+        });
+
+        // --- COMPILER COMPONENT LOGIC ---
+        const htmlInput = document.getElementById('code-html');
+        const cssInput = document.getElementById('code-css');
+        const jsInput = document.getElementById('code-js');
+        const livePreview = document.getElementById('live-preview');
+
+        function compileSandboxEngine() {
+            const frameDoc = livePreview.contentDocument || livePreview.contentWindow.document;
+            frameDoc.open();
+            frameDoc.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <style>${cssInput.value}</style>
+                </head>
+                <body>
+                    ${htmlInput.value}
+                    <script>${jsInput.value}<\/script>
+                </body>
+                </html>
+            `);
+            frameDoc.close();
+        }
+
+        [htmlInput, cssInput, jsInput].forEach(element => {
+            element.addEventListener('input', compileSandboxEngine);
+        });
+        window.addEventListener('DOMContentLoaded', compileSandboxEngine);
+
+        // --- SIDEBAR ARCHITECTURE TRANSITIONS ---
+        const navItems = document.querySelectorAll('.nav-item');
+        const panels = document.querySelectorAll('.workspace-panel');
+
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                navItems.forEach(nav => nav.classList.remove('active'));
+                panels.forEach(panel => panel.classList.remove('active'));
+
+                item.classList.add('active');
+                const target = item.getAttribute('data-target');
+                document.getElementById(`panel-${target}`).classList.add('active');
+            });
+        });
+
+        // --- ENCRYPTION TRANSCODER SYSTEMS ---
+        const b64Input = document.getElementById('b64-input');
+        const b64Output = document.getElementById('b64-output');
+        
+        document.getElementById('b64-encode-btn').addEventListener('click', () => {
+            try {
+                b64Output.textContent = btoa(b64Input.value);
+                b64Output.style.color = "var(--accent)";
+            } catch(e) {
+                b64Output.textContent = "Conversion Exception Array Error: Multi-byte saturation fail.";
+                b64Output.style.color = "var(--error)";
+            }
+        });
+
+        document.getElementById('b64-decode-btn').addEventListener('click', () => {
+            try {
+                b64Output.textContent = atob(b64Input.value);
+                b64Output.style.color = "var(--accent)";
+            } catch(e) {
+                b64Output.textContent = "Invalid Base64 string context structural validation failure.";
+                b64Output.style.color = "var(--error)";
+            }
+        });
+
+        // --- PSEUDO HASH DATA ENGINE ---
+        const hashInput = document.getElementById('hash-input');
+        const hashOutput = document.getElementById('hash-output');
+
+        function executeFakeHashLoop() {
+            let string = hashInput.value;
+            let hash = 0x811c9dc5; // FNV-1a structural seed initialization
+            for (let i = 0; i < string.length; i++) {
+                hash ^= string.charCodeAt(i);
+                hash += (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24);
+            }
+            const processedHex = (hash >>> 0).toString(16).toUpperCase().padStart(8, '0');
+            hashOutput.textContent = `FNV_1A::COMPUTE_NODE_HEX::0x${processedHex}FE64${processedHex}`;
+        }
+        hashInput.addEventListener('input', executeFakeHashLoop);
+        executeFakeHashLoop();
+
+        // --- REGEX PROFILING PIPELINE ---
+        const regexText = document.getElementById('regex-text-target');
+        const regexPattern = document.getElementById('regex-pattern');
+        const regexFlags = document.getElementById('regex-flags');
+        const regexOutput = document.getElementById('regex-output');
+
+        function analyzeRegexMatrix() {
+            try {
+                const searchPattern = new RegExp(regexPattern.value, regexFlags.value);
+                const stringToMatch = regexText.value;
+                const matchMatches = stringToMatch.match(searchPattern);
+
+                if(matchMatches) {
+                    regexOutput.innerHTML = `<strong>Matched Allocation Vectors Found [${matchMatches.length}]:</strong><br>` + 
+                        matchMatches.map((m, index) => `Index [${index}] Vector Data Segment Value: -> "${m}"`).join('<br>');
+                    regexOutput.style.color = "var(--accent)";
+                } else {
+                    regexOutput.textContent = "Regex Evaluation Engine Execution Loop: 0 matches compiled across payload array grid.";
+                    regexOutput.style.color = "var(--text-muted)";
+                }
+            } catch(error) {
+                regexOutput.textContent = `Structural Lexical Evaluation Compilation Fault: ${error.message}`;
+                regexOutput.style.color = "var(--error)";
+            }
+        }
+        [regexText, regexPattern, regexFlags].forEach(inp => inp.addEventListener('input', analyzeRegexMatrix));
+        analyzeRegexMatrix();
+
+        // --- TELEMETRY NODE SIMULATOR LOGS ---
+        const logContainer = document.getElementById('telemetry-log-stream');
+        const eventTrigger = document.getElementById('spawn-node-event');
+        const logModules = ["SECURITY_ROUTER", "DB_CLUSTER_B", "ASYNC_THREAD_POOL", "MEM_CACHE_ALLOCATOR", "HTTP_ROUTER_V6"];
+        const logActions = ["Thread handshake synchronized", "Cache garbage collect complete", "Socket context frame drop detected", "Memory leakage patch successfully applied", "I/O transmission stream acknowledged"];
+
+        eventTrigger.addEventListener('click', () => {
+            const timeStamp = new Date().toISOString().split('T')[1].substring(0, 8);
+            const randomModule = logModules[Math.floor(Math.random() * logModules.length)];
+            const randomAction = logActions[Math.floor(Math.random() * logActions.length)];
+            const hexID = Math.floor(Math.random()*16777215).toString(16).toUpperCase();
+            
+            logContainer.innerHTML += `[${timeStamp}] [SYS_NODE_${hexID}]::[${randomModule}] - ${randomAction}<br>`;
+            logContainer.scrollTop = logContainer.scrollHeight;
+        });
+
+        // --- VISUAL SPECTRAL THEME TOGGLE ENGINE ---
+        const themeBtn = document.getElementById('theme-toggle');
+        themeBtn.addEventListener('click', () => {
+            document.body.classList.toggle('light-theme');
+        });
+
+        // --- STATE ENGINE FLUSH SYSTEM ---
+        document.getElementById('clear-cache-btn').addEventListener('click', () => {
+            htmlInput.value = "";
+            cssInput.value = "";
+            jsInput.value = "";
+            b64Input.value = "";
+            regexText.value = "";
+            compileSandboxEngine();
+            analyzeRegexMatrix();
+            executeFakeHashLoop();
+            logContainer.innerHTML = "[SYSTEM NOTIFY] Matrix engine state register variables successfully flushed.<br>";
+        });
+    </script>
+</body>
+</html>
