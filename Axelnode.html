@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - axelnode</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f5f7ff',
+                            100: '#ebf0ff',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .active-nav {
+            color: #2563eb;
+            border-left-color: #2563eb;
+            font-weight: 600;
+        }
+        .dark .active-nav {
+            color: #60a5fa;
+            border-left-color: #60a5fa;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 transition-colors duration-200">
+
+    <!-- Top Sticky Navigation Bar -->
+    <header class="sticky top-0 z-40 w-full border-b border-slate-200/80 bg-white/80 backdrop-blur dark:border-slate-800/80 dark:bg-slate-950/85">
+        <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center gap-2">
+                <span class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
+                    axelnode
+                </span>
+                <span class="hidden sm:inline-block h-4 w-[1px] bg-slate-300 dark:bg-slate-700"></span>
+                <span class="hidden sm:inline-block text-sm text-slate-500 dark:text-slate-400">Privacy Portal</span>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <!-- Search Box -->
+                <div class="relative hidden md:block">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </span>
+                    <input type="text" id="searchInput" oninput="searchPolicy()" placeholder="Search terms..." class="w-60 rounded-full border border-slate-200 bg-slate-100/50 py-1.5 pl-9 pr-4 text-sm outline-none focus:border-primary-600 focus:bg-white dark:border-slate-800 dark:bg-slate-900 dark:focus:border-primary-600 dark:focus:bg-slate-950 transition-all">
+                </div>
+
+                <!-- Theme Toggle Button -->
+                <button id="themeToggle" onclick="toggleTheme()" class="rounded-full p-2 text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 focus:outline-none" aria-label="Toggle dark mode">
+                    <!-- Light Icon -->
+                    <svg id="themeLightIcon" class="h-5 w-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m2.828-9.9a5 5 0 117.07 7.07l-7.07-7.07z"/>
+                    </svg>
+                    <!-- Dark Icon -->
+                    <svg id="themeDarkIcon" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                    </svg>
+                </button>
+
+                <!-- Quick Print Action -->
+                <button onclick="window.print()" class="rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-white px-4 py-1.5 text-xs font-semibold tracking-wide transition">
+                    Print / PDF
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            
+            <!-- Desktop Sidebar Navigation -->
+            <aside class="hidden lg:block lg:col-span-1">
+                <div class="sticky top-24 space-y-4">
+                    <p class="text-xs font-semibold tracking-wider text-slate-400 uppercase">Sections</p>
+                    <nav class="flex flex-col space-y-2 border-l border-slate-200 dark:border-slate-800 text-sm">
+                        <a href="#intro" class="sidebar-link pl-4 py-1.5 border-l-2 border-transparent text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:border-slate-300 transition-all active-nav">Introduction & Contact</a>
+                        <a href="#scope" class="sidebar-link pl-4 py-1.5 border-l-2 border-transparent text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:border-slate-300 transition-all">Scope & Application</a>
+                        <a href="#storage" class="sidebar-link pl-4 py-1.5 border-l-2 border-transparent text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:border-slate-300 transition-all">Data Storage & Protection</a>
+                        <a href="#rights" class="sidebar-link pl-4 py-1.5 border-l-2 border-transparent text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:border-slate-300 transition-all">GDPR User Rights</a>
+                        <a href="#cookies" class="sidebar-link pl-4 py-1.5 border-l-2 border-transparent text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:border-slate-300 transition-all">Cookies & Tracking</a>
+                        <a href="#us-compliance" class="sidebar-link pl-4 py-1.5 border-l-2 border-transparent text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:border-slate-300 transition-all">US Privacy Compliance</a>
+                    </nav>
+                    
+                    <!-- Quick Contact Card inside Sidebar -->
+                    <div class="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-950/40">
+                        <h4 class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Need Help?</h4>
+                        <p class="mt-2 text-xs text-slate-600 dark:text-slate-400">Contact us at any time regarding your security and data inquiry:</p>
+                        <div class="mt-3 space-y-1.5 text-xs">
+                            <a href="mailto:eerier.inks-2m@icloud.com" class="block font-medium text-primary-600 hover:underline dark:text-blue-400 truncate">eerier.inks-2m@icloud.com</a>
+                            <a href="tel:+19492961567" class="block font-medium text-slate-700 hover:underline dark:text-slate-300">+1 (949) 296-1567</a>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Document Content Column -->
+            <main class="col-span-1 lg:col-span-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800/80 rounded-2xl p-6 sm:p-10 shadow-sm print:border-none print:shadow-none print:p-0">
+                
+                <!-- Document Header -->
+                <div class="border-b border-slate-200 dark:border-slate-800 pb-6 mb-8">
+                    <span class="inline-flex items-center rounded-full bg-primary-100 dark:bg-primary-800/30 px-3 py-1 text-xs font-medium text-primary-600 dark:text-blue-400">
+                        Official Policy Document
+                    </span>
+                    <h1 class="mt-3 text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
+                        Privacy Policy
+                    </h1>
+                    <div class="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-500 dark:text-slate-400">
+                        <div class="flex items-center gap-1.5">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                            <span>Effective Date: <strong>01/07/2026, 01:47:35</strong></span>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+                            </svg>
+                            <a href="https://kevinyibochen.com" target="_blank" rel="noopener" class="hover:underline text-slate-700 dark:text-slate-300">kevinyibochen.com</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Policy Content -->
+                <div id="policyContent" class="space-y-12 text-slate-600 dark:text-slate-300 leading-relaxed">
+                    
+                    <!-- Section: Intro -->
+                    <section id="intro" class="scroll-mt-24">
+                        <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-4">1. Introduction and organizational info</h2>
+                        <p class="mb-4">
+                            We, at <strong>axelnode</strong>, are dedicated to serving our customers and contacts to the best of our abilities. Part of our commitment involves the responsible management of personal information collected through our website <a href="https://kevinyibochen.com" target="_blank" rel="noopener" class="text-primary-600 hover:underline dark:text-blue-400">kevinyibochen.com</a>, and any related interactions. Our primary goals in processing this information include:
+                        </p>
+                        <ul class="list-disc pl-6 mb-4 space-y-2">
+                            <li>Enhancing the user experience on our platform by understanding customer needs and preferences.</li>
+                            <li>Providing timely support and responding to inquiries or service requests.</li>
+                            <li>Improving our products and services to meet the evolving demands of our users.</li>
+                            <li>Conducting necessary business operations, such as billing and account management.</li>
+                        </ul>
+                        <p class="mb-4">
+                            It is our policy to process personal information with the utmost respect for privacy and security. We adhere to all relevant regulations and guidelines to ensure that the data we handle is protected against unauthorized access, disclosure, alteration, and destruction. Our practices are designed to safeguard the confidentiality and integrity of your personal information, while enabling us to deliver the services you trust us with.
+                        </p>
+                        <p class="mb-4">
+                            We do not have a designated Data Protection Officer (DPO) but remain fully committed to addressing your privacy concerns. Should you have any questions or require further information about how we manage personal information, please feel free to contact us at:
+                        </p>
+                        <div class="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 flex flex-col sm:flex-row justify-between gap-4 items-start sm:items-center">
+                            <div>
+                                <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Official Contact Channels</p>
+                                <p class="text-sm font-semibold text-slate-950 dark:text-white mt-1">Email: <span class="text-primary-600 dark:text-blue-400" id="contactEmail">eerier.inks-2m@icloud.com</span></p>
+                                <p class="text-sm font-semibold text-slate-950 dark:text-white">Phone: +1-US 9492961567</p>
+                            </div>
+                            <button onclick="copyToClipboard('eerier.inks-2m@icloud.com')" class="text-xs bg-white border dark:bg-slate-950 dark:border-slate-800 hover:bg-slate-50 hover:text-primary-600 px-3 py-1.5 rounded-lg font-medium transition flex items-center gap-1">
+                                <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
+                                <span>Copy Email</span>
+                            </button>
+                        </div>
+                        <p class="mt-4">
+                            Your privacy is our priority. We are committed to processing your personal information transparently and with your safety in mind. This commitment extends to our collaboration with third-party services that may process personal information on our behalf, such as in the case of sending invoices. Rest assured, all activities are conducted in strict compliance with applicable privacy laws.
+                        </p>
+                    </section>
+
+                    <!-- Section: Scope -->
+                    <section id="scope" class="scroll-mt-24">
+                        <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-4">2. Scope and application</h2>
+                        <p>
+                            Our privacy policy is designed to protect the personal information of all our stakeholders, including website visitors, registered users, and customers. Whether you are just browsing our website <a href="https://kevinyibochen.com" class="text-primary-600 hover:underline dark:text-blue-400">kevinyibochen.com</a>, using our services as a registered user, or engaging with us as a valued customer, we ensure that your personal data is processed with the highest standards of privacy and security. This policy outlines our practices and your rights related to personal information.
+                        </p>
+                    </section>
+
+                    <!-- Section: Storage & Protection -->
+                    <section id="storage" class="scroll-mt-24">
+                        <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-4">3. Data storage and protection</h2>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <h3 class="text-md font-semibold text-slate-900 dark:text-white">Data Storage Locations</h3>
+                                <p class="mt-1">
+                                    Personal information is stored in secure servers located in: 
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800 dark:bg-green-950/40 dark:text-green-300">
+                                        United States and the European Economic Area (EEA)
+                                    </span>. 
+                                    For services that require international data transfer, we ensure that such transfers comply with all applicable laws and maintain data protection standards equivalent to those in our primary location.
+                                </p>
+                            </div>
+
+                            <div>
+                                <h3 class="text-md font-semibold text-slate-900 dark:text-white">Data Hosting Partners</h3>
+                                <p class="mt-1">
+                                    We partner with reputable data hosting providers committed to using state-of-the-art security measures. These partners are selected based on their adherence to stringent data protection standards.
+                                </p>
+                            </div>
+
+                            <div>
+                                <h3 class="text-md font-semibold text-slate-900 dark:text-white">Data Processing Agreements (DPAs)</h3>
+                                <p class="mt-1">
+                                    When we share your data with third-party service providers, we do so under the protection of Data Processing Agreements (DPAs) that ensure your information is managed in accordance with GDPR and other relevant data protection laws. These agreements mandate that third parties implement adequate technical and organizational measures to ensure the security of your data.
+                                </p>
+                            </div>
+
+                            <div>
+                                <h3 class="text-md font-semibold text-slate-900 dark:text-white">Transparency and Control</h3>
+                                <p class="mt-1">
+                                    We believe in transparency and providing you with control over your personal information. You will always be informed about any significant changes to our sharing practices, and where applicable, you will have the option to consent to such changes.
+                                </p>
+                                <p class="mt-2 text-sm italic">
+                                    Your trust is important to us, and we strive to ensure that your personal information is disclosed only in accordance with this policy and when there is a justified reason to do so. For any queries or concerns about how we share and disclose personal information, please reach out to us at <a href="mailto:eerier.inks-2m@icloud.com" class="text-primary-600 dark:text-blue-400">eerier.inks-2m@icloud.com</a>.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Section: User Rights -->
+                    <section id="rights" class="scroll-mt-24">
+                        <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-4">4. User rights and choices (GDPR)</h2>
+                        <p class="mb-4">
+                            At axelnode, we recognize and respect your rights regarding your personal information, in accordance with the General Data Protection Regulation (GDPR) and other applicable data protection laws. 
+                        </p>
+
+                        <!-- GDPR Interactive Rights Accordion -->
+                        <div class="space-y-2 mb-6">
+                            <!-- Right 1 -->
+                            <div class="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden bg-slate-50/50 dark:bg-slate-900/30">
+                                <button onclick="toggleAccordion('gdpr-1')" class="w-full flex justify-between items-center px-4 py-3 text-left font-semibold text-sm text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                                    <span>Right of Access (Art. 15 GDPR)</span>
+                                    <span id="icon-gdpr-1" class="transform transition duration-200">+</span>
+                                </button>
+                                <div id="gdpr-1" class="hidden px-4 pb-3 text-sm text-slate-600 dark:text-slate-400">
+                                    You have the right to request access to the personal information we hold about you and to obtain information about how we process it.
+                                </div>
+                            </div>
+                            
+                            <!-- Right 2 -->
+                            <div class="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden bg-slate-50/50 dark:bg-slate-900/30">
+                                <button onclick="toggleAccordion('gdpr-2')" class="w-full flex justify-between items-center px-4 py-3 text-left font-semibold text-sm text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                                    <span>Right to Rectification (Art. 16 GDPR)</span>
+                                    <span id="icon-gdpr-2" class="transform transition duration-200">+</span>
+                                </button>
+                                <div id="gdpr-2" class="hidden px-4 pb-3 text-sm text-slate-600 dark:text-slate-400">
+                                    If you believe that any personal information we hold about you is incorrect or incomplete, you have the right to request its correction or completion.
+                                </div>
+                            </div>
+
+                            <!-- Right 3 -->
+                            <div class="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden bg-slate-50/50 dark:bg-slate-900/30">
+                                <button onclick="toggleAccordion('gdpr-3')" class="w-full flex justify-between items-center px-4 py-3 text-left font-semibold text-sm text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                                    <span>Right to Erasure / Right to be Forgotten (Art. 17 GDPR)</span>
+                                    <span id="icon-gdpr-3" class="transform transition duration-200">+</span>
+                                </button>
+                                <div id="gdpr-3" class="hidden px-4 pb-3 text-sm text-slate-600 dark:text-slate-400">
+                                    You have the right to request the deletion of your personal information when it is no longer necessary for the purposes for which it was collected, among other circumstances.
+                                </div>
+                            </div>
+
+                            <!-- Right 4 -->
+                            <div class="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden bg-slate-50/50 dark:bg-slate-900/30">
+                                <button onclick="toggleAccordion('gdpr-4')" class="w-full flex justify-between items-center px-4 py-3 text-left font-semibold text-sm text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                                    <span>Right to Restriction of Processing (Art. 18 GDPR)</span>
+                                    <span id="icon-gdpr-4" class="transform transition duration-200">+</span>
+                                </button>
+                                <div id="gdpr-4" class="hidden px-4 pb-3 text-sm text-slate-600 dark:text-slate-400">
+                                    You have the right to request that we restrict the processing of your personal information under certain conditions.
+                                </div>
+                            </div>
+
+                            <!-- Right 5 -->
+                            <div class="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden bg-slate-50/50 dark:bg-slate-900/30">
+                                <button onclick="toggleAccordion('gdpr-5')" class="w-full flex justify-between items-center px-4 py-3 text-left font-semibold text-sm text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                                    <span>Right to Data Portability (Art. 20 GDPR)</span>
+                                    <span id="icon-gdpr-5" class="transform transition duration-200">+</span>
+                                </button>
+                                <div id="gdpr-5" class="hidden px-4 pb-3 text-sm text-slate-600 dark:text-slate-400">
+                                    You have the right to receive your personal information in a structured, commonly used, and machine-readable format and to transmit those data to another controller.
+                                </div>
+                            </div>
+
+                            <!-- Right 6 -->
+                            <div class="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden bg-slate-50/50 dark:bg-slate-900/30">
+                                <button onclick="toggleAccordion('gdpr-6')" class="w-full flex justify-between items-center px-4 py-3 text-left font-semibold text-sm text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                                    <span>Right to Object (Art. 21 GDPR)</span>
+                                    <span id="icon-gdpr-6" class="transform transition duration-200">+</span>
+                                </button>
+                                <div id="gdpr-6" class="hidden px-4 pb-3 text-sm text-slate-600 dark:text-slate-400">
+                                    You have the right to object to the processing of your personal information, under certain conditions, including processing for direct marketing.
+                                </div>
+                            </div>
+
+                            <!-- Right 7 -->
+                            <div class="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden bg-slate-50/50 dark:bg-slate-900/30">
+                                <button onclick="toggleAccordion('gdpr-7')" class="w-full flex justify-between items-center px-4 py-3 text-left font-semibold text-sm text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                                    <span>Right to Withdraw Consent (Art. 7(3) GDPR)</span>
+                                    <span id="icon-gdpr-7" class="transform transition duration-200">+</span>
+                                </button>
+                                <div id="gdpr-7" class="hidden px-4 pb-3 text-sm text-slate-600 dark:text-slate-400">
+                                    Where the processing of your personal information is based on your consent, you have the right to withdraw that consent at any time without affecting the lawfulness of processing based on consent before its withdrawal.
+                                </div>
+                            </div>
+
+                            <!-- Right 8 -->
+                            <div class="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden bg-slate-50/50 dark:bg-slate-900/30">
+                                <button onclick="toggleAccordion('gdpr-8')" class="w-full flex justify-between items-center px-4 py-3 text-left font-semibold text-sm text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                                    <span>Right to Lodge a Complaint (Art. 77 GDPR)</span>
+                                    <span id="icon-gdpr-8" class="transform transition duration-200">+</span>
+                                </button>
+                                <div id="gdpr-8" class="hidden px-4 pb-3 text-sm text-slate-600 dark:text-slate-400">
+                                    You have the right to lodge a complaint with a supervisory authority if you believe our processing of your personal information violates applicable data protection laws.
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3 class="text-md font-bold text-slate-900 dark:text-white mt-4 mb-2">Exercising your rights</h3>
+                        <p class="mb-4">
+                            To exercise any of these rights, please contact us at <a href="mailto:eerier.inks-2m@icloud.com" class="text-primary-600 hover:underline dark:text-blue-400">eerier.inks-2m@icloud.com</a> or <a href="tel:+19492961567" class="text-primary-600 hover:underline dark:text-blue-400">+1-US 9492961567</a>. 
+                        </p>
+                        <p>
+                            We will respond to your request in accordance with applicable data protection laws and within the timeframes stipulated by those laws. Please note, in some cases, we may need to verify your identity as part of the process to ensure the security of your personal information.
+                        </p>
+                    </section>
+
+                    <!-- Section: Cookies -->
+                    <section id="cookies" class="scroll-mt-24">
+                        <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-4">5. Cookies and tracking technologies</h2>
+                        <p class="mb-4">
+                            At axelnode, we value your privacy and are committed to being transparent about our use of cookies and other tracking technologies on our website <a href="https://kevinyibochen.com" class="text-primary-600 hover:underline dark:text-blue-400">kevinyibochen.com</a>. These technologies play a crucial role in ensuring the smooth operation of our digital platforms, enhancing your user experience, and providing insights that help us improve.
+                        </p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div class="p-4 border border-slate-200 dark:border-slate-800 rounded-xl">
+                                <h4 class="font-semibold text-slate-900 dark:text-white text-sm">Essential Cookies</h4>
+                                <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Necessary for the website's functionality, such as authentication and security. They do not require consent.</p>
+                            </div>
+                            <div class="p-4 border border-slate-200 dark:border-slate-800 rounded-xl">
+                                <h4 class="font-semibold text-slate-900 dark:text-white text-sm">Performance & Analytics</h4>
+                                <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">These collect information about how visitors use our website to help us design a cleaner, faster experience.</p>
+                            </div>
+                            <div class="p-4 border border-slate-200 dark:border-slate-800 rounded-xl">
+                                <h4 class="font-semibold text-slate-900 dark:text-white text-sm">Functional Cookies</h4>
+                                <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Enable the website to provide enhanced functionality and personalization, like remembering your preferences.</p>
+                            </div>
+                            <div class="p-4 border border-slate-200 dark:border-slate-800 rounded-xl">
+                                <h4 class="font-semibold text-slate-900 dark:text-white text-sm">Advertising & Targeting</h4>
+                                <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Used to deliver advertisements more relevant to you and your interests, and limit repetitive views.</p>
+                            </div>
+                        </div>
+
+                        <p class="text-sm italic">
+                            Upon your first visit, our website will present you with a cookie consent banner, where you can accept all cookies, reject non-essential ones, or fully customize your preferences.
+                        </p>
+                    </section>
+
+                    <!-- Section: US Compliance -->
+                    <section id="us-compliance" class="scroll-mt-24">
+                        <h2 class="text-xl font-bold text-slate-900 dark:text-white mb-4">6. Compliance with United States privacy laws</h2>
+                        <p class="mb-4">
+                            For residents of the United States of America (including California residents under the California Consumer Privacy Act/CCPA), the following provisions apply:
+                        </p>
+
+                        <div class="space-y-4 mb-6">
+                            <div class="border-l-4 border-primary-600 dark:border-blue-400 pl-4 py-1">
+                                <h4 class="font-bold text-slate-900 dark:text-white text-sm">A. Individual Rights</h4>
+                                <p class="text-sm mt-1">The CCPA provides residents of California specific rights regarding their personal information, additional to what has been described before.</p>
+                            </div>
+                            <div class="border-l-4 border-primary-600 dark:border-blue-400 pl-4 py-1">
+                                <h4 class="font-bold text-slate-900 dark:text-white text-sm">B. Right to Know</h4>
+                                <p class="text-sm mt-1">You may request that we disclose to you what personal information we have collected, used, shared, or sold about you, and why we collected, used, shared, or sold that information.</p>
+                            </div>
+                            <div class="border-l-4 border-primary-600 dark:border-blue-400 pl-4 py-1">
+                                <h4 class="font-bold text-slate-900 dark:text-white text-sm">C. Right to Delete</h4>
+                                <p class="text-sm mt-1">You may request that we delete personal information we have collected about you.</p>
+                            </div>
+                            <div class="border-l-4 border-primary-600 dark:border-blue-400 pl-4 py-1">
+                                <h4 class="font-bold text-slate-900 dark:text-white text-sm">D. Right to Correct</h4>
+                                <p class="text-sm mt-1">You may ask us to correct inaccurate information that we have about you.</p>
+                            </div>
+                            <div class="border-l-4 border-primary-600 dark:border-blue-400 pl-4 py-1">
+                                <h4 class="font-bold text-slate-900 dark:text-white text-sm">E. Right to Limit</h4>
+                                <p class="text-sm mt-1">You can request us to only use your sensitive personal information (for example, your social security number, your genetic data, etc.) for limited purposes, such as providing you with the services you requested.</p>
+                            </div>
+                            <div class="border-l-4 border-primary-600 dark:border-blue-400 pl-4 py-1">
+                                <h4 class="font-bold text-slate-900 dark:text-white text-sm">F. Right to Opt-Out</h4>
+                                <p class="text-sm mt-1"><strong>axelnode does not sell or share personal information.</strong> In case your data is sold or shared in the future, you can make use of your right to opt-out of the sale or sharing of personal information by submitting your request through the link on our website.</p>
+                            </div>
+                            <div class="border-l-4 border-primary-600 dark:border-blue-400 pl-4 py-1">
+                                <h4 class="font-bold text-slate-900 dark:text-white text-sm">G. Right to Non-Discrimination</h4>
+                                <p class="text-sm mt-1">You have the right to be protected from discrimination for exercising your rights.</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-blue-50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/50 rounded-xl p-5">
+                            <h4 class="font-bold text-slate-900 dark:text-white text-md">How to Submit Your Request or Appeal a Decision</h4>
+                            <p class="text-sm mt-2">
+                                You may submit your US privacy request by sending an email to <a href="mailto:eerier.inks-2m@icloud.com" class="font-semibold text-primary-600 hover:underline dark:text-blue-400">eerier.inks-2m@icloud.com</a> or calling <a href="tel:+19492961567" class="font-semibold text-primary-600 hover:underline dark:text-blue-400">+1-US 9492961567</a>.
+                            </p>
+                            <p class="text-sm mt-3 font-semibold text-slate-900 dark:text-white">Appeals Process:</p>
+                            <p class="text-sm mt-1">
+                                To appeal a decision regarding your privacy request, contact us within <strong>60 days</strong> of receiving our response via email or phone. In your appeal, please provide:
+                            </p>
+                            <ul class="list-disc pl-5 mt-2 text-xs space-y-1">
+                                <li>Your original privacy request details</li>
+                                <li>The date of our initial decision/response</li>
+                                <li>A brief explanation of why you believe our decision was incorrect</li>
+                            </ul>
+                        </div>
+                    </section>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Universal Toast Message -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 bg-slate-900 text-white dark:bg-white dark:text-slate-900 px-4 py-2.5 rounded-xl shadow-lg transition-all duration-300 flex items-center gap-2 text-sm font-medium">
+        <svg class="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+        </svg>
+        <span id="toastMessage">Action successful</span>
+    </div>
+
+    <script>
+        // Init state
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check theme settings
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+                document.getElementById('themeLightIcon').classList.remove('hidden');
+                document.getElementById('themeDarkIcon').classList.add('hidden');
+            } else {
+                document.documentElement.classList.remove('dark');
+                document.getElementById('themeLightIcon').classList.add('hidden');
+                document.getElementById('themeDarkIcon').classList.remove('hidden');
+            }
+            
+            // Set active navigation listener
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.sidebar-link');
+            
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.clientHeight;
+                    if (pageYOffset >= (sectionTop - 150)) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active-nav');
+                    if (link.getAttribute('href').slice(1) === current) {
+                        link.classList.add('active-nav');
+                    }
+                });
+            });
+        });
+
+        // Theme Switcher
+        function toggleTheme() {
+            const root = document.documentElement;
+            const isDark = root.classList.contains('dark');
+            
+            if (isDark) {
+                root.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+                document.getElementById('themeLightIcon').classList.add('hidden');
+                document.getElementById('themeDarkIcon').classList.remove('hidden');
+            } else {
+                root.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+                document.getElementById('themeLightIcon').classList.remove('hidden');
+                document.getElementById('themeDarkIcon').classList.add('hidden');
+            }
+        }
+
+        // Accordion functionality for GDPR Rights
+        function toggleAccordion(id) {
+            const content = document.getElementById(id);
+            const icon = document.getElementById('icon-' + id);
+            
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                icon.textContent = '−';
+                icon.classList.add('rotate-180');
+            } else {
+                content.classList.add('hidden');
+                icon.textContent = '+';
+                icon.classList.remove('rotate-180');
+            }
+        }
+
+        // Clipboard Copy Action
+        function copyToClipboard(text) {
+            // Using recommended execCommand context
+            const el = document.createElement('textarea');
+            el.value = text;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+
+            showToast("Copied contact email to clipboard!");
+        }
+
+        // Search Policy helper
+        function searchPolicy() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const paragraphs = document.querySelectorAll('#policyContent p, #policyContent li, #policyContent h2, #policyContent h3, #policyContent h4');
+            
+            if (query === '') {
+                paragraphs.forEach(p => {
+                    p.style.opacity = '1';
+                    p.style.backgroundColor = 'transparent';
+                });
+                return;
+            }
+
+            paragraphs.forEach(p => {
+                const text = p.textContent.toLowerCase();
+                if (text.includes(query)) {
+                    p.style.opacity = '1';
+                    // Highlight matching paragraphs slightly
+                    p.style.backgroundColor = 'rgba(37, 99, 235, 0.08)';
+                } else {
+                    p.style.opacity = '0.35';
+                    p.style.backgroundColor = 'transparent';
+                }
+            });
+        }
+
+        // Toast feedback
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').textContent = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
