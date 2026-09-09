@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AxelNode Portfolio</title>
+    <title>AxelNode | Autonomous Smart Mobility Platform</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <script>
         tailwind.config = {
@@ -18,306 +20,683 @@
                     colors: {
                         dark: '#0a0a0a',
                         darker: '#050505',
-                        accent: '#3b82f6', // Bright Blue
+                        accent: '#3b82f6',
                         accentHover: '#2563eb',
-                        surface: '#171717',
-                        surfaceHover: '#262626'
+                        surface: '#141414',
+                        surfaceHover: '#222222',
+                        borderSubtle: 'rgba(255, 255, 255, 0.08)'
                     }
                 }
             }
-        }
+        };
     </script>
     <style>
         body {
-            background-color: theme('colors.darker');
+            background-color: #050505;
             color: #f3f4f6;
         }
-        .glass-panel {
-            background: rgba(23, 23, 23, 0.6);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+        .bg-grid-pattern {
+            background-size: 36px 36px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
         }
-        .glow-text {
-            text-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+        .glass-panel {
+            background: rgba(18, 18, 18, 0.72);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+        }
+        .glow-accent {
+            text-shadow: 0 0 25px rgba(59, 130, 246, 0.55);
+        }
+        .glow-box {
+            box-shadow: 0 0 35px -5px rgba(59, 130, 246, 0.25);
         }
         /* Custom scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
         }
         ::-webkit-scrollbar-track {
-            background: theme('colors.darker');
+            background: #050505;
         }
         ::-webkit-scrollbar-thumb {
-            background: theme('colors.surfaceHover');
+            background: #262626;
             border-radius: 4px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: theme('colors.accent');
+            background: #3b82f6;
         }
     </style>
 </head>
-<body class="antialiased selection:bg-accent selection:text-white">
+<body class="antialiased selection:bg-accent selection:text-white bg-darker text-gray-100 min-h-screen flex flex-col font-sans">
 
-    <nav class="fixed w-full z-50 glass-panel border-b border-white/5 transition-all duration-300">
+    <!-- Top Navigation -->
+    <nav id="navbar" class="fixed w-full z-50 glass-panel border-b border-white/5 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
-                <div class="flex items-center gap-2">
-                    <i data-lucide="cpu" class="text-accent w-6 h-6"></i>
-                    <span class="font-bold text-xl tracking-tight">AxelNode<span class="text-accent">.</span></span>
+                <!-- Brand -->
+                <a href="#home" class="flex items-center gap-2 group">
+                    <div class="w-8 h-8 rounded-lg bg-accent/15 border border-accent/30 flex items-center justify-center text-accent transition-transform group-hover:scale-105">
+                        <i data-lucide="cpu" class="w-4 h-4"></i>
+                    </div>
+                    <span class="font-bold text-lg tracking-tight text-white">AxelNode<span class="text-accent">.</span></span>
+                </a>
+
+                <!-- Desktop Navigation Links -->
+                <div class="hidden md:flex items-center space-x-1 lg:space-x-4">
+                    <a href="#home" class="text-gray-300 hover:text-white hover:bg-white/5 px-3 py-1.5 rounded-md text-sm font-medium transition-all">Home</a>
+                    <a href="#project" class="text-gray-300 hover:text-white hover:bg-white/5 px-3 py-1.5 rounded-md text-sm font-medium transition-all">Overview</a>
+                    <a href="#hardware" class="text-gray-300 hover:text-white hover:bg-white/5 px-3 py-1.5 rounded-md text-sm font-medium transition-all">Hardware BOM</a>
+                    <a href="https://kevinyibochen.com/aboutme.html" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-blue-300 hover:bg-accent/10 px-3 py-1.5 rounded-md text-sm font-medium transition-all flex items-center gap-1.5 border border-accent/20">
+                        <i data-lucide="user" class="w-3.5 h-3.5"></i>
+                        About Me
+                    </a>
                 </div>
-                <div class="hidden md:block">
-                    <div class="ml-10 flex items-baseline space-x-8">
-                        <a href="#home" class="hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">Home</a>
-                        <a href="#project" class="hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">AxelNode</a>
-                        <a href="#hardware" class="hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">Hardware List</a>
+
+                <!-- Right Action Links & Mobile Menu Button -->
+                <div class="flex items-center gap-3">
+                    <a href="https://github.com/NoFiringPin/axelnode" target="_blank" rel="noopener noreferrer" class="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all" title="AxelNode GitHub Repository">
+                        <i data-lucide="git-branch" class="w-4 h-4"></i>
+                    </a>
+                    <a href="https://github.com/yiboc2012" target="_blank" rel="noopener noreferrer" class="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all" title="Personal GitHub (@yiboc2012)">
+                        <i data-lucide="github" class="w-4 h-4"></i>
+                    </a>
+                    
+                    <!-- Mobile Hamburger Button -->
+                    <button id="mobile-menu-btn" type="button" class="md:hidden p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 focus:outline-none" aria-label="Toggle navigation menu">
+                        <i data-lucide="menu" id="menu-icon-bars" class="w-5 h-5"></i>
+                        <i data-lucide="x" id="menu-icon-close" class="w-5 h-5 hidden"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-white/5 bg-darker/95 backdrop-blur-xl px-4 pt-3 pb-5 space-y-2">
+            <a href="#home" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-white/5">Home</a>
+            <a href="#project" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-white/5">Overview</a>
+            <a href="#hardware" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-white/5">Hardware BOM</a>
+            <a href="https://kevinyibochen.com/aboutme.html" target="_blank" rel="noopener noreferrer" class="block px-3 py-2 rounded-md text-base font-medium text-accent hover:bg-accent/10 border border-accent/20 flex items-center gap-2">
+                <i data-lucide="external-link" class="w-4 h-4"></i>
+                About Kevin Chen
+            </a>
+        </div>
+    </nav>
+
+    <section id="home" class="relative pt-32 pb-20 lg:pt-48 lg:pb-36 overflow-hidden bg-grid-pattern">
+        <!-- Gradient Accents -->
+        <div class="absolute inset-0 pointer-events-none">
+            <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-blue-600/15 rounded-full blur-[120px]"></div>
+            <div class="absolute top-10 right-10 w-72 h-72 bg-accent/10 rounded-full blur-[90px]"></div>
+        </div>
+
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <!-- Status Badge -->
+            <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full glass-panel text-xs sm:text-sm font-mono text-gray-300 mb-8 border border-white/10 hover:border-accent/40 transition-colors shadow-lg">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>System Online</span>
+                <span class="text-gray-600">|</span>
+                <span class="text-accent font-semibold">Raspberry Pi 5 Hub</span>
+            </div>
+
+            <!-- Main Heading -->
+            <h1 class="text-5xl sm:text-6xl md:text-7xl font-extrabold tracking-tight mb-6">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-accent to-indigo-300 glow-accent">AxelNode</span>
+            </h1>
+
+            <p class="max-w-2xl mx-auto text-gray-400 text-base sm:text-lg mb-10 leading-relaxed">
+                A custom-built semi-autonomous smart mobility cart combining infrared computer vision, I2C telemetry, and responsive servo actuation.
+            </p>
+
+            <!-- Call to Actions -->
+            <div class="flex flex-wrap items-center justify-center gap-4">
+                <a href="#project" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-accent text-white font-medium hover:bg-accentHover transition-all transform hover:-translate-y-0.5 shadow-lg shadow-accent/20">
+                    <span>Explore Architecture</span>
+                    <i data-lucide="arrow-down" class="w-4 h-4"></i>
+                </a>
+                <a href="https://github.com/NoFiringPin/axelnode" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg glass-panel hover:bg-surfaceHover text-white font-medium border border-white/10 hover:border-white/20 transition-all transform hover:-translate-y-0.5">
+                    <i data-lucide="github" class="w-4 h-4"></i>
+                    <span>Repository</span>
+                </a>
+                <a href="https://kevinyibochen.com/aboutme.html" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg glass-panel text-blue-300 hover:text-white hover:bg-blue-600/20 border border-blue-500/30 hover:border-blue-400 transition-all transform hover:-translate-y-0.5">
+                    <i data-lucide="user-check" class="w-4 h-4"></i>
+                    <span>About the Creator</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="project" class="py-24 bg-dark border-t border-white/5 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <!-- Description -->
+                <div class="lg:col-span-6 space-y-6">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-accent/10 border border-accent/20 text-accent text-xs font-mono">
+                        <i data-lucide="layers" class="w-3.5 h-3.5"></i>
+                        <span>EMBEDDED ROBOTICS PLATFORM</span>
+                    </div>
+
+                    <h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-white">
+                        Engineered for Real-World Edge Mobility
+                    </h2>
+
+                    <p class="text-gray-400 text-base sm:text-lg leading-relaxed">
+                        AxelNode transforms a wagon cart chassis into a mobile computing testbed. Powered by an onboard <span class="text-white font-medium">Raspberry Pi 5</span>, it unifies computer vision, multi-range IR proximity sensing, and real-time PWM control into an interactive, modular node.
+                    </p>
+
+                    <p class="text-gray-400 text-base leading-relaxed">
+                        Local processing eliminates latency constraints, allowing immediate obstacle avoidance and infrared night vision streaming directly to an onboard 10-inch capacitive touchscreen human-machine interface (HMI).
+                    </p>
+
+                    <!-- Tech Stack Pills -->
+                    <div class="pt-2 flex flex-wrap gap-2">
+                        <span class="px-3 py-1 text-xs font-mono rounded-md bg-white/5 border border-white/10 text-gray-300 flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-accent"></span>Raspberry Pi 5 (8GB)
+                        </span>
+                        <span class="px-3 py-1 text-xs font-mono rounded-md bg-white/5 border border-white/10 text-gray-300 flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-yellow-400"></span>Python 3 & OpenCV
+                        </span>
+                        <span class="px-3 py-1 text-xs font-mono rounded-md bg-white/5 border border-white/10 text-gray-300 flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-purple-400"></span>I2C & STEMMA QT
+                        </span>
+                        <span class="px-3 py-1 text-xs font-mono rounded-md bg-white/5 border border-white/10 text-gray-300 flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>Dual 5V/5A Buck Regulator
+                        </span>
                     </div>
                 </div>
-                <div class="flex items-center gap-4">
-                    <a href="https://github.com/yiboc2012" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition-colors" title="My Personal GitHub">
-                        <i data-lucide="github" class="w-5 h-5"></i>
+
+                <!-- Interactive Hardware Simulation Card -->
+                <div class="lg:col-span-6">
+                    <div class="relative group">
+                        <div class="absolute -inset-1 bg-gradient-to-r from-accent/40 via-blue-500/20 to-purple-600/30 rounded-2xl blur-lg opacity-40 group-hover:opacity-75 transition duration-700"></div>
+                        
+                        <div class="relative rounded-2xl overflow-hidden glass-panel border border-white/10 p-6 glow-box">
+                            <!-- Terminal / Telemetry Header -->
+                            <div class="flex items-center justify-between pb-4 mb-4 border-b border-white/10">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-3 h-3 rounded-full bg-red-500/80"></div>
+                                    <div class="w-3 h-3 rounded-full bg-yellow-500/80"></div>
+                                    <div class="w-3 h-3 rounded-full bg-green-500/80"></div>
+                                    <span class="ml-2 font-mono text-xs text-gray-400">node://axelnode.local/telemetry</span>
+                                </div>
+                                <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">LIVE STREAM</span>
+                            </div>
+
+                            <!-- Diagnostic Readout Grid -->
+                            <div class="grid grid-cols-2 gap-3 mb-5 font-mono">
+                                <div class="p-3 rounded-lg bg-surface/90 border border-white/5">
+                                    <div class="text-[11px] text-gray-400 uppercase tracking-wider mb-1 flex items-center gap-1">
+                                        <i data-lucide="thermometer" class="w-3 h-3 text-accent"></i> Pi 5 Core Temp
+                                    </div>
+                                    <div class="text-xl font-bold text-white flex items-baseline gap-1">
+                                        <span id="telemetry-temp">44.2</span><span class="text-xs text-gray-400">°C</span>
+                                    </div>
+                                </div>
+                                <div class="p-3 rounded-lg bg-surface/90 border border-white/5">
+                                    <div class="text-[11px] text-gray-400 uppercase tracking-wider mb-1 flex items-center gap-1">
+                                        <i data-lucide="radar" class="w-3 h-3 text-emerald-400"></i> Proximity (VCNL)
+                                    </div>
+                                    <div class="text-xl font-bold text-emerald-400 flex items-baseline gap-1">
+                                        <span id="telemetry-dist">128</span><span class="text-xs text-gray-400">cm</span>
+                                    </div>
+                                </div>
+                                <div class="p-3 rounded-lg bg-surface/90 border border-white/5">
+                                    <div class="text-[11px] text-gray-400 uppercase tracking-wider mb-1 flex items-center gap-1">
+                                        <i data-lucide="battery-charging" class="w-3 h-3 text-yellow-400"></i> Bus Voltage
+                                    </div>
+                                    <div class="text-xl font-bold text-yellow-400 flex items-baseline gap-1">
+                                        <span id="telemetry-volt">5.12</span><span class="text-xs text-gray-400">V @ 4.2A</span>
+                                    </div>
+                                </div>
+                                <div class="p-3 rounded-lg bg-surface/90 border border-white/5">
+                                    <div class="text-[11px] text-gray-400 uppercase tracking-wider mb-1 flex items-center gap-1">
+                                        <i data-lucide="compass" class="w-3 h-3 text-blue-400"></i> Gimbal Servo
+                                    </div>
+                                    <div class="text-xl font-bold text-blue-400 flex items-baseline gap-1">
+                                        <span id="telemetry-servo">0</span><span class="text-xs text-gray-400">deg</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Simulated Camera / Radar Canvas -->
+                            <div class="relative w-full h-44 rounded-lg bg-black/60 border border-white/10 overflow-hidden flex items-center justify-center">
+                                <div class="absolute inset-0 opacity-20 bg-[radial-gradient(#3b82f6_1px,transparent_1px)] [background-size:16px_16px]"></div>
+                                <!-- Crosshairs & overlay -->
+                                <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                    <div class="w-24 h-24 border border-dashed border-accent/40 rounded-full animate-spin [animation-duration:12s]"></div>
+                                    <div class="w-40 h-[1px] bg-accent/20 absolute"></div>
+                                    <div class="h-40 w-[1px] bg-accent/20 absolute"></div>
+                                </div>
+                                <div class="z-10 text-center space-y-1">
+                                    <i data-lucide="eye" class="w-8 h-8 text-accent/80 mx-auto animate-pulse"></i>
+                                    <p class="text-xs font-mono text-gray-300">Arducam IR Feed Active</p>
+                                    <p class="text-[10px] font-mono text-gray-500">Autonomous Collision Avoidance: ENGAGED</p>
+                                </div>
+                                <div class="absolute bottom-2 right-3 text-[10px] font-mono text-gray-400">
+                                    FPS: <span id="telemetry-fps">29.8</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="hardware" class="py-24 relative bg-darker border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <!-- Section Header -->
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <h2 class="text-3xl sm:text-4xl font-bold mb-4 tracking-tight text-white">
+                    Hardware BOM & Architecture
+                </h2>
+                <p class="text-gray-400 text-sm sm:text-base">
+                    A comprehensive breakdown of the physical modules, sensor interfaces, and power systems powering AxelNode.
+                </p>
+
+                <!-- Filter Buttons -->
+                <div class="mt-8 flex flex-wrap items-center justify-center gap-2" id="bom-filters">
+                    <button type="button" data-filter="all" class="bom-filter-btn active px-3.5 py-1.5 text-xs font-mono rounded-lg bg-accent text-white border border-accent transition-all">All Parts (10)</button>
+                    <button type="button" data-filter="compute" class="bom-filter-btn px-3.5 py-1.5 text-xs font-mono rounded-lg bg-surface text-gray-400 hover:text-white border border-white/5 hover:border-white/20 transition-all">Compute & Display</button>
+                    <button type="button" data-filter="sensors" class="bom-filter-btn px-3.5 py-1.5 text-xs font-mono rounded-lg bg-surface text-gray-400 hover:text-white border border-white/5 hover:border-white/20 transition-all">Vision & Sensors</button>
+                    <button type="button" data-filter="power" class="bom-filter-btn px-3.5 py-1.5 text-xs font-mono rounded-lg bg-surface text-gray-400 hover:text-white border border-white/5 hover:border-white/20 transition-all">Power & Control</button>
+                    <button type="button" data-filter="chassis" class="bom-filter-btn px-3.5 py-1.5 text-xs font-mono rounded-lg bg-surface text-gray-400 hover:text-white border border-white/5 hover:border-white/20 transition-all">Chassis & Cabling</button>
+                </div>
+            </div>
+
+            <!-- Hardware Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="bom-cards-container">
+                
+                <!-- Part 1: Raspberry Pi 5 -->
+                <div class="bom-card glass-panel p-6 rounded-xl hover:-translate-y-1 transition-all border border-white/5 hover:border-accent/40 flex flex-col justify-between" data-category="compute">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 rounded-lg bg-surface flex items-center justify-center text-accent border border-white/5">
+                                <i data-lucide="cpu" class="w-6 h-6"></i>
+                            </div>
+                            <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Verified</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2">Raspberry Pi 5</h3>
+                        <p class="text-sm text-gray-400 leading-relaxed mb-4">
+                            <strong class="text-gray-200">Role:</strong> Central processing brain.<br>
+                            <strong class="text-gray-200">Importance:</strong> Executes real-time sensor loops, runs the Python telemetry server, handles OpenCV infrared video pipelines, and renders the onboard UI.
+                        </p>
+                    </div>
+                    <div class="pt-3 border-t border-white/5 flex items-center justify-between text-xs font-mono text-gray-500">
+                        <span>Category: Compute</span>
+                        <span class="text-accent">BCM2712 Quad-Core</span>
+                    </div>
+                </div>
+
+                <!-- Part 2: Arducam IR -->
+                <div class="bom-card glass-panel p-6 rounded-xl hover:-translate-y-1 transition-all border border-white/5 hover:border-accent/40 flex flex-col justify-between" data-category="sensors">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 rounded-lg bg-surface flex items-center justify-center text-accent border border-white/5">
+                                <i data-lucide="camera" class="w-6 h-6"></i>
+                            </div>
+                            <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20">IR Sensor</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2">Arducam IR Camera</h3>
+                        <p class="text-sm text-gray-400 leading-relaxed mb-4">
+                            <strong class="text-gray-200">Role:</strong> Infrared camera module.<br>
+                            <strong class="text-gray-200">Importance:</strong> Delivers machine vision in low-light and pitch-black conditions using 850nm IR LEDs, enabling day-and-night autonomous navigation.
+                        </p>
+                    </div>
+                    <div class="pt-3 border-t border-white/5 flex items-center justify-between text-xs font-mono text-gray-500">
+                        <span>Category: Vision</span>
+                        <span class="text-accent">CSI-2 Bus</span>
+                    </div>
+                </div>
+
+                <!-- Part 3: Adafruit VCNL4200 -->
+                <div class="bom-card glass-panel p-6 rounded-xl hover:-translate-y-1 transition-all border border-white/5 hover:border-accent/40 flex flex-col justify-between" data-category="sensors">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 rounded-lg bg-surface flex items-center justify-center text-accent border border-white/5">
+                                <i data-lucide="radar" class="w-6 h-6"></i>
+                            </div>
+                            <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20">Proximity</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2">Adafruit VCNL4200 Sensor</h3>
+                        <p class="text-sm text-gray-400 leading-relaxed mb-4">
+                            <strong class="text-gray-200">Role:</strong> Long-distance IR proximity & ambient light.<br>
+                            <strong class="text-gray-200">Importance:</strong> Serves as the primary collision avoidance radar up to 1.5 meters, providing millisecond-level feedback before contact occurs.
+                        </p>
+                    </div>
+                    <div class="pt-3 border-t border-white/5 flex items-center justify-between text-xs font-mono text-gray-500">
+                        <span>Category: Sensing</span>
+                        <span class="text-accent">I2C (0x51)</span>
+                    </div>
+                </div>
+
+                <!-- Part 4: Pi STEMMA QT Breakout -->
+                <div class="bom-card glass-panel p-6 rounded-xl hover:-translate-y-1 transition-all border border-white/5 hover:border-accent/40 flex flex-col justify-between" data-category="power">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 rounded-lg bg-surface flex items-center justify-center text-accent border border-white/5">
+                                <i data-lucide="git-merge" class="w-6 h-6"></i>
+                            </div>
+                            <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20">Interface</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2">Pi STEMMA QT Breakout</h3>
+                        <p class="text-sm text-gray-400 leading-relaxed mb-4">
+                            <strong class="text-gray-200">Role:</strong> Plug-and-play I2C bus distribution.<br>
+                            <strong class="text-gray-200">Importance:</strong> Eliminates vulnerable breadboards and soldering on mobile chassis, providing vibration-resistant JST-SH connector access.
+                        </p>
+                    </div>
+                    <div class="pt-3 border-t border-white/5 flex items-center justify-between text-xs font-mono text-gray-500">
+                        <span>Category: Interconnect</span>
+                        <span class="text-accent">Qwiic / JST-SH</span>
+                    </div>
+                </div>
+
+                <!-- Part 5: STEMMA QT Cables -->
+                <div class="bom-card glass-panel p-6 rounded-xl hover:-translate-y-1 transition-all border border-white/5 hover:border-accent/40 flex flex-col justify-between" data-category="chassis">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 rounded-lg bg-surface flex items-center justify-center text-accent border border-white/5">
+                                <i data-lucide="cable" class="w-6 h-6"></i>
+                            </div>
+                            <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-gray-500/10 text-gray-300 border border-gray-500/20">Harness</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2">STEMMA QT Cables (150/400mm)</h3>
+                        <p class="text-sm text-gray-400 leading-relaxed mb-4">
+                            <strong class="text-gray-200">Role:</strong> 4-pin shielded data & power conduits.<br>
+                            <strong class="text-gray-200">Importance:</strong> Flexible wire lengths route signals securely from the internal Pi enclosure to edge-mounted sensors on the wagon frame.
+                        </p>
+                    </div>
+                    <div class="pt-3 border-t border-white/5 flex items-center justify-between text-xs font-mono text-gray-500">
+                        <span>Category: Cabling</span>
+                        <span class="text-accent">4-Pin Twisted</span>
+                    </div>
+                </div>
+
+                <!-- Part 6: Servo Hat -->
+                <div class="bom-card glass-panel p-6 rounded-xl hover:-translate-y-1 transition-all border border-white/5 hover:border-accent/40 flex flex-col justify-between" data-category="power">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 rounded-lg bg-surface flex items-center justify-center text-accent border border-white/5">
+                                <i data-lucide="sliders" class="w-6 h-6"></i>
+                            </div>
+                            <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20">Actuation</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2">16-Channel PWM Servo HAT</h3>
+                        <p class="text-sm text-gray-400 leading-relaxed mb-4">
+                            <strong class="text-gray-200">Role:</strong> Dedicated hardware PWM generator.<br>
+                            <strong class="text-gray-200">Importance:</strong> Offloads high-frequency pulse-width modulation from Linux user-space, delivering jitter-free steering and gimbal control.
+                        </p>
+                    </div>
+                    <div class="pt-3 border-t border-white/5 flex items-center justify-between text-xs font-mono text-gray-500">
+                        <span>Category: Motor Control</span>
+                        <span class="text-accent">PCA9685 I2C</span>
+                    </div>
+                </div>
+
+                <!-- Part 7: Wagon Cart Chassis -->
+                <div class="bom-card glass-panel p-6 rounded-xl hover:-translate-y-1 transition-all border border-white/5 hover:border-accent/40 flex flex-col justify-between" data-category="chassis">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 rounded-lg bg-surface flex items-center justify-center text-accent border border-white/5">
+                                <i data-lucide="truck" class="w-6 h-6"></i>
+                            </div>
+                            <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-yellow-500/10 text-yellow-400 border border-yellow-500/20">Chassis</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2">Heavy-Duty Wagon Chassis</h3>
+                        <p class="text-sm text-gray-400 leading-relaxed mb-4">
+                            <strong class="text-gray-200">Role:</strong> Structural chassis & payload frame.<br>
+                            <strong class="text-gray-200">Importance:</strong> Provides rigid mounting points, suspension tolerance over uneven terrain, and ample payload room for heavy battery banks.
+                        </p>
+                    </div>
+                    <div class="pt-3 border-t border-white/5 flex items-center justify-between text-xs font-mono text-gray-500">
+                        <span>Category: Mechanical</span>
+                        <span class="text-accent">Reinforced Steel Bed</span>
+                    </div>
+                </div>
+
+                <!-- Part 8: 10-Inch Touchscreen -->
+                <div class="bom-card glass-panel p-6 rounded-xl hover:-translate-y-1 transition-all border border-white/5 hover:border-accent/40 flex flex-col justify-between" data-category="compute">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 rounded-lg bg-surface flex items-center justify-center text-accent border border-white/5">
+                                <i data-lucide="monitor" class="w-6 h-6"></i>
+                            </div>
+                            <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20">Interface</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2">10-Inch Capacitive Touchscreen</h3>
+                        <p class="text-sm text-gray-400 leading-relaxed mb-4">
+                            <strong class="text-gray-200">Role:</strong> Field Human-Machine Interface (HMI).<br>
+                            <strong class="text-gray-200">Importance:</strong> Allows onboard debugging, live camera feeds inspection, manual drive overrides, and standalone operation without external laptops.
+                        </p>
+                    </div>
+                    <div class="pt-3 border-t border-white/5 flex items-center justify-between text-xs font-mono text-gray-500">
+                        <span>Category: Display</span>
+                        <span class="text-accent">HDMI + USB Touch</span>
+                    </div>
+                </div>
+
+                <!-- Part 9: 5V 5A Dual PD Power Supply -->
+                <div class="bom-card glass-panel p-6 rounded-xl hover:-translate-y-1 transition-all border border-white/5 hover:border-accent/40 flex flex-col justify-between" data-category="power">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-12 h-12 rounded-lg bg-surface flex items-center justify-center text-accent border border-white/5">
+                                <i data-lucide="zap" class="w-6 h-6"></i>
+                            </div>
+                            <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-red-500/10 text-red-400 border border-red-500/20">Power Reg</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2">5V 5A Dual PD Power Converter</h3>
+                        <p class="text-sm text-gray-400 leading-relaxed mb-4">
+                            <strong class="text-gray-200">Role:</strong> Step-down regulator (9–24V to 5V).<br>
+                            <strong class="text-gray-200">Importance:</strong> Safely powers the Pi 5's high peak current demands (up to 25W), the display, and sensors without thermal throttling or brownouts.
+                        </p>
+                    </div>
+                    <div class="pt-3 border-t border-white/5 flex items-center justify-between text-xs font-mono text-gray-500">
+                        <span>Category: Power</span>
+                        <span class="text-accent">Synchronous Buck 5A</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Part 10: Extension Cable Banner -->
+            <div class="mt-8 bom-card" data-category="chassis">
+                <div class="glass-panel p-4 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4 border border-white/5 hover:border-accent/30 transition-all">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-lg bg-surface flex items-center justify-center text-accent border border-white/5">
+                            <i data-lucide="plug" class="w-4 h-4"></i>
+                        </div>
+                        <p class="text-sm text-gray-300">
+                            <strong class="text-white font-medium">6ft USB Extension Cable:</strong> Cleanly routes high-amperage power lines and peripheral data buses across the full length of the cart chassis.
+                        </p>
+                    </div>
+                    <span class="text-xs font-mono px-3 py-1 rounded bg-white/5 text-gray-400 border border-white/10 whitespace-nowrap">BOM Item #10</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="py-16 bg-surface/60 border-t border-white/5">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="glass-panel rounded-2xl p-8 border border-white/10 flex flex-col md:flex-row items-center justify-between gap-8">
+                <div class="space-y-3 text-center md:text-left">
+                    <div class="inline-flex items-center gap-2 text-xs font-mono text-accent">
+                        <i data-lucide="code-2" class="w-3.5 h-3.5"></i>
+                        <span>PROJECT LEAD & HARDWARE ARCHITECT</span>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white">Kevin Yibo Chen</h3>
+                    <p class="text-gray-400 text-sm max-w-xl leading-relaxed">
+                        Passionate about edge computing, embedded Linux, and robotics. AxelNode is one of several open hardware and software experiments designed to bridge physical sensors with smart local inference.
+                    </p>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                    <a href="https://kevinyibochen.com/aboutme.html" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-accent text-white font-medium text-sm hover:bg-accentHover transition-colors shadow-md">
+                        <i data-lucide="user" class="w-4 h-4"></i>
+                        <span>About Kevin</span>
+                    </a>
+                    <a href="https://github.com/yiboc2012" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-surface hover:bg-surfaceHover text-gray-300 hover:text-white font-medium text-sm border border-white/10 transition-colors">
+                        <i data-lucide="github" class="w-4 h-4"></i>
+                        <span>GitHub Profile</span>
                     </a>
                 </div>
             </div>
         </div>
-    </nav>
-
-    <section id="home" class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
-        <div class="absolute inset-0 z-0">
-            <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-accent/20 via-darker to-darker"></div>
-        </div>
-        
-        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface border border-white/10 text-sm font-mono text-gray-300 mb-8">
-                <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                System Online
-            </div>
-            
-            <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-10">
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-accent to-blue-400 glow-text">AxelNode</span>
-            </h1>
-            
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="#project" class="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-lg bg-accent text-white font-semibold hover:bg-accentHover transition-all transform hover:scale-105">
-                    View Project
-                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                </a>
-                <a href="https://github.com/NoFiringPin/axelnode" target="_blank" class="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-lg bg-surface border border-white/10 text-white font-semibold hover:bg-surfaceHover transition-all transform hover:scale-105">
-                    <i data-lucide="github" class="w-4 h-4"></i>
-                    AxelNode Repository
-                </a>
-            </div>
-        </div>
     </section>
 
-    <section id="project" class="py-20 bg-dark border-t border-white/5">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-                <div>
-                    <h2 class="text-3xl md:text-4xl font-bold mb-6">Project <span class="font-mono text-accent">AxelNode</span></h2>
-                    <p class="text-gray-400 text-lg leading-relaxed mb-6">
-                        AxelNode is a custom-engineered smart mobility and sensor platform built on a wagon cart chassis. Powered by a Raspberry Pi 5, it integrates advanced computer vision, long-distance proximity sensing, and robust motor control to create an interactive, semi-autonomous hardware node.
-                    </p>
-                    <p class="text-gray-400 text-lg leading-relaxed mb-8">
-                        The core mission of AxelNode was to build a mobile, intelligent unit capable of processing its environment locally via various sensors while providing a user-friendly touch interface right on the hardware. All code and scripts powering this system are fully open-source.
-                    </p>
-                    <div class="flex flex-wrap gap-3">
-                        <span class="px-3 py-1 text-xs font-mono rounded bg-accent/10 text-accent border border-accent/20">Raspberry Pi</span>
-                        <span class="px-3 py-1 text-xs font-mono rounded bg-accent/10 text-accent border border-accent/20">Python</span>
-                        <span class="px-3 py-1 text-xs font-mono rounded bg-accent/10 text-accent border border-accent/20">I2C / Sensors</span>
-                        <span class="px-3 py-1 text-xs font-mono rounded bg-accent/10 text-accent border border-accent/20">Robotics</span>
-                    </div>
-                </div>
-                
-                <div class="relative group">
-                    <div class="absolute -inset-1 bg-gradient-to-r from-accent to-blue-600 rounded-xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
-                    <div class="relative rounded-xl overflow-hidden glass-panel aspect-video flex items-center justify-center p-8">
-                        <div class="text-center">
-                            <i data-lucide="bot" class="w-24 h-24 text-accent/50 mx-auto mb-4 animate-pulse"></i>
-                            <div class="text-sm text-gray-500 mt-2">Hardware Unit Visualization</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="hardware" class="py-20 relative">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl md:text-4xl font-bold mb-4">Hardware BOM & Architecture</h2>
-                <p class="text-gray-400 max-w-2xl mx-auto">A comprehensive breakdown of the physical components used to build AxelNode, detailing exactly what they do and why they are critical to the project's success.</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                
-                <!-- Part 1 -->
-                <div class="glass-panel p-6 rounded-xl hover:-translate-y-1 transition-transform border border-white/5 hover:border-accent/50">
-                    <div class="w-12 h-12 rounded-lg bg-surface flex items-center justify-center mb-4 text-accent">
-                        <i data-lucide="cpu" class="w-6 h-6"></i>
-                    </div>
-                    <h3 class="text-lg font-bold mb-2">Raspberry PI 5 ✅</h3>
-                    <p class="text-sm text-gray-400 leading-relaxed">
-                        <strong class="text-white">Role:</strong> The central "brain" of the AxelNode.<br>
-                        <strong class="text-white">Importance:</strong> It runs the main operating system, processes all sensor data, handles the camera feed, and executes the code that dictates the cart's behavior. The Pi 5's upgraded processing power is essential for smooth realtime operations.
-                    </p>
-                </div>
-
-                <!-- Part 2 -->
-                <div class="glass-panel p-6 rounded-xl hover:-translate-y-1 transition-transform border border-white/5 hover:border-accent/50">
-                    <div class="w-12 h-12 rounded-lg bg-surface flex items-center justify-center mb-4 text-accent">
-                        <i data-lucide="camera" class="w-6 h-6"></i>
-                    </div>
-                    <h3 class="text-lg font-bold mb-2">Arducam IR</h3>
-                    <p class="text-sm text-gray-400 leading-relaxed">
-                        <strong class="text-white">Role:</strong> Infrared camera module.<br>
-                        <strong class="text-white">Importance:</strong> Provides machine vision capabilities to the node, allowing it to "see" its environment even in low-light or zero-light conditions by detecting infrared light, which is crucial for nighttime navigation or security monitoring.
-                    </p>
-                </div>
-
-                <!-- Part 3 -->
-                <div class="glass-panel p-6 rounded-xl hover:-translate-y-1 transition-transform border border-white/5 hover:border-accent/50">
-                    <div class="w-12 h-12 rounded-lg bg-surface flex items-center justify-center mb-4 text-accent">
-                        <i data-lucide="radio" class="w-6 h-6"></i>
-                    </div>
-                    <h3 class="text-lg font-bold mb-2">Adafruit VCNL4200 IR Proximity</h3>
-                    <p class="text-sm text-gray-400 leading-relaxed">
-                        <strong class="text-white">Role:</strong> Long distance IR proximity and ambient light sensor.<br>
-                        <strong class="text-white">Importance:</strong> Acts as the collision-avoidance radar. It accurately measures the distance to objects in front of the cart and adjusts to ambient light, preventing the cart from crashing into walls or obstacles.
-                    </p>
-                </div>
-
-                <!-- Part 4 -->
-                <div class="glass-panel p-6 rounded-xl hover:-translate-y-1 transition-transform border border-white/5 hover:border-accent/50">
-                    <div class="w-12 h-12 rounded-lg bg-surface flex items-center justify-center mb-4 text-accent">
-                        <i data-lucide="git-merge" class="w-6 h-6"></i>
-                    </div>
-                    <h3 class="text-lg font-bold mb-2">Pi Stemma QT Breakout</h3>
-                    <p class="text-sm text-gray-400 leading-relaxed">
-                        <strong class="text-white">Role:</strong> I2C interface board for the Raspberry Pi.<br>
-                        <strong class="text-white">Importance:</strong> Simplifies hardware prototyping. It allows I2C sensors (like the VCNL4200) to be plugged directly into the Pi without messy soldering, ensuring reliable and secure data connections.
-                    </p>
-                </div>
-
-                <!-- Part 5 -->
-                <div class="glass-panel p-6 rounded-xl hover:-translate-y-1 transition-transform border border-white/5 hover:border-accent/50">
-                    <div class="w-12 h-12 rounded-lg bg-surface flex items-center justify-center mb-4 text-accent">
-                        <i data-lucide="cable" class="w-6 h-6"></i>
-                    </div>
-                    <h3 class="text-lg font-bold mb-2">STEMMA QT Cables (150mm & 400mm)</h3>
-                    <p class="text-sm text-gray-400 leading-relaxed">
-                        <strong class="text-white">Role:</strong> JST SH 4-pin data and power cables.<br>
-                        <strong class="text-white">Importance:</strong> These cables route the communication lines from the Pi's brain to the sensors mounted on the edges of the cart. The different lengths (150mm and 400mm) provide flexibility in where sensors can be physically placed on the chassis.
-                    </p>
-                </div>
-
-                <!-- Part 6 -->
-                <div class="glass-panel p-6 rounded-xl hover:-translate-y-1 transition-transform border border-white/5 hover:border-accent/50">
-                    <div class="w-12 h-12 rounded-lg bg-surface flex items-center justify-center mb-4 text-accent">
-                        <i data-lucide="settings" class="w-6 h-6"></i>
-                    </div>
-                    <h3 class="text-lg font-bold mb-2">Servo Hat</h3>
-                    <p class="text-sm text-gray-400 leading-relaxed">
-                        <strong class="text-white">Role:</strong> PWM/Servo controller add-on board.<br>
-                        <strong class="text-white">Importance:</strong> The Raspberry Pi struggles to control multiple servos precisely on its own. This HAT offloads that work, allowing smooth and accurate control of motors used for steering, moving the camera gimbal, or operating robotic arms on the cart.
-                    </p>
-                </div>
-
-                <!-- Part 7 -->
-                <div class="glass-panel p-6 rounded-xl hover:-translate-y-1 transition-transform border border-white/5 hover:border-accent/50">
-                    <div class="w-12 h-12 rounded-lg bg-surface flex items-center justify-center mb-4 text-accent">
-                        <i data-lucide="truck" class="w-6 h-6"></i>
-                    </div>
-                    <h3 class="text-lg font-bold mb-2">Wagon Cart</h3>
-                    <p class="text-sm text-gray-400 leading-relaxed">
-                        <strong class="text-white">Role:</strong> The physical chassis and base.<br>
-                        <strong class="text-white">Importance:</strong> Provides the structural foundation and payload capacity. It houses the battery, the Pi, all the circuitry, and the screen, making the entire node completely mobile and robust for real-world testing.
-                    </p>
-                </div>
-
-                <!-- Part 8 -->
-                <div class="glass-panel p-6 rounded-xl hover:-translate-y-1 transition-transform border border-white/5 hover:border-accent/50">
-                    <div class="w-12 h-12 rounded-lg bg-surface flex items-center justify-center mb-4 text-accent">
-                        <i data-lucide="monitor" class="w-6 h-6"></i>
-                    </div>
-                    <h3 class="text-lg font-bold mb-2">10-Inch Touchscreen</h3>
-                    <p class="text-sm text-gray-400 leading-relaxed">
-                        <strong class="text-white">Role:</strong> On-board Human-Machine Interface (HMI).<br>
-                        <strong class="text-white">Importance:</strong> Allows direct interaction with the AxelNode operating system without needing a remote PC. Essential for on-the-fly debugging, starting scripts, and viewing camera feeds directly from the cart in the field.
-                    </p>
-                </div>
-
-                <!-- Part 9 -->
-                <div class="glass-panel p-6 rounded-xl hover:-translate-y-1 transition-transform border border-white/5 hover:border-accent/50">
-                    <div class="w-12 h-12 rounded-lg bg-surface flex items-center justify-center mb-4 text-accent">
-                        <i data-lucide="zap" class="w-6 h-6"></i>
-                    </div>
-                    <h3 class="text-lg font-bold mb-2">5V 5A Dual PD Power Supply</h3>
-                    <p class="text-sm text-gray-400 leading-relaxed">
-                        <strong class="text-white">Role:</strong> Step-down power converter (9-24V to 5V) with cooling.<br>
-                        <strong class="text-white">Importance:</strong> The Pi 5, screen, and sensors draw significant power. This module safely steps down a larger battery voltage to a stable 5V at a high current (5A). The cooling fan ensures the power delivery remains stable under heavy compute loads, preventing system crashes.
-                    </p>
-                </div>
-
+    <footer class="bg-darker py-10 border-t border-white/5 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-2 text-gray-400 text-sm">
+                <i data-lucide="cpu" class="w-4 h-4 text-accent"></i>
+                <span>&copy; <span id="current-year"></span> AxelNode Project. Built by <a href="https://kevinyibochen.com/aboutme.html" target="_blank" rel="noopener noreferrer" class="text-white hover:text-accent underline transition-colors">Kevin</a>.</span>
             </div>
             
-            <div class="mt-8 flex justify-center">
-                <!-- Part 10 - USB Cable -->
-                <div class="glass-panel p-4 rounded-xl inline-flex items-center gap-4 border border-white/5">
-                    <i data-lucide="plug" class="text-gray-400 w-5 h-5"></i>
-                    <span class="text-sm text-gray-300">Also utilizing a <strong class="text-white">6ft USB Extension Cable</strong> to neatly route power and peripheral connections across the length of the wagon cart.</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <footer class="bg-darker py-10 border-t border-white/5">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
-            <div class="text-gray-400 text-sm">
-                &copy; <script>document.write(new Date().getFullYear())</script> AxelNode Project. By Kevin.
-            </div>
-            
-            <div class="flex items-center gap-6">
-                <a href="https://github.com/NoFiringPin/axelnode" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition-colors text-sm flex items-center gap-2">
+            <div class="flex items-center flex-wrap justify-center gap-6">
+                <a href="https://github.com/NoFiringPin/axelnode" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition-colors text-sm flex items-center gap-1.5">
                     <i data-lucide="folder-git-2" class="w-4 h-4"></i>
-                    Scripts & Code
+                    <span>Scripts & Code</span>
                 </a>
-                <a href="https://github.com/yiboc2012" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition-colors text-sm flex items-center gap-2">
+                <a href="https://github.com/yiboc2012" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition-colors text-sm flex items-center gap-1.5">
                     <i data-lucide="github" class="w-4 h-4"></i>
-                    yiboc2012
+                    <span>yiboc2012</span>
+                </a>
+                <a href="https://kevinyibochen.com/aboutme.html" target="_blank" rel="noopener noreferrer" class="text-accent hover:text-blue-300 transition-colors text-sm flex items-center gap-1.5">
+                    <i data-lucide="external-link" class="w-4 h-4"></i>
+                    <span>kevinyibochen.com/aboutme.html</span>
                 </a>
             </div>
         </div>
     </footer>
 
     <script>
+        // Safely set the current year without document.write
+        const yearEl = document.getElementById('current-year');
+        if (yearEl) {
+            yearEl.textContent = new Date().getFullYear();
+        }
+
         // Initialize Lucide icons
         lucide.createIcons();
 
-        // Smooth scrolling for anchor links
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const iconBars = document.getElementById('menu-icon-bars');
+        const iconClose = document.getElementById('menu-icon-close');
+
+        if (mobileMenuBtn && mobileMenu) {
+            mobileMenuBtn.addEventListener('click', () => {
+                const isOpen = !mobileMenu.classList.contains('hidden');
+                if (isOpen) {
+                    mobileMenu.classList.add('hidden');
+                    iconBars.classList.remove('hidden');
+                    iconClose.classList.add('hidden');
+                } else {
+                    mobileMenu.classList.remove('hidden');
+                    iconBars.classList.add('hidden');
+                    iconClose.classList.remove('hidden');
+                }
+            });
+
+            // Close mobile menu on nav link click
+            document.querySelectorAll('.mobile-nav-link').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                    iconBars.classList.remove('hidden');
+                    iconClose.classList.add('hidden');
+                });
+            });
+        }
+
+        // Smooth scroll for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if(target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth'
-                    });
+                const href = this.getAttribute('href');
+                if (href && href !== '#') {
+                    const target = document.querySelector(href);
+                    if (target) {
+                        e.preventDefault();
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
                 }
             });
         });
 
-        // Add a simple scroll effect to the navbar
-        const nav = document.querySelector('nav');
+        // Navbar blur and elevation on scroll
+        const navbar = document.getElementById('navbar');
         window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                nav.classList.add('bg-dark/80', 'shadow-lg');
-                nav.classList.remove('border-transparent');
+            if (window.scrollY > 30) {
+                navbar.classList.add('bg-darker/90', 'shadow-xl', 'border-white/10');
             } else {
-                nav.classList.remove('bg-dark/80', 'shadow-lg');
-                nav.classList.add('border-transparent');
+                navbar.classList.remove('bg-darker/90', 'shadow-xl', 'border-white/10');
             }
         });
+
+        // Interactive Hardware BOM Category Filtering
+        const filterButtons = document.querySelectorAll('.bom-filter-btn');
+        const bomCards = document.querySelectorAll('.bom-card');
+
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const filter = btn.getAttribute('data-filter');
+                
+                // Update button states
+                filterButtons.forEach(b => {
+                    b.classList.remove('bg-accent', 'text-white', 'border-accent');
+                    b.classList.add('bg-surface', 'text-gray-400', 'border-white/5');
+                });
+                btn.classList.remove('bg-surface', 'text-gray-400', 'border-white/5');
+                btn.classList.add('bg-accent', 'text-white', 'border-accent');
+
+                // Filter cards
+                bomCards.forEach(card => {
+                    const category = card.getAttribute('data-category');
+                    if (filter === 'all' || category === filter) {
+                        card.style.display = '';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Live Telemetry Simulator for realism
+        const tempEl = document.getElementById('telemetry-temp');
+        const distEl = document.getElementById('telemetry-dist');
+        const voltEl = document.getElementById('telemetry-volt');
+        const servoEl = document.getElementById('telemetry-servo');
+        const fpsEl = document.getElementById('telemetry-fps');
+
+        let servoAngle = 0;
+        let servoDir = 1;
+
+        setInterval(() => {
+            if (tempEl) {
+                const temp = (43.8 + Math.random() * 1.6).toFixed(1);
+                tempEl.textContent = temp;
+            }
+            if (distEl) {
+                const dist = Math.floor(120 + Math.random() * 20);
+                distEl.textContent = dist;
+            }
+            if (voltEl) {
+                const volt = (5.10 + Math.random() * 0.05).toFixed(2);
+                const amp = (4.1 + Math.random() * 0.3).toFixed(1);
+                voltEl.textContent = `${volt}`;
+            }
+            if (servoEl) {
+                servoAngle += 5 * servoDir;
+                if (servoAngle >= 45) servoDir = -1;
+                if (servoAngle <= -45) servoDir = 1;
+                servoEl.textContent = servoAngle > 0 ? `+${servoAngle}` : servoAngle;
+            }
+            if (fpsEl) {
+                fpsEl.textContent = (29.5 + Math.random() * 0.8).toFixed(1);
+            }
+        }, 1800);
     </script>
-    about me :kevinyibochen.com/aboutme.html
 </body>
 </html>
