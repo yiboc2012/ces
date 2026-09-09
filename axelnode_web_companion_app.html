@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AxelNode | Smart Cart Mobile</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- TensorFlow.js and COCO-SSD for AI Vision -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
+
+    <!-- Xterm.js for SSH Terminal -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.css" />
+    <script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.8.0/lib/xterm-addon-fit.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        appBg: '#0A0E0A',
+                        appSurface: '#111111',
+                        accent: '#69f0ae', 
+                        accentDark: '#00c853'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            background-image: radial-gradient(circle at center, #2a2a2a 0%, #111 100%);
+            color: white;
+            overflow: hidden;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+
+        .nav-item.active {
+            color: theme('colors.accent');
+        }
+        .nav-item.active .icon-bg {
+            background-color: rgba(105, 240, 174, 0.15);
+        }
+
+        .view-section {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        
+        .view-section.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .scanlines {
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.2) 50%,
+                rgba(0,0,0,0.2)
+            );
+            background-size: 100% 4px;
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .glass {
+            background: rgba(17, 17, 17, 0.85);
+            backdrop-filter: blur(16px);
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        /* Phone Hardware styling */
+        .phone-frame {
+            box-shadow: 0 50px 100px -20px rgba(0, 0, 0, 0.8), inset 0 0 0 2px rgba(255,255,255,0.05);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Mobile Device Frame -->
+    <div class="phone-frame relative w-[375px] h-[812px] max-h-[95vh] bg-appBg rounded-[50px] border-[14px] border-[#18181b] overflow-hidden flex flex-col shrink-0 scale-95 md:scale-100 transition-transform">
+        
+        <!-- Hardware Notch / Dynamic Island Mock -->
+        <div class="absolute top-0 inset-x-0 flex justify-center z-[100] pointer-events-none">
+            <div class="w-32 h-7 bg-[#18181b] rounded-b-3xl"></div>
+        </div>
+
+        <!-- Status Bar Mock -->
+        <div class="absolute top-0 inset-x-0 h-12 flex justify-between items-center px-6 z-[90] pointer-events-none text-[11px] font-bold">
+            <span id="os-time" class="ml-2">9:41</span>
+            <div class="flex gap-2 items-center mr-2">
+                <i data-lucide="bar-chart-2" class="w-3 h-3"></i>
+                <i data-lucide="wifi" class="w-3 h-3"></i>
+                <i data-lucide="battery" class="w-4 h-4"></i>
+            </div>
+        </div>
+
+        <!-- Main App Content Area -->
+        <main class="flex-1 relative bg-appBg overflow-y-auto overflow-x-hidden pt-12 pb-24 flex flex-col">
+            
+            <!-- VIEW: STATUS (HOME) -->
+            <section id="view-status" class="view-section active flex-col h-full w-full">
+                <div class="absolute inset-0 bg-gradient-to-b from-green-900/30 to-black pointer-events-none"></div>
+                
+                <!-- Settings Button -->
+                <div class="absolute top-4 right-4 z-20">
+                    <button onclick="showSettings()" class="p-2 text-white/50 hover:text-accent transition-colors rounded-full bg-black/50 backdrop-blur">
+                        <i data-lucide="settings" class="w-5 h-5"></i>
+                    </button>
+                </div>
+
+                <div class="relative z-10 flex-1 flex flex-col items-center justify-center p-6 text-center">
+                    
+                    <div class="relative w-48 h-48 rounded-full flex items-center justify-center shadow-[0_0_50px_rgba(105,240,174,0.15)] bg-accent/5 mb-10">
+                        <i data-lucide="cpu" class="w-20 h-20 text-accent"></i>
+                        <!-- Orbiting rings animation -->
+                        <div class="absolute inset-[-10px] border border-accent/20 rounded-full animate-[spin_10s_linear_infinite]"></div>
+                        <div class="absolute inset-[-20px] border border-accent/10 rounded-full animate-[spin_15s_linear_infinite_reverse]"></div>
+                    </div>
+
+                    <div class="space-y-4 mb-10 w-full">
+                        <h1 class="text-4xl font-black tracking-widest text-accent">AXEL</h1>
+                        <h2 class="text-xs font-bold tracking-[0.3em] text-gray-400">SMART CART NODE</h2>
+                        
+                        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/30 mt-4">
+                            <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_#22c55e]"></span>
+                            <span class="text-green-500 font-bold text-[10px] tracking-wide">SYSTEM ONLINE</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white/5 border border-white/10 rounded-2xl p-4 w-full mb-6">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs text-gray-500 font-bold">TARGET IP</span>
+                            <span id="display-ip" class="text-xs font-mono text-accent">192.168.0.112</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-gray-500 font-bold">BATT LEVEL</span>
+                            <span class="text-xs font-mono text-white">84%</span>
+                        </div>
+                    </div>
+
+                    <button onclick="switchTab('drive')" class="w-full py-4 bg-accent hover:bg-accentDark text-black font-bold rounded-2xl transition-all active:scale-95 flex items-center justify-center gap-3 text-sm shadow-[0_0_20px_rgba(105,240,174,0.3)]">
+                        <i data-lucide="power" class="w-5 h-5"></i>
+                        INITIALIZE CONTROL
+                    </button>
+                </div>
+            </section>
+
+            <!-- VIEW: DRIVE (LIVE STREAM) -->
+            <section id="view-drive" class="view-section flex-col h-full w-full bg-black relative">
+                
+                <!-- Video Feed -->
+                <div class="flex-1 relative flex items-center justify-center overflow-hidden">
+                    <div class="scanlines"></div>
+                    
+                    <div id="stream-container" class="relative w-full h-full flex items-center justify-center bg-[#050505]">
+                        <img id="mjpeg-stream" src="https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?auto=format&fit=crop&w=800&q=80" alt="Camera Feed" class="object-cover w-full h-full opacity-60 grayscale contrast-125" style="display: none;">
+                        
+                        <div id="stream-standby" class="flex flex-col items-center text-white/20">
+                            <i data-lucide="video-off" class="w-12 h-12 mb-3"></i>
+                            <span class="tracking-[0.2em] font-bold text-xs">CAMERA STANDBY</span>
+                        </div>
+                    </div>
+
+                    <!-- HUD Overlay -->
+                    <div class="absolute inset-0 pointer-events-none p-4 flex flex-col justify-between z-10">
+                        <div class="flex justify-between items-start pt-8">
+                            <div class="flex items-center gap-2">
+                                <div class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></div>
+                                <span class="text-[9px] font-mono font-bold text-red-500 tracking-wider">LIVE</span>
+                            </div>
+                            <div class="text-right text-[9px] font-mono text-accent">
+                                <span id="fps-counter">30 FPS</span><br>
+                                <span id="hud-time">00:00:00</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Crosshair -->
+                        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-40">
+                            <div class="w-8 h-px bg-accent absolute top-1/2 -left-4"></div>
+                            <div class="h-8 w-px bg-accent absolute -top-4 left-1/2"></div>
+                            <div class="w-3 h-3 border border-accent rounded-full absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Joystick / Controls Area Mock -->
+                <div class="h-32 bg-[#0a0a0a] border-t border-white/5 flex items-center justify-center gap-6 px-4 z-20 shrink-0">
+                    <button class="w-12 h-12 rounded-full bg-white/5 active:bg-white/10 flex items-center justify-center">
+                        <i data-lucide="camera" class="w-5 h-5"></i>
+                    </button>
+                    
+                    <button id="toggle-stream-btn" onclick="toggleStream()" class="w-16 h-16 rounded-full bg-accent text-black shadow-[0_0_20px_rgba(105,240,174,0.4)] flex items-center justify-center transition-transform active:scale-95">
+                        <i data-lucide="play" id="stream-icon" class="w-8 h-8 ml-1 fill-current"></i>
+                    </button>
+                    
+                    <button class="w-12 h-12 rounded-full bg-white/5 active:bg-white/10 flex items-center justify-center">
+                        <i data-lucide="mic" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </section>
+
+            <!-- VIEW: CART AI (OBJECT DETECTION) -->
+            <section id="view-ai" class="view-section flex-col h-full w-full bg-appBg">
+                
+                <!-- Camera / Canvas Half -->
+                <div class="flex-1 relative bg-black flex flex-col">
+                    <div class="absolute top-0 inset-x-0 p-4 z-20 flex justify-between items-start bg-gradient-to-b from-black/80 to-transparent pt-10">
+                        <h3 class="font-bold text-accent tracking-wider text-xs flex items-center gap-2">
+                            <i data-lucide="brain" class="w-4 h-4"></i> VISION
+                        </h3>
+                        <button onclick="toggleAiLive()" id="ai-toggle-btn" class="px-3 py-1 rounded-full bg-white/10 text-[10px] font-bold active:bg-white/20">START</button>
+                    </div>
+
+                    <div class="flex-1 relative overflow-hidden" id="ai-container">
+                        <video id="ai-video" autoplay playsinline muted class="absolute inset-0 w-full h-full object-cover hidden"></video>
+                        <canvas id="ai-canvas" class="absolute inset-0 w-full h-full object-cover pointer-events-none"></canvas>
+                        
+                        <div id="ai-standby" class="absolute inset-0 flex flex-col items-center justify-center text-center p-4">
+                            <i data-lucide="eye-off" class="w-10 h-10 text-white/20 mb-2"></i>
+                            <p class="text-[10px] font-mono text-white/30">VISION OFFLINE</p>
+                        </div>
+                        
+                        <div id="ai-loading" class="absolute inset-0 flex flex-col items-center justify-center text-center p-4 hidden bg-black/80 backdrop-blur-sm z-10">
+                            <i data-lucide="loader" class="w-8 h-8 text-accent mb-2 animate-spin"></i>
+                            <p class="text-[10px] font-mono text-accent">LOADING MODEL...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Logs Half -->
+                <div class="h-1/2 bg-appSurface border-t border-white/5 p-4 flex flex-col overflow-hidden shrink-0">
+                    <!-- Status Box -->
+                    <div class="bg-black rounded-xl p-3 border border-white/5 mb-4 flex gap-3 items-center shrink-0">
+                        <div class="w-2 h-2 rounded-full bg-accent animate-pulse"></div>
+                        <p id="ai-status-text" class="text-xs font-mono text-gray-400 line-clamp-2">System standby. Awaiting initialization.</p>
+                    </div>
+
+                    <h3 class="text-[10px] font-bold text-gray-500 tracking-[0.2em] mb-2">REAL-TIME LOG</h3>
+                    
+                    <!-- Object List -->
+                    <div class="flex-1 overflow-y-auto bg-black/50 rounded-xl border border-white/5 p-2 font-mono text-xs">
+                        <div id="object-list" class="space-y-1">
+                            <div class="p-4 text-white/20 text-center">No entities detected.</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW: TERMINAL (SSH) -->
+            <section id="view-terminal" class="view-section flex-col h-full w-full bg-[#050505]">
+                <div class="px-4 py-3 flex items-center justify-between border-b border-white/10 shrink-0 pt-10">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="terminal-square" class="w-4 h-4 text-accent"></i>
+                        <span class="font-bold text-xs tracking-widest">SSH SHELL</span>
+                    </div>
+                    <button onclick="mockReboot()" class="text-[10px] font-mono text-accent">RECONNECT</button>
+                </div>
+                
+                <!-- Terminal Container -->
+                <div class="flex-1 w-full h-full p-2 bg-black overflow-hidden relative">
+                    <div id="terminal-container" class="absolute inset-0 p-2"></div>
+                </div>
+
+                <!-- Quick Macro Bar -->
+                <div class="bg-[#0a0e0a] border-t border-white/10 p-2 shrink-0">
+                    <!-- Ctrl Keys -->
+                    <div class="flex gap-1 overflow-x-auto pb-2 scrollbar-hide">
+                        <button onclick="term.write('\x03')" class="px-3 py-1.5 bg-white/5 active:bg-white/10 rounded text-[10px] font-mono text-gray-400 shrink-0">^C</button>
+                        <button onclick="term.write('\x18')" class="px-3 py-1.5 bg-white/5 active:bg-white/10 rounded text-[10px] font-mono text-gray-400 shrink-0">^X</button>
+                        <button onclick="term.write('\x09')" class="px-3 py-1.5 bg-white/5 active:bg-white/10 rounded text-[10px] font-mono text-gray-400 shrink-0">TAB</button>
+                        <div class="w-px h-4 bg-white/10 mx-1 my-auto shrink-0"></div>
+                        <button onclick="sendMockCommand('uptime')" class="px-3 py-1.5 bg-accent/10 text-accent rounded text-[10px] font-bold shrink-0">SYS</button>
+                        <button onclick="sendMockCommand('top -bn1 | head -n 5')" class="px-3 py-1.5 bg-blue-500/10 text-blue-400 rounded text-[10px] font-bold shrink-0">PROC</button>
+                        <button onclick="sendMockCommand('vcgencmd measure_temp')" class="px-3 py-1.5 bg-orange-500/10 text-orange-400 rounded text-[10px] font-bold shrink-0">TEMP</button>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Bottom Navigation Bar -->
+        <nav class="absolute bottom-0 w-full h-[85px] glass flex items-center justify-between px-4 pb-4 pt-2 z-50 rounded-b-[36px]">
+            <button onclick="switchTab('status')" id="nav-status" class="nav-item active flex flex-col items-center justify-center w-16 text-gray-500 relative transition-colors">
+                <div class="icon-bg w-10 h-10 rounded-full flex items-center justify-center mb-1 transition-colors">
+                    <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+                </div>
+                <span class="text-[9px] font-bold tracking-wider">Status</span>
+            </button>
+            <button onclick="switchTab('drive')" id="nav-drive" class="nav-item flex flex-col items-center justify-center w-16 text-gray-500 relative transition-colors">
+                <div class="icon-bg w-10 h-10 rounded-full flex items-center justify-center mb-1 transition-colors">
+                    <i data-lucide="video" class="w-5 h-5"></i>
+                </div>
+                <span class="text-[9px] font-bold tracking-wider">Drive</span>
+            </button>
+            <button onclick="switchTab('ai')" id="nav-ai" class="nav-item flex flex-col items-center justify-center w-16 text-gray-500 relative transition-colors">
+                <div class="icon-bg w-10 h-10 rounded-full flex items-center justify-center mb-1 transition-colors">
+                    <i data-lucide="brain" class="w-5 h-5"></i>
+                </div>
+                <span class="text-[9px] font-bold tracking-wider">AI</span>
+            </button>
+            <button onclick="switchTab('terminal')" id="nav-terminal" class="nav-item flex flex-col items-center justify-center w-16 text-gray-500 relative transition-colors">
+                <div class="icon-bg w-10 h-10 rounded-full flex items-center justify-center mb-1 transition-colors">
+                    <i data-lucide="terminal" class="w-5 h-5"></i>
+                </div>
+                <span class="text-[9px] font-bold tracking-wider">SSH</span>
+            </button>
+        </nav>
+
+        <!-- Settings Modal (Absolute inside phone frame) -->
+        <div id="settings-modal" class="absolute inset-0 bg-black/80 backdrop-blur-sm z-[110] hidden flex items-center justify-center p-6 opacity-0 transition-opacity rounded-[40px]">
+            <div class="bg-appSurface border border-white/10 rounded-2xl w-full p-6 transform scale-95 transition-transform" id="settings-card">
+                <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
+                    <i data-lucide="settings-2" class="text-accent w-5 h-5"></i> Configuration
+                </h2>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-500 mb-2 tracking-wider">PI IP ADDRESS</label>
+                        <input type="text" id="ip-input" value="192.168.0.112" class="w-full bg-black border border-white/10 rounded-lg px-3 py-2 text-sm text-white font-mono focus:outline-none focus:border-accent">
+                    </div>
+                </div>
+                <div class="mt-6 flex justify-end gap-2">
+                    <button onclick="hideSettings()" class="px-4 py-2 rounded-lg text-xs font-bold text-gray-400">CANCEL</button>
+                    <button onclick="saveSettings()" class="px-4 py-2 rounded-lg text-xs font-bold bg-accent text-black">SAVE</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alert Modal (Absolute inside phone frame) -->
+        <div id="msg-modal" class="absolute inset-x-4 top-16 bg-red-500 border border-red-400 rounded-xl shadow-2xl p-4 z-[120] hidden transform -translate-y-4 transition-transform">
+            <h3 class="text-white font-bold mb-1 flex items-center gap-2 text-sm" id="msg-title"><i data-lucide="alert-triangle" class="w-4 h-4"></i> HAZARD</h3>
+            <p class="text-white/90 text-xs mb-3" id="msg-body">Close proximity.</p>
+            <button onclick="document.getElementById('msg-modal').style.display='none'" class="w-full py-2 bg-black/20 rounded text-xs font-bold text-white">DISMISS</button>
+        </div>
+
+    </div>
+
+    <!-- Clock script for OS Time -->
+    <script>
+        setInterval(() => {
+            const d = new Date();
+            document.getElementById('os-time').innerText = d.getHours() + ':' + d.getMinutes().toString().padStart(2, '0');
+        }, 1000);
+    </script>
+
+    <!-- App Logic -->
+    <script>
+        lucide.createIcons();
+
+        let currentIp = "192.168.0.112";
+        let timeInterval;
+        let fitAddon; // Declare fitAddon globally
+        
+        function switchTab(tabId) {
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            document.getElementById(`nav-${tabId}`).classList.add('active');
+
+            document.querySelectorAll('.view-section').forEach(el => {
+                el.classList.remove('active');
+                setTimeout(() => { if(!el.classList.contains('active')) el.style.display = 'none'; }, 200);
+            });
+            
+            const target = document.getElementById(`view-${tabId}`);
+            target.style.display = 'flex';
+            setTimeout(() => target.classList.add('active'), 10);
+
+            if(tabId === 'drive') startClock();
+            else clearInterval(timeInterval);
+
+            if(tabId === 'terminal' && term && fitAddon) {
+                // Must wait for container to be visible and have dimensions
+                setTimeout(() => {
+                    fitAddon.fit();
+                }, 100);
+            }
+        }
+
+        function startClock() {
+            clearInterval(timeInterval);
+            timeInterval = setInterval(() => {
+                document.getElementById('hud-time').innerText = new Date().toTimeString().split(' ')[0];
+            }, 1000);
+        }
+
+        const modal = document.getElementById('settings-modal');
+        const modalCard = document.getElementById('settings-card');
+        
+        function showSettings() {
+            modal.style.display = 'flex';
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modalCard.classList.remove('scale-95');
+            }, 10);
+        }
+
+        function hideSettings() {
+            modal.classList.add('opacity-0');
+            modalCard.classList.add('scale-95');
+            setTimeout(() => modal.style.display = 'none', 200);
+        }
+
+        function saveSettings() {
+            currentIp = document.getElementById('ip-input').value;
+            document.getElementById('display-ip').innerText = currentIp;
+            hideSettings();
+        }
+
+        function showMessage(title, body) {
+            document.getElementById('msg-title').innerHTML = `<i data-lucide="alert-triangle" class="w-4 h-4"></i> ${title}`;
+            document.getElementById('msg-body').innerText = body;
+            const m = document.getElementById('msg-modal');
+            m.style.display = 'block';
+            setTimeout(() => m.classList.remove('-translate-y-4'), 10);
+            lucide.createIcons();
+            
+            // Auto hide after 3 seconds
+            setTimeout(() => {
+                m.classList.add('-translate-y-4');
+                setTimeout(() => m.style.display='none', 200);
+            }, 3000);
+        }
+
+        let isStreaming = false;
+        function toggleStream() {
+            isStreaming = !isStreaming;
+            const img = document.getElementById('mjpeg-stream');
+            const standby = document.getElementById('stream-standby');
+            const btn = document.getElementById('toggle-stream-btn');
+            
+            if (isStreaming) {
+                standby.style.display = 'none';
+                img.style.display = 'block';
+                btn.classList.replace('bg-accent', 'bg-red-500');
+                btn.innerHTML = `<i data-lucide="square" class="w-6 h-6 fill-current"></i>`;
+            } else {
+                standby.style.display = 'flex';
+                img.style.display = 'none';
+                btn.classList.replace('bg-red-500', 'bg-accent');
+                btn.innerHTML = `<i data-lucide="play" class="w-8 h-8 ml-1 fill-current"></i>`;
+            }
+            lucide.createIcons();
+        }
+
+        // TF.js Logic
+        let aiModel = null, aiLive = false, videoStream = null;
+        const videoEl = document.getElementById('ai-video');
+        const canvasEl = document.getElementById('ai-canvas');
+        const ctx = canvasEl.getContext('2d');
+        const statusText = document.getElementById('ai-status-text');
+        let requestAnimationFrameId;
+
+        async function initModel() {
+            if (aiModel) return;
+            document.getElementById('ai-standby').classList.add('hidden');
+            document.getElementById('ai-loading').classList.remove('hidden');
+            statusText.innerText = "Loading MobileNet...";
+            
+            try {
+                aiModel = await cocoSsd.load();
+                statusText.innerText = "Ready for inference.";
+            } catch (err) {
+                statusText.innerText = "Error loading model.";
+                aiLive = false;
+            }
+        }
+
+        async function toggleAiLive() {
+            const btn = document.getElementById('ai-toggle-btn');
+            if (!aiLive) {
+                aiLive = true;
+                btn.innerText = "STOP";
+                btn.classList.add('bg-red-500/20', 'text-red-400');
+                btn.classList.remove('bg-white/10');
+                await initModel();
+                if (aiModel) startWebcam();
+            } else {
+                aiLive = false;
+                btn.innerText = "START";
+                btn.classList.remove('bg-red-500/20', 'text-red-400');
+                btn.classList.add('bg-white/10');
+                stopWebcam();
+                document.getElementById('ai-loading').classList.add('hidden');
+                document.getElementById('ai-standby').classList.remove('hidden');
+                videoEl.classList.add('hidden');
+                ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
+                statusText.innerText = "System offline.";
+                document.getElementById('object-list').innerHTML = '<div class="p-4 text-white/20 text-center">System offline.</div>';
+            }
+        }
+
+        async function startWebcam() {
+            try {
+                videoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
+                videoEl.srcObject = videoStream;
+                videoEl.classList.remove('hidden');
+                document.getElementById('ai-loading').classList.add('hidden');
+                
+                videoEl.onloadedmetadata = () => {
+                    canvasEl.width = videoEl.videoWidth;
+                    canvasEl.height = videoEl.videoHeight;
+                    statusText.innerText = "Webcam active. Processing...";
+                    detectFrame();
+                };
+            } catch (err) {
+                statusText.innerText = "Webcam access denied.";
+                aiLive = false;
+            }
+        }
+
+        function stopWebcam() {
+            if (videoStream) videoStream.getTracks().forEach(track => track.stop());
+            if (requestAnimationFrameId) cancelAnimationFrame(requestAnimationFrameId);
+        }
+
+        async function detectFrame() {
+            if (!aiLive || !aiModel) return;
+            try {
+                const predictions = await aiModel.detect(videoEl);
+                drawPredictions(predictions);
+                updateLog(predictions);
+            } catch (err) {}
+            requestAnimationFrameId = requestAnimationFrame(() => setTimeout(detectFrame, 150));
+        }
+
+        let lastHazardTime = 0;
+        function drawPredictions(predictions) {
+            ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
+            predictions.forEach(p => {
+                const [x, y, w, h] = p.bbox;
+                const text = `${p.class} (${Math.round(p.score * 100)}%)`;
+                const isHazard = (w * h) / (canvasEl.width * canvasEl.height) > 0.3;
+                const color = isHazard ? '#ef4444' : '#69f0ae';
+
+                if (isHazard && Date.now() - lastHazardTime > 5000) {
+                    showMessage("HAZARD", `Proximity to ${p.class}.`);
+                    lastHazardTime = Date.now();
+                }
+
+                ctx.strokeStyle = color; ctx.lineWidth = 3; ctx.strokeRect(x, y, w, h);
+                ctx.fillStyle = color; ctx.fillRect(x, y - 20, ctx.measureText(text).width + 10, 20);
+                ctx.fillStyle = '#000'; ctx.font = '12px "JetBrains Mono"'; ctx.fillText(text, x + 5, y - 5);
+            });
+        }
+
+        function updateLog(predictions) {
+            const log = document.getElementById('object-list');
+            if (predictions.length === 0) {
+                log.innerHTML = '<div class="p-2 text-white/40">Scanning...</div>';
+                statusText.innerText = "Clear path.";
+                return;
+            }
+            log.innerHTML = predictions.map(p => `
+                <div class="flex justify-between p-1.5 border-b border-white/5">
+                    <span class="text-white font-bold uppercase text-[10px]">${p.class}</span>
+                    <span class="text-[9px] text-gray-500">${Math.round(p.score * 100)}%</span>
+                </div>
+            `).join('');
+            statusText.innerText = `Detected ${predictions.map(p=>p.class).join(', ')}`;
+        }
+
+        // Terminal Logic
+        let term, commandInput = '';
+
+        function initTerminal() {
+            term = new Terminal({
+                theme: { background: '#000000', foreground: '#e5e5e5', cursor: '#69f0ae' },
+                fontFamily: '"JetBrains Mono", monospace',
+                fontSize: 10, // Small font for phone screen
+                cursorBlink: true,
+                convertEol: true
+            });
+            
+            fitAddon = new FitAddon.FitAddon();
+            term.loadAddon(fitAddon);
+            
+            term.open(document.getElementById('terminal-container'));
+            mockBootSequence();
+
+            term.onData(e => {
+                switch (e) {
+                    case '\u0003': term.write('^C\r\n'); prompt(); commandInput = ''; break;
+                    case '\r': term.write('\r\n'); handleCommand(commandInput.trim()); commandInput = ''; break;
+                    case '\u007F': if (commandInput.length > 0) { commandInput = commandInput.slice(0, -1); term.write('\b \b'); } break;
+                    default: if (e >= String.fromCharCode(0x20) && e <= String.fromCharCode(0x7E)) { commandInput += e; term.write(e); }
+                }
+            });
+        }
+
+        function prompt() { term.write('\r\n\x1b[32mrpi@axelnode\x1b[0m:\x1b[34m~\x1b[0m$ '); }
+
+        function mockBootSequence() {
+            term.clear();
+            term.write(`Connecting to ${currentIp}...\r\n`);
+            setTimeout(() => term.write('Connection established.\r\n'), 400);
+            setTimeout(() => {
+                term.write('\x1b[32mSuccess.\x1b[0m\r\nLinux axelnode 6.1.21\r\n');
+                prompt();
+            }, 800);
+        }
+
+        function mockReboot() {
+            term.write('\r\nConnection closed.\r\n');
+            setTimeout(mockBootSequence, 800);
+        }
+
+        function sendMockCommand(cmd) {
+            while(commandInput.length > 0) { commandInput = commandInput.slice(0, -1); term.write('\b \b'); }
+            term.write(cmd + '\r\n');
+            handleCommand(cmd);
+        }
+
+        function handleCommand(cmd) {
+            if (!cmd) { prompt(); return; }
+            const c = cmd.toLowerCase();
+            if (c === 'clear') term.clear();
+            else if (c.includes('uptime')) term.write(` up 3 days,  load avg: 0.14\r\n`);
+            else if (c.includes('ls')) term.write('\x1b[34mscripts\x1b[0m  \x1b[32mstart.sh\x1b[0m  app.py\r\n');
+            else if (c.includes('top')) term.write('Tasks: 121 total\r\n%Cpu(s): 12.4 us\r\nMem : 8044236 total\r\n');
+            else if (c.includes('vcgencmd')) term.write('temp=48.5\'C\r\n');
+            else term.write(`bash: ${cmd.split(' ')[0]}: command not found\r\n`);
+            prompt();
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initTerminal();
+            // In case it renders in background, attempt fit once visible
+            setTimeout(() => { if (fitAddon) fitAddon.fit(); }, 500); 
+        });
+
+    </script>
+</body>
+</html>
