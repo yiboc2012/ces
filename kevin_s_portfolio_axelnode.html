@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AxelNode Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        dark: '#0a0a0a',
+                        darker: '#050505',
+                        accent: '#3b82f6', // Bright Blue
+                        accentHover: '#2563eb',
+                        surface: '#171717',
+                        surfaceHover: '#262626'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: theme('colors.darker');
+            color: #f3f4f6;
+        }
+        .glass-panel {
+            background: rgba(23, 23, 23, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .glow-text {
+            text-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: theme('colors.darker');
+        }
+        ::-webkit-scrollbar-thumb {
+            background: theme('colors.surfaceHover');
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: theme('colors.accent');
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-accent selection:text-white">
+
+    <nav class="fixed w-full z-50 glass-panel border-b border-white/5 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="cpu" class="text-accent w-6 h-6"></i>
+                    <span class="font-bold text-xl tracking-tight">AxelNode<span class="text-accent">.</span></span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8">
+                        <a href="#home" class="hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">Home</a>
+                        <a href="#project" class="hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">AxelNode</a>
+                        <a href="#hardware" class="hover:text-accent transition-colors px-3 py-2 rounded-md text-sm font-medium">Hardware List</a>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <a href="https://github.com/yiboc2012" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition-colors" title="My Personal GitHub">
+                        <i data-lucide="github" class="w-5 h-5"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section id="home" class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-accent/20 via-darker to-darker"></div>
+        </div>
+        
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface border border-white/10 text-sm font-mono text-gray-300 mb-8">
+                <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                System Online
+            </div>
+            
+            <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-10">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-accent to-blue-400 glow-text">AxelNode</span>
+            </h1>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="#project" class="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-lg bg-accent text-white font-semibold hover:bg-accentHover transition-all transform hover:scale-105">
+                    View Project
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </a>
+                <a href="https://github.com/NoFiringPin/axelnode" target="_blank" class="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-lg bg-surface border border-white/10 text-white font-semibold hover:bg-surfaceHover transition-all transform hover:scale-105">
+                    <i data-lucide="github" class="w-4 h-4"></i>
+                    AxelNode Repository
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="project" class="py-20 bg-dark border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div>
+                    <h2 class="text-3xl md:text-4xl font-bold mb-6">Project <span class="font-mono text-accent">AxelNode</span></h2>
+                    <p class="text-gray-400 text-lg leading-relaxed mb-6">
+                        AxelNode is a custom-engineered smart mobility and sensor platform built on a wagon cart chassis. Powered by a Raspberry Pi 5, it integrates advanced computer vision, long-distance proximity sensing, and robust motor control to create an interactive, semi-autonomous hardware node.
+                    </p>
+                    <p class="text-gray-400 text-lg leading-relaxed mb-8">
+                        The core mission of AxelNode was to build a mobile, intelligent unit capable of processing its environment locally via various sensors while providing a user-friendly touch interface right on the hardware. All code and scripts powering this system are fully open-source.
+                    </p>
+                    <div class="flex flex-wrap gap-3">
+                        <span class="px-3 py-1 text-xs font-mono rounded bg-accent/10 text-accent border border-accent/20">Raspberry Pi</span>
+                        <span class="px-3 py-1 text-xs font-mono rounded bg-accent/10 text-accent border border-accent/20">Python</span>
+                        <span class="px-3 py-1 text-xs font-mono rounded bg-accent/10 text-accent border border-accent/20">I2C / Sensors</span>
+                        <span class="px-3 py-1 text-xs font-mono rounded bg-accent/10 text-accent border border-accent/20">Robotics</span>
+                    </div>
+                </div>
+                
+                <div class="relative group">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-accent to-blue-600 rounded-xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+                    <div class="relative rounded-xl overflow-hidden glass-panel aspect-video flex items-center justify-center p-8">
+                        <div class="text-center">
+                            <i data-lucide="bot" class="w-24 h-24 text-accent/50 mx-auto mb-4 animate-pulse"></i>
+                            <div class="text-sm text-gray-500 mt-2">Hardware Unit Visualization</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="hardware" class="py-20 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Hardware BOM & Architecture</h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">A comprehensive breakdown of the physical components used to build AxelNode, detailing exactly what they do and why they are critical to the project's success.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <!-- Part 1 -->
+                <div class="glass-panel p-6 rounded-xl hover:-translate-y-1 transition-transform border border-white/5 hover:border-accent/50">
+                    <div class="w-12 h-12 rounded-lg bg-surface flex items-center justify-center mb-4 text-accent">
+                        <i data-lucide="cpu" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">Raspberry PI 5 ✅</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed">
+                        <strong class="text-white">Role:</strong> The central "brain" of the AxelNode.<br>
+                        <strong class="text-white">Importance:</strong> It runs the main operating system, processes all sensor data, handles the camera feed, and executes the code that dictates the cart's behavior. The Pi 5's upgraded processing power is essential for smooth realtime operations.
+                    </p>
+                </div>
+
+                <!-- Part 2 -->
+                <div class="glass-panel p-6 rounded-xl hover:-translate-y-1 transition-transform border border-white/5 hover:border-accent/50">
+                    <div class="w-12 h-12 rounded-lg bg-surface flex items-center justify-center mb-4 text-accent">
+                        <i data-lucide="camera" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">Arducam IR</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed">
+                        <strong class="text-white">Role:</strong> Infrared camera module.<br>
+                        <strong class="text-white">Importance:</strong> Provides machine vision capabilities to the node, allowing it to "see" its environment even in low-light or zero-light conditions by detecting infrared light, which is crucial for nighttime navigation or security monitoring.
+                    </p>
+                </div>
+
+                <!-- Part 3 -->
+                <div class="glass-panel p-6 rounded-xl hover:-translate-y-1 transition-transform border border-white/5 hover:border-accent/50">
+                    <div class="w-12 h-12 rounded-lg bg-surface flex items-center justify-center mb-4 text-accent">
+                        <i data-lucide="radio" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">Adafruit VCNL4200 IR Proximity</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed">
+                        <strong class="text-white">Role:</strong> Long distance IR proximity and ambient light sensor.<br>
+                        <strong class="text-white">Importance:</strong> Acts as the collision-avoidance radar. It accurately measures the distance to objects in front of the cart and adjusts to ambient light, preventing the cart from crashing into walls or obstacles.
+                    </p>
+                </div>
+
+                <!-- Part 4 -->
+                <div class="glass-panel p-6 rounded-xl hover:-translate-y-1 transition-transform border border-white/5 hover:border-accent/50">
+                    <div class="w-12 h-12 rounded-lg bg-surface flex items-center justify-center mb-4 text-accent">
+                        <i data-lucide="git-merge" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">Pi Stemma QT Breakout</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed">
+                        <strong class="text-white">Role:</strong> I2C interface board for the Raspberry Pi.<br>
+                        <strong class="text-white">Importance:</strong> Simplifies hardware prototyping. It allows I2C sensors (like the VCNL4200) to be plugged directly into the Pi without messy soldering, ensuring reliable and secure data connections.
+                    </p>
+                </div>
+
+                <!-- Part 5 -->
+                <div class="glass-panel p-6 rounded-xl hover:-translate-y-1 transition-transform border border-white/5 hover:border-accent/50">
+                    <div class="w-12 h-12 rounded-lg bg-surface flex items-center justify-center mb-4 text-accent">
+                        <i data-lucide="cable" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">STEMMA QT Cables (150mm & 400mm)</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed">
+                        <strong class="text-white">Role:</strong> JST SH 4-pin data and power cables.<br>
+                        <strong class="text-white">Importance:</strong> These cables route the communication lines from the Pi's brain to the sensors mounted on the edges of the cart. The different lengths (150mm and 400mm) provide flexibility in where sensors can be physically placed on the chassis.
+                    </p>
+                </div>
+
+                <!-- Part 6 -->
+                <div class="glass-panel p-6 rounded-xl hover:-translate-y-1 transition-transform border border-white/5 hover:border-accent/50">
+                    <div class="w-12 h-12 rounded-lg bg-surface flex items-center justify-center mb-4 text-accent">
+                        <i data-lucide="settings" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">Servo Hat</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed">
+                        <strong class="text-white">Role:</strong> PWM/Servo controller add-on board.<br>
+                        <strong class="text-white">Importance:</strong> The Raspberry Pi struggles to control multiple servos precisely on its own. This HAT offloads that work, allowing smooth and accurate control of motors used for steering, moving the camera gimbal, or operating robotic arms on the cart.
+                    </p>
+                </div>
+
+                <!-- Part 7 -->
+                <div class="glass-panel p-6 rounded-xl hover:-translate-y-1 transition-transform border border-white/5 hover:border-accent/50">
+                    <div class="w-12 h-12 rounded-lg bg-surface flex items-center justify-center mb-4 text-accent">
+                        <i data-lucide="truck" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">Wagon Cart</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed">
+                        <strong class="text-white">Role:</strong> The physical chassis and base.<br>
+                        <strong class="text-white">Importance:</strong> Provides the structural foundation and payload capacity. It houses the battery, the Pi, all the circuitry, and the screen, making the entire node completely mobile and robust for real-world testing.
+                    </p>
+                </div>
+
+                <!-- Part 8 -->
+                <div class="glass-panel p-6 rounded-xl hover:-translate-y-1 transition-transform border border-white/5 hover:border-accent/50">
+                    <div class="w-12 h-12 rounded-lg bg-surface flex items-center justify-center mb-4 text-accent">
+                        <i data-lucide="monitor" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">10-Inch Touchscreen</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed">
+                        <strong class="text-white">Role:</strong> On-board Human-Machine Interface (HMI).<br>
+                        <strong class="text-white">Importance:</strong> Allows direct interaction with the AxelNode operating system without needing a remote PC. Essential for on-the-fly debugging, starting scripts, and viewing camera feeds directly from the cart in the field.
+                    </p>
+                </div>
+
+                <!-- Part 9 -->
+                <div class="glass-panel p-6 rounded-xl hover:-translate-y-1 transition-transform border border-white/5 hover:border-accent/50">
+                    <div class="w-12 h-12 rounded-lg bg-surface flex items-center justify-center mb-4 text-accent">
+                        <i data-lucide="zap" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2">5V 5A Dual PD Power Supply</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed">
+                        <strong class="text-white">Role:</strong> Step-down power converter (9-24V to 5V) with cooling.<br>
+                        <strong class="text-white">Importance:</strong> The Pi 5, screen, and sensors draw significant power. This module safely steps down a larger battery voltage to a stable 5V at a high current (5A). The cooling fan ensures the power delivery remains stable under heavy compute loads, preventing system crashes.
+                    </p>
+                </div>
+
+            </div>
+            
+            <div class="mt-8 flex justify-center">
+                <!-- Part 10 - USB Cable -->
+                <div class="glass-panel p-4 rounded-xl inline-flex items-center gap-4 border border-white/5">
+                    <i data-lucide="plug" class="text-gray-400 w-5 h-5"></i>
+                    <span class="text-sm text-gray-300">Also utilizing a <strong class="text-white">6ft USB Extension Cable</strong> to neatly route power and peripheral connections across the length of the wagon cart.</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-darker py-10 border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="text-gray-400 text-sm">
+                &copy; <script>document.write(new Date().getFullYear())</script> AxelNode Project. By Kevin.
+            </div>
+            
+            <div class="flex items-center gap-6">
+                <a href="https://github.com/NoFiringPin/axelnode" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition-colors text-sm flex items-center gap-2">
+                    <i data-lucide="folder-git-2" class="w-4 h-4"></i>
+                    Scripts & Code
+                </a>
+                <a href="https://github.com/yiboc2012" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition-colors text-sm flex items-center gap-2">
+                    <i data-lucide="github" class="w-4 h-4"></i>
+                    yiboc2012
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if(target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Add a simple scroll effect to the navbar
+        const nav = document.querySelector('nav');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                nav.classList.add('bg-dark/80', 'shadow-lg');
+                nav.classList.remove('border-transparent');
+            } else {
+                nav.classList.remove('bg-dark/80', 'shadow-lg');
+                nav.classList.add('border-transparent');
+            }
+        });
+    </script>
+</body>
+</html>
