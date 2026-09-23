@@ -104,6 +104,14 @@
         .phone-frame {
             box-shadow: 0 50px 100px -20px rgba(0, 0, 0, 0.8), inset 0 0 0 2px rgba(255,255,255,0.05);
         }
+
+        /* Active Guide Card Highlight */
+        .guide-card-active {
+            border-color: #69f0ae !important;
+            background-color: rgba(105, 240, 174, 0.08) !important;
+            box-shadow: 0 0 20px rgba(105, 240, 174, 0.15);
+            transform: scale(1.01);
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -129,13 +137,17 @@
             </button>
         </div>
 
-        <!-- Step-by-step documentation -->
-        <div class="space-y-4 text-xs">
-            <!-- Step 1 -->
-            <div class="p-4 bg-white/5 border border-white/10 rounded-2xl">
-                <div class="flex items-center gap-2 font-bold text-white mb-2">
-                    <span class="w-5 h-5 rounded-full bg-accent/20 text-accent flex items-center justify-center text-[10px] font-mono">1</span>
-                    <span class="text-sm">Status & Connection Setup</span>
+        <!-- Step-by-step documentation with dynamic highlight -->
+        <div class="space-y-4 text-xs" id="guide-cards-container">
+            
+            <!-- Step 1: STATUS -->
+            <div id="guide-card-status" class="guide-card p-4 bg-white/5 border border-white/10 rounded-2xl transition-all duration-300">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center gap-2 font-bold text-white">
+                        <span class="guide-badge w-5 h-5 rounded-full bg-accent/20 text-accent flex items-center justify-center text-[10px] font-mono">1</span>
+                        <span class="text-sm">Status & Connection Setup</span>
+                    </div>
+                    <span class="guide-active-tag hidden text-[9px] font-mono font-bold px-2 py-0.5 rounded bg-accent/20 text-accent border border-accent/40">CURRENT TAB</span>
                 </div>
                 <p class="text-gray-400 leading-relaxed mb-2">
                     The starting dashboard gives you the cart node connection state and battery percentage.
@@ -146,11 +158,14 @@
                 </ul>
             </div>
 
-            <!-- Step 2 -->
-            <div class="p-4 bg-white/5 border border-white/10 rounded-2xl">
-                <div class="flex items-center gap-2 font-bold text-white mb-2">
-                    <span class="w-5 h-5 rounded-full bg-accent/20 text-accent flex items-center justify-center text-[10px] font-mono">2</span>
-                    <span class="text-sm">Drive & Live Camera Stream</span>
+            <!-- Step 2: DRIVE -->
+            <div id="guide-card-drive" class="guide-card p-4 bg-white/5 border border-white/10 rounded-2xl transition-all duration-300">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center gap-2 font-bold text-white">
+                        <span class="guide-badge w-5 h-5 rounded-full bg-white/10 text-gray-300 flex items-center justify-center text-[10px] font-mono">2</span>
+                        <span class="text-sm">Drive & Live Camera Stream</span>
+                    </div>
+                    <span class="guide-active-tag hidden text-[9px] font-mono font-bold px-2 py-0.5 rounded bg-accent/20 text-accent border border-accent/40">CURRENT TAB</span>
                 </div>
                 <p class="text-gray-400 leading-relaxed mb-2">
                     Access real-time video streaming from the cart's mounted camera.
@@ -161,11 +176,14 @@
                 </ul>
             </div>
 
-            <!-- Step 3 -->
-            <div class="p-4 bg-white/5 border border-white/10 rounded-2xl">
-                <div class="flex items-center gap-2 font-bold text-white mb-2">
-                    <span class="w-5 h-5 rounded-full bg-accent/20 text-accent flex items-center justify-center text-[10px] font-mono">3</span>
-                    <span class="text-sm">AI Computer Vision & Safety</span>
+            <!-- Step 3: AI -->
+            <div id="guide-card-ai" class="guide-card p-4 bg-white/5 border border-white/10 rounded-2xl transition-all duration-300">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center gap-2 font-bold text-white">
+                        <span class="guide-badge w-5 h-5 rounded-full bg-white/10 text-gray-300 flex items-center justify-center text-[10px] font-mono">3</span>
+                        <span class="text-sm">AI Computer Vision & Safety</span>
+                    </div>
+                    <span class="guide-active-tag hidden text-[9px] font-mono font-bold px-2 py-0.5 rounded bg-accent/20 text-accent border border-accent/40">CURRENT TAB</span>
                 </div>
                 <p class="text-gray-400 leading-relaxed mb-2">
                     Runs client-side neural network detection using MobileNet/COCO-SSD.
@@ -177,11 +195,14 @@
                 </ul>
             </div>
 
-            <!-- Step 4 -->
-            <div class="p-4 bg-white/5 border border-white/10 rounded-2xl">
-                <div class="flex items-center gap-2 font-bold text-white mb-2">
-                    <span class="w-5 h-5 rounded-full bg-accent/20 text-accent flex items-center justify-center text-[10px] font-mono">4</span>
-                    <span class="text-sm">SSH Shell Diagnostics</span>
+            <!-- Step 4: TERMINAL (SSH) -->
+            <div id="guide-card-terminal" class="guide-card p-4 bg-white/5 border border-white/10 rounded-2xl transition-all duration-300">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center gap-2 font-bold text-white">
+                        <span class="guide-badge w-5 h-5 rounded-full bg-white/10 text-gray-300 flex items-center justify-center text-[10px] font-mono">4</span>
+                        <span class="text-sm">SSH Shell Diagnostics</span>
+                    </div>
+                    <span class="guide-active-tag hidden text-[9px] font-mono font-bold px-2 py-0.5 rounded bg-accent/20 text-accent border border-accent/40">CURRENT TAB</span>
                 </div>
                 <p class="text-gray-400 leading-relaxed mb-2">
                     Direct terminal access to cart hardware diagnostics.
@@ -473,15 +494,52 @@
         let currentIp = "192.168.0.112";
         let timeInterval;
         let fitAddon;
+        let activeTab = 'status';
 
         // Toggle user guide drawer
         function toggleUserGuide() {
             const drawer = document.getElementById('guide-drawer');
             drawer.classList.toggle('translate-x-full');
+            updateGuideHighlight(activeTab);
             lucide.createIcons();
+        }
+
+        // Highlight corresponding guide card and scroll it into view
+        function updateGuideHighlight(tabId) {
+            document.querySelectorAll('.guide-card').forEach(card => {
+                card.classList.remove('guide-card-active');
+                
+                // Reset tag and badge inside card
+                const tag = card.querySelector('.guide-active-tag');
+                if(tag) tag.classList.add('hidden');
+                
+                const badge = card.querySelector('.guide-badge');
+                if(badge) {
+                    badge.classList.remove('bg-accent', 'text-black');
+                    badge.classList.add('bg-white/10', 'text-gray-300');
+                }
+            });
+
+            const activeCard = document.getElementById(`guide-card-${tabId}`);
+            if (activeCard) {
+                activeCard.classList.add('guide-card-active');
+                
+                const activeTag = activeCard.querySelector('.guide-active-tag');
+                if(activeTag) activeTag.classList.remove('hidden');
+
+                const activeBadge = activeCard.querySelector('.guide-badge');
+                if(activeBadge) {
+                    activeBadge.classList.remove('bg-white/10', 'text-gray-300');
+                    activeBadge.classList.add('bg-accent', 'text-black');
+                }
+
+                // Smoothly scroll the card into center view within the drawer
+                activeCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
         }
         
         function switchTab(tabId) {
+            activeTab = tabId;
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             document.getElementById(`nav-${tabId}`).classList.add('active');
 
@@ -493,6 +551,9 @@
             const target = document.getElementById(`view-${tabId}`);
             target.style.display = 'flex';
             setTimeout(() => target.classList.add('active'), 10);
+
+            // Dynamically synchronize the guide highlights
+            updateGuideHighlight(tabId);
 
             if(tabId === 'drive') startClock();
             else clearInterval(timeInterval);
@@ -752,6 +813,7 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             initTerminal();
+            updateGuideHighlight('status');
             setTimeout(() => { if (fitAddon) fitAddon.fit(); }, 500); 
         });
     </script>
