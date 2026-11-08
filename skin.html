@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft Boy Skin Generator & Viewer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        body { background-color: #0b0f19; color: #f8fafc; font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+        canvas { display: block; outline: none; }
+        .color-picker { -webkit-appearance: none; border: none; width: 34px; height: 34px; border-radius: 50%; cursor: pointer; padding: 0; background: transparent; }
+        .color-picker::-webkit-color-swatch-wrapper { padding: 0; }
+        .color-picker::-webkit-color-swatch { border: 2px solid #475569; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.4); }
+        .pixelated { image-rendering: pixelated; image-rendering: crisp-edges; }
+        /* Custom scrollbars */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col bg-slate-950 text-slate-100 select-none">
+    <!-- Header -->
+    <header class="bg-slate-900/90 backdrop-blur border-b border-slate-800 sticky top-0 z-50 px-4 md:px-6 py-3.5 flex items-center justify-between shadow-md">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 bg-gradient-to-tr from-emerald-600 to-teal-400 rounded-xl flex items-center justify-center font-black text-xl text-white shadow-lg shadow-emerald-950">MC</div>
+            <div>
+                <h1 class="font-bold text-base md:text-lg text-white tracking-wide">Java Edition Skin Studio</h1>
+                <p class="text-xs text-slate-400 hidden sm:block">Craft, customize, and export genuine 64x64 boy skins</p>
+            </div>
+        </div>
+        <div class="flex items-center space-x-3">
+            <!-- 2D Texture Preview Modal Trigger -->
+            <button id="view-texture-btn" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs md:text-sm font-medium px-3.5 py-2 rounded-xl border border-slate-700 transition flex items-center space-x-1.5 shadow">
+                <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                <span>View Sheet</span>
+            </button>
+            <button id="download-btn" class="bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-semibold px-4 md:px-5 py-2 rounded-xl shadow-lg shadow-emerald-700/30 transition-all flex items-center space-x-2 text-xs md:text-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                <span>Download Skin (.PNG)</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="flex-1 flex flex-col lg:flex-row h-[calc(100vh-65px)] overflow-hidden">
+        <!-- 3D Preview Canvas Area -->
+        <div class="flex-1 relative bg-gradient-to-b from-slate-900 via-slate-950 to-slate-950 flex flex-col items-center justify-center overflow-hidden">
+            <div id="canvas-container" class="w-full h-full cursor-grab active:cursor-grabbing"></div>
+            
+            <!-- Controls Overlay -->
+            <div class="absolute bottom-5 left-5 right-5 sm:right-auto bg-slate-900/90 backdrop-blur-md border border-slate-800 p-2.5 rounded-2xl flex flex-wrap items-center gap-2 shadow-2xl z-10">
+                <button id="rotate-toggle" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 active:bg-slate-600 text-slate-200 text-xs font-medium transition flex items-center space-x-1.5 border border-slate-700/60">
+                    <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    <span id="rotate-text">Auto-Rotate: On</span>
+                </button>
+                <button id="pose-toggle" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 active:bg-slate-600 text-slate-200 text-xs font-medium transition flex items-center space-x-1.5 border border-slate-700/60">
+                    <svg class="w-4 h-4 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    <span id="pose-text">Walk Animation</span>
+                </button>
+                <button id="reset-view" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 active:bg-slate-600 text-slate-200 text-xs font-medium transition border border-slate-700/60">
+                    Reset Camera
+                </button>
+            </div>
+
+            <!-- Hint overlay -->
+            <div class="absolute top-4 left-4 pointer-events-none bg-slate-900/80 backdrop-blur border border-slate-800/80 px-3.5 py-1.5 rounded-xl text-xs text-slate-400 shadow">
+                Left Click + Drag: Rotate &bull; Scroll: Zoom &bull; Right Click: Pan
+            </div>
+        </div>
+
+        <!-- Customization Sidebar -->
+        <div class="w-full lg:w-[410px] bg-slate-900 border-t lg:border-t-0 lg:border-l border-slate-800 flex flex-col h-[460px] lg:h-full shadow-2xl z-20">
+            <!-- Tabs -->
+            <div class="flex border-b border-slate-800 bg-slate-950/60">
+                <button onclick="switchTab('presets')" id="tab-presets" class="flex-1 py-3 text-xs font-bold text-emerald-400 border-b-2 border-emerald-500 transition">Presets</button>
+                <button onclick="switchTab('hair')" id="tab-hair" class="flex-1 py-3 text-xs font-medium text-slate-400 hover:text-white transition">Hair & Hat</button>
+                <button onclick="switchTab('outfit')" id="tab-outfit" class="flex-1 py-3 text-xs font-medium text-slate-400 hover:text-white transition">Outfit</button>
+                <button onclick="switchTab('colors')" id="tab-colors" class="flex-1 py-3 text-xs font-medium text-slate-400 hover:text-white transition">Colors</button>
+            </div>
+
+            <!-- Tab Content Area -->
+            <div class="flex-1 overflow-y-auto p-5 space-y-6">
+                <!-- Presets Tab -->
+                <div id="content-presets" class="space-y-4">
+                    <div>
+                        <h3 class="text-xs uppercase tracking-wider font-bold text-slate-400 mb-1">Boy Skin Archetypes</h3>
+                        <p class="text-xs text-slate-400">One-click starting styles with synchronized palettes and layering.</p>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <button onclick="applyPreset('casual')" class="p-3.5 rounded-2xl bg-slate-800/60 border border-slate-700/70 hover:border-emerald-500/60 hover:bg-slate-800 text-left transition group">
+                            <div class="w-7 h-7 rounded-lg bg-blue-600 mb-2.5 flex items-center justify-center font-bold text-white text-xs shadow-md">C</div>
+                            <div class="font-semibold text-xs md:text-sm text-white group-hover:text-emerald-400 transition">Casual Hoodie</div>
+                            <div class="text-[11px] text-slate-400 mt-0.5">Classic hoodie & jeans</div>
+                        </button>
+                        <button onclick="applyPreset('adventurer')" class="p-3.5 rounded-2xl bg-slate-800/60 border border-slate-700/70 hover:border-emerald-500/60 hover:bg-slate-800 text-left transition group">
+                            <div class="w-7 h-7 rounded-lg bg-amber-600 mb-2.5 flex items-center justify-center font-bold text-white text-xs shadow-md">A</div>
+                            <div class="font-semibold text-xs md:text-sm text-white group-hover:text-emerald-400 transition">Explorer Boy</div>
+                            <div class="text-[11px] text-slate-400 mt-0.5">Leather jacket & cap</div>
+                        </button>
+                        <button onclick="applyPreset('gamer')" class="p-3.5 rounded-2xl bg-slate-800/60 border border-slate-700/70 hover:border-emerald-500/60 hover:bg-slate-800 text-left transition group">
+                            <div class="w-7 h-7 rounded-lg bg-purple-600 mb-2.5 flex items-center justify-center font-bold text-white text-xs shadow-md">G</div>
+                            <div class="font-semibold text-xs md:text-sm text-white group-hover:text-emerald-400 transition">Gamer Kid</div>
+                            <div class="text-[11px] text-slate-400 mt-0.5">Headphones & neon tee</div>
+                        </button>
+                        <button onclick="applyPreset('knight')" class="p-3.5 rounded-2xl bg-slate-800/60 border border-slate-700/70 hover:border-emerald-500/60 hover:bg-slate-800 text-left transition group">
+                            <div class="w-7 h-7 rounded-lg bg-emerald-600 mb-2.5 flex items-center justify-center font-bold text-white text-xs shadow-md">K</div>
+                            <div class="font-semibold text-xs md:text-sm text-white group-hover:text-emerald-400 transition">Street Scout</div>
+                            <div class="text-[11px] text-slate-400 mt-0.5">Tactical gear & boots</div>
+                        </button>
+                    </div>
+
+                    <div class="pt-4 border-t border-slate-800">
+                        <label class="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Skin Model Geometry</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <button onclick="setModelType('classic')" id="model-classic" class="py-2.5 px-3 rounded-xl border border-emerald-500 bg-emerald-500/10 text-emerald-300 text-xs font-semibold text-center transition">Classic (4px Arms)</button>
+                            <button onclick="setModelType('slim')" id="model-slim" class="py-2.5 px-3 rounded-xl border border-slate-700 bg-slate-800/40 text-slate-400 text-xs font-semibold text-center transition">Slim (3px Alex)</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hair & Hat Tab -->
+                <div id="content-hair" class="space-y-6 hidden">
+                    <div>
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2.5">Hair Style</h3>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button onclick="setHairStyle('messy')" class="hair-btn py-2 px-2.5 rounded-xl border border-emerald-500 bg-emerald-500/10 text-emerald-300 text-xs font-medium">Messy Bangs</button>
+                            <button onclick="setHairStyle('short')" class="hair-btn py-2 px-2.5 rounded-xl border border-slate-700 bg-slate-800/40 text-slate-400 text-xs font-medium">Side Part</button>
+                            <button onclick="setHairStyle('spiky')" class="hair-btn py-2 px-2.5 rounded-xl border border-slate-700 bg-slate-800/40 text-slate-400 text-xs font-medium">Spiky Anime</button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2.5">Hair Color</h3>
+                        <div class="flex items-center space-x-3 bg-slate-950/40 p-2 rounded-xl border border-slate-800">
+                            <input type="color" id="hair-color-picker" value="#3b2219" class="color-picker" onchange="updateHairColor(this.value)">
+                            <div class="flex flex-wrap gap-1.5">
+                                <button onclick="updateHairColor('#111111'); document.getElementById('hair-color-picker').value='#111111'" class="w-7 h-7 rounded-full bg-zinc-900 border border-slate-600 hover:scale-105 transition" title="Dark Black"></button>
+                                <button onclick="updateHairColor('#3b2219'); document.getElementById('hair-color-picker').value='#3b2219'" class="w-7 h-7 rounded-full bg-amber-950 border border-slate-600 hover:scale-105 transition" title="Deep Brown"></button>
+                                <button onclick="updateHairColor('#854d0e'); document.getElementById('hair-color-picker').value='#854d0e'" class="w-7 h-7 rounded-full bg-amber-700 border border-slate-600 hover:scale-105 transition" title="Auburn"></button>
+                                <button onclick="updateHairColor('#eab308'); document.getElementById('hair-color-picker').value='#eab308'" class="w-7 h-7 rounded-full bg-yellow-500 border border-slate-600 hover:scale-105 transition" title="Blonde"></button>
+                                <button onclick="updateHairColor('#991b1b'); document.getElementById('hair-color-picker').value='#991b1b'" class="w-7 h-7 rounded-full bg-red-800 border border-slate-600 hover:scale-105 transition" title="Dark Red"></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2.5">Headwear & Outer Layer</h3>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="setAccessory('none')" class="acc-btn py-2 px-3 rounded-xl border border-emerald-500 bg-emerald-500/10 text-emerald-300 text-xs font-medium">None</button>
+                            <button onclick="setAccessory('hood')" class="acc-btn py-2 px-3 rounded-xl border border-slate-700 bg-slate-800/40 text-slate-400 text-xs font-medium">Hoodie Up</button>
+                            <button onclick="setAccessory('headphones')" class="acc-btn py-2 px-3 rounded-xl border border-slate-700 bg-slate-800/40 text-slate-400 text-xs font-medium">Gaming Headset</button>
+                            <button onclick="setAccessory('cap')" class="acc-btn py-2 px-3 rounded-xl border border-slate-700 bg-slate-800/40 text-slate-400 text-xs font-medium">Baseball Cap</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Outfit Tab -->
+                <div id="content-outfit" class="space-y-6 hidden">
+                    <div>
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2.5">Top Garment Style</h3>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button onclick="setOutfitStyle('hoodie')" class="outfit-btn py-2 px-2.5 rounded-xl border border-emerald-500 bg-emerald-500/10 text-emerald-300 text-xs font-medium">Hoodie</button>
+                            <button onclick="setOutfitStyle('tshirt')" class="outfit-btn py-2 px-2.5 rounded-xl border border-slate-700 bg-slate-800/40 text-slate-400 text-xs font-medium">T-Shirt</button>
+                            <button onclick="setOutfitStyle('jacket')" class="outfit-btn py-2 px-2.5 rounded-xl border border-slate-700 bg-slate-800/40 text-slate-400 text-xs font-medium">Open Jacket</button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2.5">Shirt / Jacket Color</h3>
+                        <div class="flex items-center space-x-3 bg-slate-950/40 p-2 rounded-xl border border-slate-800">
+                            <input type="color" id="shirt-color-picker" value="#2563eb" class="color-picker" onchange="updateShirtColor(this.value)">
+                            <div class="flex flex-wrap gap-1.5">
+                                <button onclick="updateShirtColor('#2563eb'); document.getElementById('shirt-color-picker').value='#2563eb'" class="w-7 h-7 rounded-full bg-blue-600 border border-slate-600"></button>
+                                <button onclick="updateShirtColor('#16a34a'); document.getElementById('shirt-color-picker').value='#16a34a'" class="w-7 h-7 rounded-full bg-emerald-600 border border-slate-600"></button>
+                                <button onclick="updateShirtColor('#dc2626'); document.getElementById('shirt-color-picker').value='#dc2626'" class="w-7 h-7 rounded-full bg-red-600 border border-slate-600"></button>
+                                <button onclick="updateShirtColor('#9333ea'); document.getElementById('shirt-color-picker').value='#9333ea'" class="w-7 h-7 rounded-full bg-purple-600 border border-slate-600"></button>
+                                <button onclick="updateShirtColor('#1e293b'); document.getElementById('shirt-color-picker').value='#1e293b'" class="w-7 h-7 rounded-full bg-slate-800 border border-slate-600"></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2.5">Pants Color</h3>
+                        <div class="flex items-center space-x-3 bg-slate-950/40 p-2 rounded-xl border border-slate-800">
+                            <input type="color" id="pants-color-picker" value="#1e293b" class="color-picker" onchange="updatePantsColor(this.value)">
+                            <div class="flex flex-wrap gap-1.5">
+                                <button onclick="updatePantsColor('#1e293b'); document.getElementById('pants-color-picker').value='#1e293b'" class="w-7 h-7 rounded-full bg-slate-800 border border-slate-600"></button>
+                                <button onclick="updatePantsColor('#1d4ed8'); document.getElementById('pants-color-picker').value='#1d4ed8'" class="w-7 h-7 rounded-full bg-blue-700 border border-slate-600"></button>
+                                <button onclick="updatePantsColor('#475569'); document.getElementById('pants-color-picker').value='#475569'" class="w-7 h-7 rounded-full bg-slate-600 border border-slate-600"></button>
+                                <button onclick="updatePantsColor('#78350f'); document.getElementById('pants-color-picker').value='#78350f'" class="w-7 h-7 rounded-full bg-amber-900 border border-slate-600"></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Colors / Palette Tab -->
+                <div id="content-colors" class="space-y-6 hidden">
+                    <div>
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2.5">Skin Tone</h3>
+                        <div class="flex items-center space-x-3 bg-slate-950/40 p-2 rounded-xl border border-slate-800">
+                            <input type="color" id="skin-color-picker" value="#f5c49b" class="color-picker" onchange="updateSkinColor(this.value)">
+                            <div class="flex flex-wrap gap-1.5">
+                                <button onclick="updateSkinColor('#fde2cc'); document.getElementById('skin-color-picker').value='#fde2cc'" class="w-7 h-7 rounded-full bg-[#fde2cc] border border-slate-600"></button>
+                                <button onclick="updateSkinColor('#f5c49b'); document.getElementById('skin-color-picker').value='#f5c49b'" class="w-7 h-7 rounded-full bg-[#f5c49b] border border-slate-600"></button>
+                                <button onclick="updateSkinColor('#d49b6a'); document.getElementById('skin-color-picker').value='#d49b6a'" class="w-7 h-7 rounded-full bg-[#d49b6a] border border-slate-600"></button>
+                                <button onclick="updateSkinColor('#a26d42'); document.getElementById('skin-color-picker').value='#a26d42'" class="w-7 h-7 rounded-full bg-[#a26d42] border border-slate-600"></button>
+                                <button onclick="updateSkinColor('#603813'); document.getElementById('skin-color-picker').value='#603813'" class="w-7 h-7 rounded-full bg-[#603813] border border-slate-600"></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2.5">Eye Iris Color</h3>
+                        <div class="flex items-center space-x-3 bg-slate-950/40 p-2 rounded-xl border border-slate-800">
+                            <input type="color" id="eye-color-picker" value="#38bdf8" class="color-picker" onchange="updateEyeColor(this.value)">
+                            <div class="flex flex-wrap gap-1.5">
+                                <button onclick="updateEyeColor('#38bdf8'); document.getElementById('eye-color-picker').value='#38bdf8'" class="w-7 h-7 rounded-full bg-sky-400 border border-slate-600"></button>
+                                <button onclick="updateEyeColor('#22c55e'); document.getElementById('eye-color-picker').value='#22c55e'" class="w-7 h-7 rounded-full bg-emerald-500 border border-slate-600"></button>
+                                <button onclick="updateEyeColor('#a855f7'); document.getElementById('eye-color-picker').value='#a855f7'" class="w-7 h-7 rounded-full bg-purple-500 border border-slate-600"></button>
+                                <button onclick="updateEyeColor('#854d0e'); document.getElementById('eye-color-picker').value='#854d0e'" class="w-7 h-7 rounded-full bg-amber-700 border border-slate-600"></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2.5">Sneakers / Shoes</h3>
+                        <div class="flex items-center space-x-3 bg-slate-950/40 p-2 rounded-xl border border-slate-800">
+                            <input type="color" id="shoe-color-picker" value="#ffffff" class="color-picker" onchange="updateShoeColor(this.value)">
+                            <div class="flex flex-wrap gap-1.5">
+                                <button onclick="updateShoeColor('#ffffff'); document.getElementById('shoe-color-picker').value='#ffffff'" class="w-7 h-7 rounded-full bg-white border border-slate-600"></button>
+                                <button onclick="updateShoeColor('#0f172a'); document.getElementById('shoe-color-picker').value='#0f172a'" class="w-7 h-7 rounded-full bg-slate-900 border border-slate-600"></button>
+                                <button onclick="updateShoeColor('#dc2626'); document.getElementById('shoe-color-picker').value='#dc2626'" class="w-7 h-7 rounded-full bg-red-600 border border-slate-600"></button>
+                                <button onclick="updateShoeColor('#2563eb'); document.getElementById('shoe-color-picker').value='#2563eb'" class="w-7 h-7 rounded-full bg-blue-600 border border-slate-600"></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Export Instructions Footer -->
+            <div class="p-4 bg-slate-950/90 border-t border-slate-800 text-xs text-slate-400 space-y-1">
+                <div class="font-semibold text-slate-300 flex items-center space-x-1.5">
+                    <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span>Import to Minecraft Java & Bedrock</span>
+                </div>
+                <p class="text-[11px] leading-relaxed">Download the PNG, open the official launcher &rarr; <b>Skins</b> tab &rarr; <b>New Skin</b> &rarr; <b>Browse</b> & save!</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Texture Sheet Modal -->
+    <div id="texture-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 shadow-2xl flex flex-col items-center">
+            <h3 class="font-bold text-sm text-white mb-2">Raw 64x64 Skin Texture Map</h3>
+            <p class="text-xs text-slate-400 text-center mb-4">Official Java Edition 1.8+ format with transparency overlays.</p>
+            <div class="p-3 bg-slate-950 border border-slate-800 rounded-xl mb-4 flex justify-center">
+                <canvas id="preview-texture-canvas" width="256" height="256" class="pixelated border border-slate-800 rounded"></canvas>
+            </div>
+            <button onclick="document.getElementById('texture-modal').classList.add('hidden')" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-xl border border-slate-700 transition">
+                Close
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // --- State Management ---
+        const skinState = {
+            model: 'classic', // 'classic' (4px arm) or 'slim' (3px arm)
+            hairStyle: 'messy',
+            hairColor: '#3b2219',
+            accessory: 'none',
+            outfitStyle: 'hoodie',
+            shirtColor: '#2563eb',
+            pantsColor: '#1e293b',
+            skinColor: '#f5c49b',
+            eyeColor: '#38bdf8',
+            shoeColor: '#ffffff'
+        };
+
+        // --- Tabs Navigation ---
+        function switchTab(tabId) {
+            ['presets', 'hair', 'outfit', 'colors'].forEach(t => {
+                document.getElementById(`content-${t}`).classList.add('hidden');
+                document.getElementById(`tab-${t}`).className = "flex-1 py-3 text-xs font-medium text-slate-400 hover:text-white transition";
+            });
+            document.getElementById(`content-${tabId}`).classList.remove('hidden');
+            document.getElementById(`tab-${tabId}`).className = "flex-1 py-3 text-xs font-bold text-emerald-400 border-b-2 border-emerald-500 transition";
+        }
+
+        // --- Archetypes ---
+        function applyPreset(type) {
+            if (type === 'casual') {
+                skinState.hairStyle = 'messy';
+                skinState.hairColor = '#3b2219';
+                skinState.accessory = 'none';
+                skinState.outfitStyle = 'hoodie';
+                skinState.shirtColor = '#2563eb';
+                skinState.pantsColor = '#1e293b';
+                skinState.shoeColor = '#ffffff';
+                skinState.eyeColor = '#38bdf8';
+            } else if (type === 'adventurer') {
+                skinState.hairStyle = 'short';
+                skinState.hairColor = '#854d0e';
+                skinState.accessory = 'cap';
+                skinState.outfitStyle = 'jacket';
+                skinState.shirtColor = '#d97706';
+                skinState.pantsColor = '#78350f';
+                skinState.shoeColor = '#451a03';
+                skinState.eyeColor = '#22c55e';
+            } else if (type === 'gamer') {
+                skinState.hairStyle = 'spiky';
+                skinState.hairColor = '#111111';
+                skinState.accessory = 'headphones';
+                skinState.outfitStyle = 'tshirt';
+                skinState.shirtColor = '#9333ea';
+                skinState.pantsColor = '#0f172a';
+                skinState.shoeColor = '#38bdf8';
+                skinState.eyeColor = '#a855f7';
+            } else if (type === 'knight') {
+                skinState.hairStyle = 'short';
+                skinState.hairColor = '#eab308';
+                skinState.accessory = 'none';
+                skinState.outfitStyle = 'jacket';
+                skinState.shirtColor = '#334155';
+                skinState.pantsColor = '#1e293b';
+                skinState.shoeColor = '#0f172a';
+                skinState.eyeColor = '#38bdf8';
+            }
+            syncPickers();
+            updateAllButtonsUI();
+            rebuildSkinCanvas();
+        }
+
+        function setModelType(type) {
+            skinState.model = type;
+            document.getElementById('model-classic').className = type === 'classic' 
+                ? "py-2.5 px-3 rounded-xl border border-emerald-500 bg-emerald-500/10 text-emerald-300 text-xs font-semibold text-center transition" 
+                : "py-2.5 px-3 rounded-xl border border-slate-700 bg-slate-800/40 text-slate-400 text-xs font-semibold text-center transition";
+            document.getElementById('model-slim').className = type === 'slim' 
+                ? "py-2.5 px-3 rounded-xl border border-emerald-500 bg-emerald-500/10 text-emerald-300 text-xs font-semibold text-center transition" 
+                : "py-2.5 px-3 rounded-xl border border-slate-700 bg-slate-800/40 text-slate-400 text-xs font-semibold text-center transition";
+            buildCharacterModel();
+            rebuildSkinCanvas();
+        }
+
+        function setHairStyle(style) {
+            skinState.hairStyle = style;
+            updateAllButtonsUI();
+            rebuildSkinCanvas();
+        }
+
+        function setAccessory(acc) {
+            skinState.accessory = acc;
+            updateAllButtonsUI();
+            rebuildSkinCanvas();
+        }
+
+        function setOutfitStyle(style) {
+            skinState.outfitStyle = style;
+            updateAllButtonsUI();
+            rebuildSkinCanvas();
+        }
+
+        function updateHairColor(v) { skinState.hairColor = v; rebuildSkinCanvas(); }
+        function updateShirtColor(v) { skinState.shirtColor = v; rebuildSkinCanvas(); }
+        function updatePantsColor(v) { skinState.pantsColor = v; rebuildSkinCanvas(); }
+        function updateSkinColor(v) { skinState.skinColor = v; rebuildSkinCanvas(); }
+        function updateEyeColor(v) { skinState.eyeColor = v; rebuildSkinCanvas(); }
+        function updateShoeColor(v) { skinState.shoeColor = v; rebuildSkinCanvas(); }
+
+        function syncPickers() {
+            document.getElementById('hair-color-picker').value = skinState.hairColor;
+            document.getElementById('shirt-color-picker').value = skinState.shirtColor;
+            document.getElementById('pants-color-picker').value = skinState.pantsColor;
+            document.getElementById('skin-color-picker').value = skinState.skinColor;
+            document.getElementById('eye-color-picker').value = skinState.eyeColor;
+            document.getElementById('shoe-color-picker').value = skinState.shoeColor;
+        }
+
+        function updateAllButtonsUI() {
+            document.querySelectorAll('.hair-btn').forEach(btn => {
+                const match = (skinState.hairStyle === 'messy' && btn.textContent.includes('Messy')) ||
+                              (skinState.hairStyle === 'short' && btn.textContent.includes('Side')) ||
+                              (skinState.hairStyle === 'spiky' && btn.textContent.includes('Spiky'));
+                btn.className = match
+                    ? "hair-btn py-2 px-2.5 rounded-xl border border-emerald-500 bg-emerald-500/10 text-emerald-300 text-xs font-medium"
+                    : "hair-btn py-2 px-2.5 rounded-xl border border-slate-700 bg-slate-800/40 text-slate-400 text-xs font-medium";
+            });
+
+            document.querySelectorAll('.acc-btn').forEach(btn => {
+                const match = (skinState.accessory === 'none' && btn.textContent.includes('None')) ||
+                              (skinState.accessory === 'hood' && btn.textContent.includes('Hoodie')) ||
+                              (skinState.accessory === 'headphones' && btn.textContent.includes('Headset')) ||
+                              (skinState.accessory === 'cap' && btn.textContent.includes('Cap'));
+                btn.className = match
+                    ? "acc-btn py-2 px-3 rounded-xl border border-emerald-500 bg-emerald-500/10 text-emerald-300 text-xs font-medium"
+                    : "acc-btn py-2 px-3 rounded-xl border border-slate-700 bg-slate-800/40 text-slate-400 text-xs font-medium";
+            });
+
+            document.querySelectorAll('.outfit-btn').forEach(btn => {
+                const match = (skinState.outfitStyle === 'hoodie' && btn.textContent.includes('Hoodie')) ||
+                              (skinState.outfitStyle === 'tshirt' && btn.textContent.includes('T-Shirt')) ||
+                              (skinState.outfitStyle === 'jacket' && btn.textContent.includes('Jacket'));
+                btn.className = match
+                    ? "outfit-btn py-2 px-2.5 rounded-xl border border-emerald-500 bg-emerald-500/10 text-emerald-300 text-xs font-medium"
+                    : "outfit-btn py-2 px-2.5 rounded-xl border border-slate-700 bg-slate-800/40 text-slate-400 text-xs font-medium";
+            });
+        }
+
+        // Color manipulation utilities
+        function shade(hex, percent) {
+            let num = parseInt(hex.replace("#",""), 16),
+                amt = Math.round(2.55 * percent),
+                R = (num >> 16) + amt,
+                G = (num >> 8 & 0x00ff) + amt,
+                B = (num & 0x0000ff) + amt;
+            return "#" + (0x1000000 + (R<255?R<0?0:R:255)*0x10000 + (G<255?G<0?0:G:255)*0x100 + (B<255?B<0?0:B:255)).toString(16).slice(1);
+        }
+
+        // --- 64x64 Official Minecraft UV Texture Synthesizer ---
+        const skinCanvas = document.createElement('canvas');
+        skinCanvas.width = 64;
+        skinCanvas.height = 64;
+        const skinCtx = skinCanvas.getContext('2d');
+        skinCtx.imageSmoothingEnabled = false;
+
+        function fill(x, y, w, h, col) {
+            if (!col) return;
+            skinCtx.fillStyle = col;
+            skinCtx.fillRect(x, y, w, h);
+        }
+
+        function fillNoise(x, y, w, h, baseCol, amount = 10) {
+            for (let i = 0; i < w; i++) {
+                for (let j = 0; j < h; j++) {
+                    const delta = (Math.random() - 0.5) * amount;
+                    fill(x + i, y + j, 1, 1, shade(baseCol, delta));
+                }
+            }
+        }
+
+        function rebuildSkinCanvas() {
+            skinCtx.clearRect(0, 0, 64, 64);
+
+            const skin = skinState.skinColor;
+            const skinDark = shade(skin, -12);
+            const hair = skinState.hairColor;
+            const hairDark = shade(hair, -18);
+            const hairLight = shade(hair, 15);
+            const shirt = skinState.shirtColor;
+            const shirtDark = shade(shirt, -15);
+            const shirtLight = shade(shirt, 15);
+            const pants = skinState.pantsColor;
+            const pantsDark = shade(pants, -15);
+            const shoe = skinState.shoeColor;
+            const shoeDark = shade(shoe, -20);
+            const eye = skinState.eyeColor;
+
+            // ==================== 1. HEAD BASE (Skin) ====================
+            // Head Top (8,0,8,8), Bottom (16,0,8,8)
+            fill(8, 0, 8, 8, hair); // Top is covered by hair
+            fill(16, 0, 8, 8, skinDark); // Neck/Bottom
+
+            // Head Right (0,8,8,8), Front (8,8,8,8), Left (16,8,8,8), Back (24,8,8,8)
+            fill(0, 8, 8, 8, skin);
+            fill(8, 8, 8, 8, skin);
+            fill(16, 8, 8, 8, skin);
+            fill(24, 8, 8, 8, skin);
+
+            // Eyes & Eyebrows (Head Front: 8,8 -> 15,15)
+            // Eyebrows
+            fill(9, 10, 2, 1, hairDark);
+            fill(13, 10, 2, 1, hairDark);
+            // Whites
+            fill(9, 12, 1, 1, '#ffffff');
+            fill(14, 12, 1, 1, '#ffffff');
+            // Iris
+            fill(10, 12, 1, 1, eye);
+            fill(13, 12, 1, 1, eye);
+            // Mouth
+            fill(11, 14, 2, 1, shade(skin, -22));
+
+            // ==================== 2. HEAD OVERLAY (Hair / Hats) ====================
+            // Overlay region: Top (40,0,8,8), Bottom (48,0,8,8), Right (32,8,8,8), Front (40,8,8,8), Left (48,8,8,8), Back (56,8,8,8)
+            fill(40, 0, 8, 8, hair);
+            fill(48, 0, 8, 8, hairDark);
+            fill(32, 8, 8, 5, hair); // right side hair
+            fill(56, 8, 8, 5, hair); // left side hair
+            fill(48, 8, 8, 7, hair); // back hair
+
+            // Hairstyle specifics on front overlay
+            if (skinState.hairStyle === 'messy') {
+                fill(40, 8, 8, 2, hair);
+                fill(41, 10, 2, 2, hair); // Fringe left
+                fill(44, 10, 3, 2, hairLight); // Fringe right
+                fill(32, 8, 3, 6, hairDark);
+                fill(53, 8, 3, 6, hairDark);
+            } else if (skinState.hairStyle === 'short') {
+                fill(40, 8, 8, 2, hair);
+                fill(40, 10, 4, 1, hairLight);
+                fill(44, 10, 4, 1, hair);
+            } else if (skinState.hairStyle === 'spiky') {
+                fill(40, 8, 8, 3, hair);
+                fill(41, 7, 2, 2, hairLight);
+                fill(45, 7, 2, 2, hairLight);
+                fill(40, 10, 8, 1, hairDark);
+            }
+
+            // Head Accessories
+            if (skinState.accessory === 'hood') {
+                fill(40, 0, 8, 8, shirt);
+                fill(32, 8, 8, 8, shirt);
+                fill(48, 8, 8, 8, shirt);
+                fill(56, 8, 8, 8, shirt);
+                fill(40, 8, 8, 2, shirtDark); // Top rim
+                fill(40, 10, 1, 5, shirtDark); // side left
+                fill(47, 10, 1, 5, shirtDark); // side right
+            } else if (skinState.accessory === 'headphones') {
+                // Top band
+                fill(40, 0, 8, 2, '#334155');
+                // Ear cups on sides
+                fill(34, 10, 4, 4, '#ef4444');
+                fill(35, 11, 2, 2, '#1e293b');
+                fill(58, 10, 4, 4, '#ef4444');
+                fill(59, 11, 2, 2, '#1e293b');
+            } else if (skinState.accessory === 'cap') {
+                fill(40, 0, 8, 8, '#ef4444');
+                fill(40, 8, 8, 3, '#dc2626');
+                fill(32, 8, 8, 3, '#dc2626');
+                fill(48, 8, 8, 3, '#dc2626');
+                fill(56, 8, 8, 3, '#dc2626');
+                // Visor brim
+                fill(40, 11, 8, 1, '#991b1b');
+            }
+
+            // ==================== 3. TORSO / BODY ====================
+            // Torso: Top (20,16,8,4), Bottom (28,16,8,4), Right (16,20,4,12), Front (20,20,8,12), Left (28,20,4,12), Back (32,20,8,12)
+            fill(20, 16, 8, 4, shirt);
+            fill(28, 16, 8, 4, shirtDark);
+            fill(16, 20, 4, 12, shirtDark);
+            fill(28, 20, 4, 12, shirtDark);
+            fill(32, 20, 8, 12, shirt);
+            fill(20, 20, 8, 12, shirt);
+
+            // Shirt styling
+            if (skinState.outfitStyle === 'hoodie') {
+                // Strings & Pocket
+                fill(22, 21, 1, 4, '#f8fafc');
+                fill(25, 21, 1, 4, '#f8fafc');
+                fill(22, 27, 4, 3, shirtDark);
+                fill(21, 28, 6, 2, shirtDark);
+            } else if (skinState.outfitStyle === 'tshirt') {
+                // Neck cutout showing skin
+                fill(23, 20, 2, 2, skin);
+                // Graphic icon on chest
+                fill(23, 23, 2, 2, '#fbbf24');
+            } else if (skinState.outfitStyle === 'jacket') {
+                // Undershirt visible
+                fill(23, 20, 2, 12, '#ffffff');
+                fill(20, 20, 3, 12, shirtDark);
+                fill(25, 20, 3, 12, shirtDark);
+            }
+
+            // ==================== 4. ARMS ====================
+            const isSlim = skinState.model === 'slim';
+            const armW = isSlim ? 3 : 4;
+
+            // RIGHT ARM: Top (44,16,4,4), Bottom (48,16,4,4), Right (40,20,4,12), Front (44,20,armW,12), Left (44+armW,20,4,12), Back (48+armW,20,armW,12)
+            fill(44, 16, 4, 4, shirt);
+            fill(48, 16, 4, 4, skinDark);
+            fill(40, 20, 16, 12, shirtDark); // Base fill
+            fill(44, 20, armW, 12, shirt);
+
+            if (skinState.outfitStyle === 'tshirt') {
+                // Short sleeves: show bare skin on arms
+                fill(40, 24, 16, 8, skin);
+                fill(44, 24, armW, 8, skin);
+            } else {
+                // Long sleeve cuffs and skin hands
+                fill(40, 28, 16, 4, skin);
+                fill(44, 28, armW, 4, skin);
+            }
+
+            // LEFT ARM (Modern 1.8+ coordinates): Top (36,48,4,4), Bottom (40,48,4,4), Right (32,52,4,12), Front (36,52,armW,12), Left (36+armW,52,4,12), Back (40+armW,52,armW,12)
+            fill(36, 48, 4, 4, shirt);
+            fill(40, 48, 4, 4, skinDark);
+            fill(32, 52, 16, 12, shirtDark);
+            fill(36, 52, armW, 12, shirt);
+
+            if (skinState.outfitStyle === 'tshirt') {
+                fill(32, 56, 16, 8, skin);
+                fill(36, 56, armW, 8, skin);
+            } else {
+                fill(32, 60, 16, 4, skin);
+                fill(36, 60, armW, 4, skin);
+            }
+
+            // ==================== 5. LEGS & SHOES ====================
+            // RIGHT LEG: Top (4,16,4,4), Bottom (8,16,4,4), Right (0,20,4,12), Front (4,20,4,12), Left (8,20,4,12), Back (12,20,4,12)
+            fill(4, 16, 4, 4, pants);
+            fill(8, 16, 4, 4, shoeDark);
+            fill(0, 20, 16, 9, pants);
+            fill(4, 20, 4, 9, pantsDark);
+            // Right Shoe
+            fill(0, 29, 16, 3, shoe);
+            fill(4, 29, 4, 3, shoeDark);
+            fill(4, 31, 4, 1, '#ffffff'); // Sneaker white sole
+
+            // LEFT LEG: Top (20,48,4,4), Bottom (24,48,4,4), Right (16,52,4,12), Front (20,52,4,12), Left (24,52,4,12), Back (28,52,4,12)
+            fill(20, 48, 4, 4, pants);
+            fill(24, 48, 4, 4, shoeDark);
+            fill(16, 52, 16, 9, pants);
+            fill(20, 52, 4, 9, pantsDark);
+            // Left Shoe
+            fill(16, 61, 16, 3, shoe);
+            fill(20, 61, 4, 3, shoeDark);
+            fill(20, 63, 4, 1, '#ffffff'); // Sneaker white sole
+
+            // Update Three.js Texture
+            if (canvasTexture) {
+                canvasTexture.needsUpdate = true;
+            }
+            updatePreviewSheet();
+        }
+
+        function updatePreviewSheet() {
+            const previewCanvas = document.getElementById('preview-texture-canvas');
+            if (!previewCanvas) return;
+            const pctx = previewCanvas.getContext('2d');
+            pctx.imageSmoothingEnabled = false;
+            pctx.clearRect(0, 0, 256, 256);
+            pctx.drawImage(skinCanvas, 0, 0, 256, 256);
+        }
+
+        // --- 3D Engine (Three.js with Exact Box UV Unwrapping) ---
+        let scene, camera, renderer, characterGroup;
+        let isAutoRotating = true;
+        let isWalking = false;
+        let walkTime = 0;
+        let canvasTexture;
+        let headMesh, headLayerMesh, bodyMesh, rightArmGroup, leftArmGroup, rightLegGroup, leftLegGroup;
+
+        // Custom UV Mapping Builder for Standard Minecraft Texture Atlas
+        function createMinecraftBoxGeometry(w, h, d, u, v, mirror = false) {
+            const geom = new THREE.BoxGeometry(w, h, d);
+            const uvAttr = geom.attributes.uv;
+            const tw = 64, th = 64;
+
+            // Box face order in Three.js BoxGeometry:
+            // 0: +X (Right), 1: -X (Left), 2: +Y (Top), 3: -Y (Bottom), 4: +Z (Front), 5: -Z (Back)
+            const faces = [
+                { x: u + (mirror ? 0 : d + w), y: v + d, w: d, h: h },             // +X
+                { x: u + (mirror ? d + w : 0), y: v + d, w: d, h: h },             // -X
+                { x: u + d,                   y: v,     w: w, h: d },             // +Y
+                { x: u + d + w,               y: v,     w: w, h: d },             // -Y
+                { x: u + d,                   y: v + d, w: w, h: h },             // +Z (Front)
+                { x: u + d * 2 + w,           y: v + d, w: w, h: h }              // -Z (Back)
+            ];
+
+            for (let f = 0; f < 6; f++) {
+                const face = faces[f];
+                let u0 = face.x / tw;
+                let v0 = (th - (face.y + face.h)) / th;
+                let u1 = (face.x + face.w) / tw;
+                let v1 = (th - face.y) / th;
+
+                // Assign UV coords for 2 triangles (4 vertices) per face
+                uvAttr.setXY(f * 4 + 0, u0, v1);
+                uvAttr.setXY(f * 4 + 1, u1, v1);
+                uvAttr.setXY(f * 4 + 2, u0, v0);
+                uvAttr.setXY(f * 4 + 3, u1, v0);
+            }
+            uvAttr.needsUpdate = true;
+            return geom;
+        }
+
+        function initThree() {
+            const container = document.getElementById('canvas-container');
+            scene = new THREE.Scene();
+
+            camera = new THREE.PerspectiveCamera(40, container.clientWidth / container.clientHeight, 0.1, 1000);
+            camera.position.set(0, 18, 52);
+
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            container.appendChild(renderer.domElement);
+
+            // Lighting setup for Minecraft stylized render
+            const hemiLight = new THREE.HemisphereLight(0xffffff, 0x334155, 0.7);
+            scene.add(hemiLight);
+
+            const dirLight = new THREE.DirectionalLight(0xffffff, 0.65);
+            dirLight.position.set(20, 40, 25);
+            scene.add(dirLight);
+
+            const fillLight = new THREE.DirectionalLight(0x94a3b8, 0.35);
+            fillLight.position.set(-20, -10, -20);
+            scene.add(fillLight);
+
+            // Canvas Texture
+            canvasTexture = new THREE.CanvasTexture(skinCanvas);
+            canvasTexture.magFilter = THREE.NearestFilter;
+            canvasTexture.minFilter = THREE.NearestFilter;
+            canvasTexture.generateMipmaps = false;
+
+            buildCharacterModel();
+            rebuildSkinCanvas();
+
+            // Interaction Handlers (Orbit, Pan, Zoom)
+            let isDragging = false;
+            let isPanning = false;
+            let mouseX = 0, mouseY = 0;
+
+            container.addEventListener('contextmenu', e => e.preventDefault());
+
+            container.addEventListener('mousedown', (e) => {
+                if (e.button === 2) isPanning = true;
+                else isDragging = true;
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+            });
+
+            window.addEventListener('mousemove', (e) => {
+                if (!isDragging && !isPanning) return;
+                const dx = e.clientX - mouseX;
+                const dy = e.clientY - mouseY;
+
+                if (isDragging && characterGroup) {
+                    characterGroup.rotation.y += dx * 0.008;
+                    characterGroup.rotation.x += dy * 0.008;
+                    characterGroup.rotation.x = Math.max(-0.6, Math.min(0.6, characterGroup.rotation.x));
+                } else if (isPanning) {
+                    camera.position.x -= dx * 0.04;
+                    camera.position.y += dy * 0.04;
+                }
+
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+            });
+
+            window.addEventListener('mouseup', () => {
+                isDragging = false;
+                isPanning = false;
+            });
+
+            // Touch interaction support
+            let touchX = 0, touchY = 0;
+            container.addEventListener('touchstart', (e) => {
+                if (e.touches.length === 1) {
+                    touchX = e.touches[0].clientX;
+                    touchY = e.touches[0].clientY;
+                }
+            }, { passive: true });
+
+            container.addEventListener('touchmove', (e) => {
+                if (e.touches.length === 1 && characterGroup) {
+                    const dx = e.touches[0].clientX - touchX;
+                    const dy = e.touches[0].clientY - touchY;
+                    characterGroup.rotation.y += dx * 0.01;
+                    characterGroup.rotation.x += dy * 0.01;
+                    characterGroup.rotation.x = Math.max(-0.6, Math.min(0.6, characterGroup.rotation.x));
+                    touchX = e.touches[0].clientX;
+                    touchY = e.touches[0].clientY;
+                }
+            }, { passive: true });
+
+            // Zoom
+            container.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                camera.position.z += e.deltaY * 0.04;
+                camera.position.z = Math.max(22, Math.min(85, camera.position.z));
+            }, { passive: false });
+
+            // Window resize
+            window.addEventListener('resize', onWindowResize);
+
+            // Controls triggers
+            document.getElementById('rotate-toggle').addEventListener('click', () => {
+                isAutoRotating = !isAutoRotating;
+                document.getElementById('rotate-text').textContent = `Auto-Rotate: ${isAutoRotating ? 'On' : 'Off'}`;
+            });
+
+            document.getElementById('pose-toggle').addEventListener('click', () => {
+                isWalking = !isWalking;
+                document.getElementById('pose-text').textContent = isWalking ? 'Pose: Walking' : 'Pose: Static';
+                if (!isWalking) {
+                    // Reset limb rotations
+                    if (rightArmGroup) rightArmGroup.rotation.x = 0;
+                    if (leftArmGroup) leftArmGroup.rotation.x = 0;
+                    if (rightLegGroup) rightLegGroup.rotation.x = 0;
+                    if (leftLegGroup) leftLegGroup.rotation.x = 0;
+                    if (headMesh) headMesh.rotation.y = 0;
+                }
+            });
+
+            document.getElementById('reset-view').addEventListener('click', () => {
+                if (characterGroup) {
+                    characterGroup.rotation.set(0, 0, 0);
+                }
+                camera.position.set(0, 18, 52);
+            });
+
+            document.getElementById('view-texture-btn').addEventListener('click', () => {
+                updatePreviewSheet();
+                document.getElementById('texture-modal').classList.remove('hidden');
+            });
+
+            // Start loop
+            animate();
+        }
+
+        function onWindowResize() {
+            const container = document.getElementById('canvas-container');
+            if (!container || !renderer || !camera) return;
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        }
+
+        // --- Build Fully Rigged 3D Minecraft Rig ---
+        function buildCharacterModel() {
+            if (characterGroup) scene.remove(characterGroup);
+            characterGroup = new THREE.Group();
+            scene.add(characterGroup);
+
+            const matBase = new THREE.MeshStandardMaterial({
+                map: canvasTexture,
+                roughness: 0.9,
+                metalness: 0.05
+            });
+
+            const matTransparent = new THREE.MeshStandardMaterial({
+                map: canvasTexture,
+                transparent: true,
+                alphaTest: 0.1,
+                roughness: 0.9,
+                metalness: 0.05,
+                side: THREE.DoubleSide
+            });
+
+            const armW = skinState.model === 'slim' ? 3 : 4;
+            const armOffset = skinState.model === 'slim' ? 5.5 : 6;
+
+            // 1. HEAD (8x8x8 at base u=0, v=0)
+            const headGeom = createMinecraftBoxGeometry(8, 8, 8, 0, 0);
+            headMesh = new THREE.Mesh(headGeom, matBase);
+            headMesh.position.y = 28;
+
+            // Hat / Hair Overlay (9x9x9 at u=32, v=0)
+            const hatGeom = createMinecraftBoxGeometry(9, 9, 9, 32, 0);
+            headLayerMesh = new THREE.Mesh(hatGeom, matTransparent);
+            headMesh.add(headLayerMesh);
+            characterGroup.add(headMesh);
+
+            // 2. TORSO (8x12x4 at u=16, v=16)
+            const bodyGeom = createMinecraftBoxGeometry(8, 12, 4, 16, 16);
+            bodyMesh = new THREE.Mesh(bodyGeom, matBase);
+            bodyMesh.position.y = 18;
+            characterGroup.add(bodyMesh);
+
+            // 3. RIGHT ARM (ArmW x 12 x 4 at u=40, v=16)
+            rightArmGroup = new THREE.Group();
+            rightArmGroup.position.set(-armOffset, 23, 0); // Pivot at shoulder
+            const rightArmGeom = createMinecraftBoxGeometry(armW, 12, 4, 40, 16);
+            const rightArmMesh = new THREE.Mesh(rightArmGeom, matBase);
+            rightArmMesh.position.y = -5; // Hang down from pivot
+            rightArmGroup.add(rightArmMesh);
+            characterGroup.add(rightArmGroup);
+
+            // 4. LEFT ARM (ArmW x 12 x 4 at u=32, v=48)
+            leftArmGroup = new THREE.Group();
+            leftArmGroup.position.set(armOffset, 23, 0); // Pivot at shoulder
+            const leftArmGeom = createMinecraftBoxGeometry(armW, 12, 4, 32, 48);
+            const leftArmMesh = new THREE.Mesh(leftArmGeom, matBase);
+            leftArmMesh.position.y = -5;
+            leftArmGroup.add(leftArmMesh);
+            characterGroup.add(leftArmGroup);
+
+            // 5. RIGHT LEG (4x12x4 at u=0, v=16)
+            rightLegGroup = new THREE.Group();
+            rightLegGroup.position.set(-2, 12, 0); // Pivot at hip
+            const rightLegGeom = createMinecraftBoxGeometry(4, 12, 4, 0, 16);
+            const rightLegMesh = new THREE.Mesh(rightLegGeom, matBase);
+            rightLegMesh.position.y = -6;
+            rightLegGroup.add(rightLegMesh);
+            characterGroup.add(rightLegGroup);
+
+            // 6. LEFT LEG (4x12x4 at u=16, v=48)
+            leftLegGroup = new THREE.Group();
+            leftLegGroup.position.set(2, 12, 0); // Pivot at hip
+            const leftLegGeom = createMinecraftBoxGeometry(4, 12, 4, 16, 48);
+            const leftLegMesh = new THREE.Mesh(leftLegGeom, matBase);
+            leftLegMesh.position.y = -6;
+            leftLegGroup.add(leftLegMesh);
+            characterGroup.add(leftLegGroup);
+
+            // Position character center
+            characterGroup.position.y = -10;
+        }
+
+        // --- Render & Animation Loop ---
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Auto-rotation around vertical axis
+            if (isAutoRotating && characterGroup) {
+                characterGroup.rotation.y += 0.007;
+            }
+
+            // Walking limb animation
+            if (isWalking && rightArmGroup && leftArmGroup && rightLegGroup && leftLegGroup) {
+                walkTime += 0.06;
+                const swing = Math.sin(walkTime) * 0.55;
+                rightArmGroup.rotation.x = -swing;
+                leftArmGroup.rotation.x = swing;
+                rightLegGroup.rotation.x = swing;
+                leftLegGroup.rotation.x = -swing;
+                if (headMesh) {
+                    headMesh.rotation.y = Math.sin(walkTime * 0.5) * 0.08;
+                }
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        // --- Download Skin Button Handler ---
+        document.getElementById('download-btn').addEventListener('click', () => {
+            const link = document.createElement('a');
+            link.download = `minecraft_boy_skin_${skinState.model}.png`;
+            link.href = skinCanvas.toDataURL('image/png');
+            link.click();
+        });
+
+        // Initialize when window loads
+        window.onload = () => {
+            initThree();
+        };
+    </script>
+</body>
+</html>
