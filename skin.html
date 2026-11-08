@@ -68,33 +68,34 @@
             <div class="bg-white border border-[#d4d4d8] rounded-md w-full max-w-[300px] shadow-sm overflow-hidden flex flex-col">
                 <!-- Card Header -->
                 <div class="flex justify-between items-center px-3 py-2 border-b border-[#f0f0f0] text-[13px] bg-white">
-                    <span class="text-[#2563eb] font-medium hover:underline cursor-pointer">v_mpire_eboy</span>
-                    <span class="text-gray-400 font-mono text-xs">#1</span>
+                    <span id="cardTitle" class="text-[#2563eb] font-medium hover:underline cursor-pointer">v_mpire</span>
+                    <span class="text-gray-400 font-mono text-xs">#12</span>
                 </div>
                 
-                <!-- 3D Viewport / Canvas Container -->
+                <!-- 3D Viewport / Canvas Container (No overlapping buttons!) -->
                 <div id="canvas-container" class="w-full h-[380px] bg-checker relative flex items-center justify-center select-none overflow-hidden">
-                    <!-- Quick Pose Badge -->
-                    <div class="absolute top-2.5 right-2.5 z-10 flex gap-1">
-                        <button id="poseBtn" title="Toggle Pose" class="bg-white/90 hover:bg-white text-gray-700 border border-gray-200 rounded px-2 py-1 text-[11px] font-medium shadow-sm transition">
-                            Pose: Walk
-                        </button>
-                        <button id="spinBtn" title="Auto Rotate" class="bg-white/90 hover:bg-white text-gray-700 border border-gray-200 rounded px-2 py-1 text-[11px] font-medium shadow-sm transition">
-                            Spin: Off
-                        </button>
-                    </div>
                     <!-- Three.js Canvas Injected Here -->
                 </div>
                 
                 <!-- Card Footer -->
                 <div class="flex justify-between items-center px-3 py-2 border-t border-[#f0f0f0] text-gray-500 text-[13px] bg-white">
-                    <span>1.6h</span>
-                    <span class="font-medium text-gray-600">124 ★</span>
+                    <span>1.6d</span>
+                    <span class="font-medium text-gray-600">12 ★</span>
                 </div>
             </div>
 
+            <!-- Quick Pose & Spin Controls (Moved cleanly below card so they never block the head) -->
+            <div class="mt-2.5 w-full max-w-[300px] grid grid-cols-2 gap-2">
+                <button id="poseBtn" class="bg-white hover:bg-gray-50 text-gray-700 border border-[#d4d4d8] rounded py-1.5 px-3 text-xs font-medium shadow-sm transition">
+                    Pose: Walk
+                </button>
+                <button id="spinBtn" class="bg-white hover:bg-gray-50 text-gray-700 border border-[#d4d4d8] rounded py-1.5 px-3 text-xs font-medium shadow-sm transition">
+                    Turntable: Off
+                </button>
+            </div>
+
             <!-- Primary Download Button -->
-            <button id="downloadBtn" class="mt-3 w-full max-w-[300px] bg-[#16a34a] hover:bg-[#15803d] active:bg-[#166534] text-white font-semibold py-2.5 px-4 rounded-md shadow-sm transition-all flex items-center justify-center gap-2 text-sm">
+            <button id="downloadBtn" class="mt-2.5 w-full max-w-[300px] bg-[#16a34a] hover:bg-[#15803d] active:bg-[#166534] text-white font-semibold py-2.5 px-4 rounded-md shadow-sm transition-all flex items-center justify-center gap-2 text-sm">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                 </svg>
@@ -102,14 +103,30 @@
             </button>
         </div>
 
-        <!-- RIGHT COLUMN: Skin Inspector, Layer Toggles & UV Texture Preview -->
-        <div class="md:col-span-7 bg-white border border-[#d4d4d8] rounded-md p-5 shadow-sm flex flex-col gap-5">
+        <!-- RIGHT COLUMN: Skin Inspector, Style Presets & UV Texture Preview -->
+        <div class="md:col-span-7 bg-white border border-[#d4d4d8] rounded-md p-5 shadow-sm flex flex-col gap-4">
             <div class="flex items-center justify-between border-b border-gray-100 pb-3">
                 <div>
-                    <h1 class="text-base font-bold text-gray-900">Aesthetic Grunge E-Boy (64x64 Steve)</h1>
-                    <p class="text-xs text-gray-500 mt-0.5">Hand-crafted vertical gradient hair, deep 3D bangs & multi-layered streetwear</p>
+                    <h1 class="text-base font-bold text-gray-900">Authentic NameMC Aesthetic E-Boy</h1>
+                    <p class="text-xs text-gray-500 mt-0.5">Clean vertical pillar shading, 1×2 anime eyes & long 3D curtain fringe</p>
                 </div>
-                <span class="bg-zinc-900 text-white text-[11px] font-mono px-2.5 py-1 rounded font-medium">4px Classic</span>
+                <span class="bg-zinc-900 text-white text-[11px] font-mono px-2.5 py-1 rounded font-medium">64×64 Steve</span>
+            </div>
+
+            <!-- Hair / Style Variant Selector (Inspired by Image 2 Cards) -->
+            <div>
+                <span class="text-[11px] font-semibold uppercase tracking-wider text-gray-400 block mb-1.5">Select Hair & Palette Style</span>
+                <div class="grid grid-cols-3 gap-2">
+                    <button onclick="setSkinStyle('split')" id="style-split" class="border-2 border-zinc-900 bg-zinc-900 text-white text-xs font-semibold py-2 px-2.5 rounded transition">
+                        Split-Dye E-Boy
+                    </button>
+                    <button onclick="setSkinStyle('vmpire')" id="style-vmpire" class="border border-gray-200 bg-gray-50 hover:bg-gray-100 text-gray-800 text-xs font-medium py-2 px-2.5 rounded transition">
+                        #12 v_mpire (All Black)
+                    </button>
+                    <button onclick="setSkinStyle('ash')" id="style-ash" class="border border-gray-200 bg-gray-50 hover:bg-gray-100 text-gray-800 text-xs font-medium py-2 px-2.5 rounded transition">
+                        #8 nvura (Ash Blonde)
+                    </button>
+                </div>
             </div>
 
             <!-- Interactive Camera & Layer Controls -->
@@ -121,7 +138,7 @@
                     Front View
                 </button>
                 <button onclick="setViewAngle('back')" class="bg-gray-100 hover:bg-gray-200 text-gray-800 text-xs font-medium py-2 px-3 rounded transition">
-                    Back Sigil View
+                    Back View
                 </button>
                 <button id="toggleLayerBtn" class="bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 text-xs font-semibold py-2 px-3 rounded transition">
                     Outer Layer: ON
@@ -138,30 +155,22 @@
                 </div>
 
                 <div class="flex flex-col items-center">
-                    <span class="text-[11px] font-mono uppercase tracking-wider text-gray-500 mb-2">Face & 3D Fringe Composite</span>
+                    <span class="text-[11px] font-mono uppercase tracking-wider text-gray-500 mb-2">Clean 8×8 Face & 3D Bangs</span>
                     <div class="p-2 bg-checker-dark rounded border border-gray-300 shadow-inner">
                         <canvas id="facePreviewCanvas" width="8" height="8" class="w-40 h-40 pixelated"></canvas>
                     </div>
                 </div>
             </div>
 
-            <!-- Aesthetic Details Breakdown -->
+            <!-- What Makes This Skin Clean -->
             <div class="grid grid-cols-2 gap-2.5 text-xs text-gray-600">
                 <div class="p-2.5 bg-gray-50 rounded border border-gray-100">
-                    <strong class="text-gray-900 block mb-0.5">Anime Curtain Fringe</strong>
-                    Vertical strand shading in split obsidian black & platinum ash-blonde over low-positioned eyes.
+                    <strong class="text-gray-900 block mb-0.5">True NameMC 8×8 Face</strong>
+                    No muddy nose or dark under-eye beards—crisp 1×2 vertical eyes (`W`+`e`) with long hair strands between the eyes.
                 </div>
                 <div class="p-2.5 bg-gray-50 rounded border border-gray-100">
-                    <strong class="text-gray-900 block mb-0.5">3D Streetwear Hoodie</strong>
-                    Drop-shoulder washed charcoal zip-up over micro-ribbed thermal + double silver chains.
-                </div>
-                <div class="p-2.5 bg-gray-50 rounded border border-gray-100">
-                    <strong class="text-gray-900 block mb-0.5">Asymmetrical 4px Arms</strong>
-                    Left oversized thumb-hole cuff with silver rings; right rolled sleeve with 360° barbed-wire ink.
-                </div>
-                <div class="p-2.5 bg-gray-50 rounded border border-gray-100">
-                    <strong class="text-gray-900 block mb-0.5">Skater Cargo & High-Tops</strong>
-                    Faded slate denim with ripped knees, wallet chain, and chunky black/white canvas sneakers.
+                    <strong class="text-gray-900 block mb-0.5">Vertical Pillar Shading</strong>
+                    Smooth vertical fabric folds on the open dark overcoat and inner shirt—zero messy horizontal zebra stripes.
                 </div>
             </div>
         </div>
@@ -170,85 +179,97 @@
 
 <script>
 /**
- * PART 1: ULTRA-DETAILED 64x64 PIXEL ART SKIN GENERATOR
- * Redesigned with true NameMC e-boy anime proportions:
- * - Eyes sit at rows 5-6 (low on the head) framed by sweeping 3D vertical hair strands
- * - Smooth vertical gradient shading on hair & clothes (no noisy checkerboard artifacts)
- * - Clean, recognizable silhouettes on both Base and 3D Overlay layers
+ * PART 1: AUTHENTIC NAMEMC AESTHETIC E-BOY 64x64 TEXTURE GENERATOR
+ * Strictly follows the pixel-art rules seen in Image 2 (#12 v_mpire, #8 nvura, #16 kkkkkk099):
+ * 1. Face is clean pale porcelain ('s', 'S', 'm') with ZERO ugly dark nose/mouth blocks.
+ * 2. Eyes are crisp 1x2 vertical anime eyes on rows 5-6 (cols 1-2 and 5-6) with pure white sclera ('W') and dark iris ('e', 'E').
+ * 3. Hair uses smooth vertical columns and a deep 3D outer fringe that hangs down between the eyes.
+ * 4. Torso & Arms use clean vertical fold pillars (like #12 v_mpire) with a crisp white V-neck collar and subtle silver chain.
  */
 
-const PALETTE = {
-    ' ': null, // Transparent
+let currentStyle = 'split'; // 'split' | 'vmpire' | 'ash'
 
-    // Pale Porcelain Ivory Skin (Hue-shifted warm cream to cool mauve-taupe shadows)
-    'h': '#FFF7F0', // Porcelain highlight
-    's': '#F5E4D7', // Pale ivory base
-    'S': '#E2C9B8', // Soft peach-beige mid-tone
-    'm': '#C9ABA0', // Mauve-taupe crease shadow (neck, under-hair, nose)
-    'l': '#B89698', // Cool lavender-mauve under-eye bag / lip tint
+function getPalette(style) {
+    // Base palette shared across styles
+    const pal = {
+        ' ': null, // Transparent
 
-    // Obsidian Black Hair (Right side - vertical strand shading)
-    '0': '#0D0D11', // Deepest obsidian root/shadow
-    '1': '#16171D', // Rich charcoal-black core
-    '2': '#23252E', // Soft slate-black strand mid
-    '9': '#323542', // Cool steel luster highlight band
+        // Clean Porcelain Anime Skin (Warm ivory to soft peach shadow - NO muddy grey/red)
+        'h': '#FFFBF7', // Bright skin highlight
+        's': '#FCEEE4', // Clean pale porcelain base
+        'S': '#F3DACB', // Soft warm skin shadow (forehead under bangs)
+        'm': '#E4C3B2', // Subtle chin / neck contour
 
-    // Bleached Platinum-Ash Blonde Hair (Left side - vertical strand shading)
-    '3': '#FFFDF7', // Pure platinum luster highlight
-    '4': '#F2E9D8', // Pale champagne blonde base
-    '5': '#DED2BC', // Warm ash-blonde mid-strand
-    '6': '#C2B39B', // Muted taupe-blonde root/tip shadow
+        // Crisp Anime Eyes
+        'W': '#FFFFFF', // Pure white sclera / collar / shoe sole
+        'e': '#14151B', // Deep obsidian pupil / upper lash
+        'E': '#3A3E4D', // Soft charcoal lower iris
 
-    // Eyes, Piercings & Facial Markings (Low anime placement)
-    'e': '#1E202B', // Deep charcoal upper lash/iris
-    'E': '#7C8B9E', // Icy steel-blue lower iris
-    'W': '#FFFFFF', // Crisp pure white specular highlight & shoe laces
-    'r': '#8F2436', // Subtle crimson micro-heart cheekbone tattoo
-    'x': '#E2E8F0', // Bright polished silver hardware (chains, rings, cross, labret)
-    'X': '#94A3B8', // Shaded metallic silver
+        // Clean Vertical-Shaded Dark Overcoat / Hoodie (Like #12 v_mpire)
+        'D': '#111216', // Deepest jacket seam
+        'H': '#1A1C22', // Main matte black jacket
+        'O': '#262932', // Vertical fold highlight pillar
+        'L': '#323642', // Soft lapel edge highlight
 
-    // Ribbed Thermal Base Layer (Center chest & upper arm)
-    't': '#18181E', // Deep slate rib
-    'T': '#2B2C36', // Muted ash-gray rib
+        // Inner Shirt & Silver Hardware
+        't': '#22242C', // Inner charcoal shirt base
+        'T': '#2D303B', // Inner shirt vertical highlight
+        'x': '#F1F5F9', // Bright silver chain / cross / ring highlight
+        'X': '#94A3B8', // Muted silver hardware
 
-    // Washed Vintage Black Zip-Up Hoodie (Base + 3D Outer Layer)
-    'D': '#121317', // Deep seam/fold occlusion
-    'H': '#1C1D23', // Heavyweight washed black main fabric
-    'O': '#282A33', // Raised lapel / cuff fold highlight
-    'Z': '#3F4352', // Zipper teeth & subtle trim
-    'g': '#E4E4E7', // Cracked off-white cyber-sigil back print highlight
-    'G': '#71717A', // Faded ash screen-print shadow
+        // Sleek Black Trousers & High-Tops
+        'd': '#0B0C0E', // Deepest trouser shadow
+        'P': '#121318', // Sleek black pants base
+        'p': '#1C1E26', // Vertical pant leg highlight
+        'B': '#09090B', // Jet black boots / belt
+        'w': '#F4F4F6'  // Clean white cuff / sole trim
+    };
 
-    // Vintage Slate-Denim Skater Cargo Trousers
-    'd': '#1E2229', // Deep inner leg / crease shadow
-    'P': '#292F38', // Washed charcoal-slate denim core
-    'p': '#363E4A', // Faded slate thigh highlight
-    'f': '#475161', // Distressed denim fray edge around knee rips
+    if (style === 'split') {
+        // Right side Obsidian Black (0,1,2,9), Left side Platinum Ash Blonde (3,4,5,6)
+        Object.assign(pal, {
+            '0': '#0D0E12', '1': '#16181F', '2': '#222530', '9': '#303443',
+            '3': '#FFFDF9', '4': '#F5ECE0', '5': '#E2D6C5', '6': '#C7B8A3'
+        });
+    } else if (style === 'vmpire') {
+        // All-black glossy obsidian hair (Matches #12 v_mpire in Image 2)
+        Object.assign(pal, {
+            '0': '#0B0C0F', '1': '#13151B', '2': '#1E2029', '9': '#2C2F3C',
+            '3': '#2C2F3C', '4': '#1E2029', '5': '#13151B', '6': '#0B0C0F'
+        });
+    } else if (style === 'ash') {
+        // Full Platinum / Ash Blonde hair (Matches #8 nvura / #7 in Image 2)
+        Object.assign(pal, {
+            '0': '#C2B49F', '1': '#D8CBB8', '2': '#EBE0D0', '9': '#FFFDF9',
+            '3': '#FFFDF9', '4': '#EBE0D0', '5': '#D8CBB8', '6': '#C2B49F'
+        });
+    }
 
-    // Belt, Ink & Chunky Platform High-Top Sneakers
-    'B': '#0F1014', // Matte black leather belt & chunky shoe upper
-    'k': '#181920', // Barbed-wire tattoo ink & dark sock cuff
-    'w': '#F4F4F6'  // Crisp off-white rubber foxing sole & toe cap
-};
+    return pal;
+}
 
 const blank = (w, h) => Array(h).fill(' '.repeat(w));
 
 const SkinData = {
     // =========================================================================
     // HEAD BASE (u:0, v:0, 8x8x8)
-    // Features low-set anime eyes (rows 4-5), long split-dye curtain bangs,
-    // shaded neck shadow, micro-heart tattoo, and silver labret piercing.
+    // Authentic NameMC E-Boy Face:
+    // - Rows 0-3: Vertical-shaded hair bangs
+    // - Row 4: Hair tips hanging over eye brows + bridge of nose shadow
+    // - Rows 5-6: Crisp 2x2 eyes (White sclera on outer col, dark pupil on inner col)
+    //             with a clean 2-pixel pale skin bridge in the center!
+    // - Row 7: Clean porcelain chin (NO red nose, NO dark beard bags)
     // =========================================================================
     headBase: {
         top: [
-            "01106544",
-            "01206434",
-            "12915433",
-            "12915434",
-            "11205544",
-            "01106545",
-            "00106655",
-            "00006665"
+            "01216545",
+            "01296434",
+            "01295434",
+            "01215434",
+            "01215445",
+            "01116545",
+            "00106556",
+            "00006666"
         ],
         bottom: [
             "mmmmmmmm",
@@ -260,102 +281,102 @@ const SkinData = {
             "mSSSSSSm",
             "mmmmmmmm"
         ],
-        right: [ // Character's Right Side (Obsidian Black undercut & temple strands)
-            "01112110",
-            "12922921",
-            "12211221",
-            "12100121",
-            "010ms110",
-            "000sS010",
+        right: [
+            "01211210",
+            "01299210",
+            "01222210",
+            "01121100",
+            "01100100",
+            "010ss000",
             "00ssss00",
-            "000ss000"
+            "00ssss00"
         ],
-        front: [ // Character's Face - Split curtain bangs framing eyes on rows 4 & 5
-            "01106445", // Row 0: Root crown with center part shadow
-            "12915334", // Row 1: Glossy hair luster band across forehead
-            "12105434", // Row 2: Mid-forehead curtain bangs parting slightly
-            "101mS645", // Row 3: Bangs sweeping over outer brows + center skin bridge
-            "0WeSssWe", // Row 4: Upper eyes! White specular 'W' + dark lash 'e'
-            "0EEsmrEE", // Row 5: Lower icy steel iris 'E' + soft nose 'm' + micro-heart 'r'
-            "sllsssll", // Row 6: Soft lavender under-eye blush/bags 'l' + pale cheeks
-            "msssssxs"  // Row 7: Jawline contour + silver labret ring 'x' at left lip corner
+        front: [
+            "01216545", // Row 0: Clean vertical hair columns
+            "01295434", // Row 1: Hair shine band
+            "01215434", // Row 2: Full bangs covering forehead
+            "01106445", // Row 3: Lower bangs tapering
+            "01S06S45", // Row 4: Center hair strands ('0','6') + brow shadow ('S')
+            "0WeSssWe", // Row 5: Upper Eye: Outer hair, White sclera 'W', dark pupil 'e', clean center skin 'Ss'
+            "0WEsssWE", // Row 6: Lower Eye: Outer hair, White sclera 'W', charcoal iris 'E', clean pale nose/cheeks 'sss'
+            "mssssssm"  // Row 7: Clean, smooth pale jawline (no ugly mouth/beard blocks)
         ],
-        left: [ // Character's Left Side (Platinum Blonde layered curtain locks)
-            "54434456",
-            "43343345",
-            "44544545",
-            "55655656",
-            "565sm566",
-            "56sSs666",
-            "6sssss66",
-            "66ss6666"
+        left: [
+            "54454456",
+            "54333456",
+            "54444456",
+            "65445566",
+            "65665566",
+            "666ss566",
+            "66ssss66",
+            "66ssss66"
         ],
-        back: [ // Layered grunge undercut at nape
-            "44560110",
-            "33451291",
-            "44551221",
-            "45561121",
-            "55660110",
-            "56660010",
-            "66000000",
+        back: [
+            "54451210",
+            "54341290",
+            "54451220",
+            "65451210",
+            "65561110",
+            "66560100",
+            "66600000",
             "000mm000"
         ]
     },
 
     // =========================================================================
     // HEAD OVERLAY (u:32, v:0, 8x8x8)
-    // Crucial 3D anime hair depth! Sweeping front curtain strands, side locks,
-    // and dangling silver micro-cross earring on left lobe.
+    // Deep 3D overhanging fringe (like #12 v_mpire) with long side locks
+    // and a central parted lock dipping between the eyes.
     // =========================================================================
     headOverlay: {
         top: [
-            " 11  44 ",
-            "12215334",
-            "12915334",
-            "12215444",
-            "11105544",
-            " 11  44 ",
+            " 121544 ",
+            "01295434",
+            "01295434",
+            "01215434",
+            "01215445",
+            " 110655 ",
             "        ",
             "        "
         ],
         bottom: blank(8, 8),
         right: [
-            " 112211 ",
-            "12922921",
-            "12211221",
-            "110  011",
-            "10    01",
+            " 121121 ",
+            "01299210",
+            "01222210",
+            "01121100",
+            "011  100",
+            "01    00",
             "0      0",
-            "    B   ", // Black ear plug/gauge on right lobe
             "        "
         ],
         front: [
-            "11206434", // 3D volume crown
-            "12915334", // 3D sweeping fringe top
-            "121  434", // Parted curtain bangs revealing bridge of nose
-            "10    45", // Tapered side-swept bangs framing the eyes
-            "0      5", // Fine outer hair wisps beside cheekbones
-            "        ",
-            "        ",
+            "01216545", // Row 0: Full 3D crown
+            "01295434", // Row 1: 3D luster band
+            "01215434", // Row 2: Deep overhanging fringe
+            "01106445", // Row 3: Parted bangs with center strand
+            "01 06 45", // Row 4: Center lock ('06') + side curtains framing the eyes
+            "0      5", // Row 5: Side wisps framing upper cheek
+            "0      6", // Row 6: Tapered sideburn tips
             "        "
         ],
         left: [
-            " 443344 ",
-            "43344334",
-            "44544544",
-            "556  655",
-            "56    65",
+            " 445445 ",
+            "54333456",
+            "54444456",
+            "65445566",
+            "655  566",
+            "66    56",
             "6      6",
-            "   x    ", // Silver cross earring top
-            "   X    "  // Silver cross earring drop
+            "        "
         ],
         back: [
-            " 456011 ",
-            "44551221",
-            "45561121",
-            "55660110",
-            " 66  00 ",
-            "        ",
+            " 445121 ",
+            "54341290",
+            "54451220",
+            "65451210",
+            " 556110 ",
+            "  6000  ",
             "        ",
             "        "
         ]
@@ -363,13 +384,14 @@ const SkinData = {
 
     // =========================================================================
     // TORSO BASE (u:16, v:16, 8x12x4)
-    // Open washed-black hoodie sides framing the ribbed thermal center & chains.
+    // Modelled directly after #12 v_mpire in Image 2:
+    // Crisp white V-neck collar under a sleek vertical-shaded dark coat + silver pendant.
     // =========================================================================
     torsoBase: {
         top: [
             "HHHHHHHH",
-            "HssmmssH", // Collarbone & neck base
-            "HssssssH",
+            "HWWssWWH",
+            "HWWssWWH",
             "HHHHHHHH"
         ],
         bottom: [
@@ -379,80 +401,80 @@ const SkinData = {
             "BBBBBBBB"
         ],
         right: [
-            "HHHH", "HDHH", "HDHH", "HHHH", "HOHH", "HDHH",
-            "HHHH", "HDHH", "HOHH", "HDHH", "HHHH", "BBBB"
+            "HDHH", "HDHH", "HDHH", "HDHH", "HDHH", "HDHH",
+            "HDHH", "HDHH", "HDHH", "HDHH", "HDHH", "BBBB"
         ],
         front: [
-            "HDsSSsDH", // Exposed pale collarbone
-            "HDxTTxDH", // Upper silver curb chain over ash thermal
-            "HDtxxtDH", // Upper chain center link
-            "HDXTTXDH", // Second hanging chain Sides
-            "HDtXXtDH", // Hanging chain V-drop
-            "HDTTxTDH", // Silver micro-padlock pendant ('x')
-            "HDttttDH", // Ribbed thermal stripe
-            "HDTTTTDH", // Ribbed thermal stripe
-            "HDttttDH", // Ribbed thermal stripe
-            "HDTTTTDH", // Ribbed thermal stripe
-            "HDttttDH", // Ribbed thermal stripe
-            "BBxXXxBB"  // Matte black grommet belt + double-prong silver buckle
+            "HWWssWWH", // Row 0: Crisp white shirt collar framing pale neck
+            "HDWssWDH", // Row 1: Narrowing white V-neck collar
+            "HDOxxODH", // Row 2: Silver chain clasp at base of neck
+            "HDOTtODH", // Row 3: Vertical jacket lapel ('O') + inner dark shirt ('Tt')
+            "HDOtxODH", // Row 4: Tiny silver pendant drop ('x')
+            "HDOTtODH", // Row 5: Smooth vertical shading (NO ugly horizontal stripes!)
+            "HDOTtODH", // Row 6
+            "HDOTtODH", // Row 7
+            "HDOTtODH", // Row 8
+            "HDOTtODH", // Row 9
+            "HDOTtODH", // Row 10
+            "BBBxXBBB"  // Row 11: Sleek black belt with subtle 2px silver buckle
         ],
         left: [
-            "HHHH", "HHDH", "HHDH", "HHHH", "HHOH", "HHDH",
-            "HHHH", "HHDH", "HHOH", "HHDH", "HHHH", "BBBB"
+            "HHDH", "HHDH", "HHDH", "HHDH", "HHDH", "HHDH",
+            "HHDH", "HHDH", "HHDH", "HHDH", "HHDH", "BBBB"
         ],
         back: [
-            "HHHHHHHH", // Hoodie back panel
-            "HDgGGgDH", // Cyber-sigil / skeletal wing top
-            "HgGDDGgH", // Sigil upper arch
-            "HDgGGgDH", // Sigil core
-            "HGGggGGH", // Wide skeletal rib/wing spread
-            "HDGggGDH", // Central spine motif
-            "HGGggGGH", // Lower wing flare
-            "HDgGGgDH", // Distressed print taper
-            "HDDggDDH", // Tail of sigil
-            "HDHHHHHD", // Lower hoodie drape
-            "HDOOOOHD", // Bunched hem fold
-            "HHHHHHHH"  // Ribbed waistband
+            "HHHHHHHH",
+            "HDOOOODH",
+            "HDOTtODH",
+            "HDOTxODH", // Subtle silver cross motif on upper back
+            "HDOxxxDH",
+            "HDOTxODH",
+            "HDOTxODH",
+            "HDOTtODH",
+            "HDOTtODH",
+            "HDOOOODH",
+            "HDDDDDDH",
+            "BBBBBBBB"
         ]
     },
 
     // =========================================================================
     // TORSO OVERLAY (u:16, v:32, 8x12x4)
-    // Protruding 3D unzipped hoodie lapels, silver zipper teeth, and hood around neck.
+    // Clean 3D open jacket lapels (vertical pillars on cols 0-2 and 5-7).
     // =========================================================================
     torsoOverlay: {
         top: [
-            "HOOOOOOH",
-            "OH    HO",
-            "O      O",
-            "OO    OO"
+            "HLLLLLLH",
+            "LH    HL",
+            "L      L",
+            "LH    HL"
         ],
         bottom: blank(8, 4),
         right: [
-            "HOOH", "HHOH", "HHDH", "HHHH", "HOOH", "HHDH",
-            "HHHH", "HHOH", "HHDH", "HOOH", "HHDH", "HHHH"
+            "HOOH", "HOOH", "HOOH", "HOOH", "HOOH", "HOOH",
+            "HOOH", "HOOH", "HOOH", "HOOH", "HOOH", "DDDD"
         ],
         front: [
-            "HOZ  ZOH", // 3D Hoodie collar lapels + silver zipper tracks
-            "HOZ  ZOH",
-            "HO    OH", // Open center showing thermal & chains underneath
-            "HOZ  ZOH",
+            "HLL  LLH", // 3D Collar lapels
+            "HOL  LOH",
+            "HOL  LOH", // Clean vertical 3D coat edges
+            "HOL  LOH",
             "HO    OH",
-            "HOZ  ZOH",
             "HO    OH",
-            "HOZ  ZOH", // Kangaroo pocket seam top
-            "HOO  OOH", // 3D front pouch pockets
-            "HOD  DOH",
+            "HO    OH",
+            "HO    OH",
             "HOO  OOH",
-            "HHD  DHH"
+            "HOO  OOH",
+            "HOD  DOH",
+            "HDD  DDH"
         ],
         left: [
-            "HOOH", "HOHH", "HDHH", "HHHH", "HOOH", "HDHH",
-            "HHHH", "HOHH", "HDHH", "HOOH", "HDHH", "HHHH"
+            "HOOH", "HOOH", "HOOH", "HOOH", "HOOH", "HOOH",
+            "HOOH", "HOOH", "HOOH", "HOOH", "HOOH", "DDDD"
         ],
         back: [
-            "HOOOOOOH", // 3D Hood resting across upper back/shoulders
-            "HDDDDDDH", // Under-hood shadow crease
+            "HLLLLLLH",
+            "HDDDDDDH",
             "        ",
             "        ",
             "        ",
@@ -460,318 +482,256 @@ const SkinData = {
             "        ",
             "        ",
             "        ",
-            "H      H",
-            "HOOOOOOH", // 3D bunched bottom hoodie hem
+            "        ",
+            "HOOOOOOH",
             "HDDDDDDH"
         ]
     },
 
     // =========================================================================
     // RIGHT ARM BASE (u:40, v:16, 4x12x4)
-    // Pushed-up hoodie sleeve + bare pale forearm + 360° barbed-wire tattoo + hand.
+    // Sleek full-length dark coat sleeve with crisp white shirt cuff & pale hand
+    // (Matches #12 v_mpire in Image 2—no awkward bare patchy middle arm!)
     // =========================================================================
     rightArmBase: {
         top: ["HHHH", "HHHH", "HHHH", "HHHH"],
         bottom: ["sSSs", "ssss", "ssss", "mSSm"],
         right: [
-            "HHHH", "HDHH", "HOHH", "HDHH", "DDDD", // Upper sleeve
-            "mmmm", // Shadow cast by pushed-up cuff
-            "ssss", // Bare pale forearm
-            "ksks", // 360° Barbed-wire tattoo upper thorns
-            "skkk", // Barbed-wire continuous band
-            "ssss", // Wrist
-            "shhs", // Knuckle highlight
-            "sSSs"  // Fingers
+            "HDHH", "HDHH", "HDHH", "HDHH", "HDHH",
+            "HDHH", "HDHH", "HDHH", "HDHH",
+            "DDDD", // Sleeve hem
+            "wwww", // Crisp white dress-shirt cuff peeking out
+            "ssss"  // Clean pale fingers
         ],
         front: [
-            "HHHH", "HHDH", "HOOH", "HDDD", "DDDD",
-            "mmmm",
-            "shss",
-            "kksk", // Barbed-wire tattoo front
-            "skks",
-            "ssss",
-            "shhs",
-            "sSSs"
+            "HHOH", "HHOH", "HHOH", "HHOH", "HHOH",
+            "HHOH", "HHOH", "HHOH", "HHOH",
+            "DDDD", // Dark sleeve cuff
+            "wwww", // Crisp 1px white cuff (exact match to #12 v_mpire)
+            "ssxs"  // Pale hand + subtle silver ring
         ],
         left: [
-            "HHHH", "HHDH", "HHOH", "HHDH", "DDDD",
-            "mmmm",
-            "sSss",
-            "sksk", // Barbed-wire tattoo inner arm
-            "kkks",
-            "sSss",
-            "ssss",
-            "mSSm"
+            "HHDH", "HHDH", "HHDH", "HHDH", "HHDH",
+            "HHDH", "HHDH", "HHDH", "HHDH",
+            "DDDD",
+            "wwww",
+            "sSSs"
         ],
         back: [
-            "HHHH", "HDHH", "HOOH", "DDDH", "DDDD",
-            "mmmm",
-            "sSss",
-            "kskk", // Barbed-wire tattoo back
-            "sksk",
-            "sSss",
-            "ssss",
-            "sSSs"
+            "HOHH", "HOHH", "HOHH", "HOHH", "HOHH",
+            "HOHH", "HOHH", "HOHH", "HOHH",
+            "DDDD",
+            "wwww",
+            "ssss"
         ]
     },
 
     // =========================================================================
     // RIGHT ARM OVERLAY (u:40, v:32, 4x12x4)
-    // Thick 3D bunched fabric folds at mid-forearm where sleeve is pushed up.
+    // Subtle 3D sleeve cuff & shoulder drape.
     // =========================================================================
     rightArmOverlay: {
         top: ["HOOH", "OHOO", "OHOO", "HOOH"],
         bottom: blank(4, 4),
         right: [
-            "HOOH", "HHHH", "HHDH", "HOOH", "DDDD", "OOOO",
-            "    ", "    ", "    ", "    ", "    ", "    "
+            "HOOH", "HOOH", "    ", "    ", "    ", "    ",
+            "    ", "    ", "HOOH", "DDDD", "    ", "    "
         ],
         front: [
-            "HOOH", "HHHH", "HHDH", "HOOH", "DDDD", "OOOO",
-            "    ", "    ", "    ", "    ", "    ", "    "
+            "HOOH", "HOOH", "    ", "    ", "    ", "    ",
+            "    ", "    ", "HOOH", "DDDD", "    ", "    "
         ],
         left: [
-            "HOOH", "HHHH", "HHDH", "HOOH", "DDDD", "OOOO",
-            "    ", "    ", "    ", "    ", "    ", "    "
+            "HOOH", "HOOH", "    ", "    ", "    ", "    ",
+            "    ", "    ", "HOOH", "DDDD", "    ", "    "
         ],
         back: [
-            "HOOH", "HHHH", "HHDH", "HOOH", "DDDD", "OOOO",
-            "    ", "    ", "    ", "    ", "    ", "    "
+            "HOOH", "HOOH", "    ", "    ", "    ", "    ",
+            "    ", "    ", "HOOH", "DDDD", "    ", "    "
         ]
     },
 
     // =========================================================================
     // LEFT ARM BASE (u:32, v:48, 4x12x4)
-    // Extended drop-shoulder sleeve covering wrist + thumb-hole cuff + 2 silver rings.
+    // Matching sleek dark sleeve with white cuff and silver ring detail.
     // =========================================================================
     leftArmBase: {
         top: ["HHHH", "HHHH", "HHHH", "HHHH"],
         bottom: ["sSSs", "ssss", "ssss", "mSSm"],
         right: [
-            "HHHH", "HHDH", "HHHH", "HOHH", "HHDH", "HHHH",
-            "HOHH", "HHDH", "HHHH", "DDDD",
-            "Hsss", // Thumb-hole wrap
-            "sxsx"  // Two silver band rings on fingers
+            "HDHH", "HDHH", "HDHH", "HDHH", "HDHH",
+            "HDHH", "HDHH", "HDHH", "HDHH",
+            "DDDD",
+            "wwww",
+            "sSSs"
         ],
         front: [
-            "HHHH", "HDHH", "HHHH", "HOOH", "HDDH", "HHHH",
-            "HOOH", "HDDH", "HHHH", "DDDD",
-            "HHHs", // Extended cuff over palm with thumb opening
-            "xsss"  // Silver ring highlight on index finger
-        ],
-        left: [
-            "HHHH", "HDHH", "HHHH", "HHOH", "HDHH", "HHHH",
-            "HHOH", "HDHH", "HHHH", "DDDD",
-            "HHHH",
+            "HOHH", "HOHH", "HOHH", "HOHH", "HOHH",
+            "HOHH", "HOHH", "HOHH", "HOHH",
+            "DDDD",
+            "wwww",
             "sxss"
         ],
+        left: [
+            "HHDH", "HHDH", "HHDH", "HHDH", "HHDH",
+            "HHDH", "HHDH", "HHDH", "HHDH",
+            "DDDD",
+            "wwww",
+            "ssss"
+        ],
         back: [
-            "HHHH", "HHDH", "HHHH", "HOOH", "HDDH", "HHHH",
-            "HOOH", "HDDH", "HHHH", "DDDD",
-            "HHHH",
-            "sxsx"
+            "HHOH", "HHOH", "HHOH", "HHOH", "HHOH",
+            "HHOH", "HHOH", "HHOH", "HHOH",
+            "DDDD",
+            "wwww",
+            "ssss"
         ]
     },
 
     // =========================================================================
     // LEFT ARM OVERLAY (u:48, v:48, 4x12x4)
-    // Baggy 3D sleeve silhouette stacks above the wrist and palm.
     // =========================================================================
     leftArmOverlay: {
         top: ["HOOH", "OHOO", "OHOO", "HOOH"],
         bottom: blank(4, 4),
         right: [
-            "HOOH", "HHHH", "    ", "    ", "    ", "    ",
-            "HOOH", "HDDD", "HOOH", "DDDD", "H   ", "    "
+            "HOOH", "HOOH", "    ", "    ", "    ", "    ",
+            "    ", "    ", "HOOH", "DDDD", "    ", "    "
         ],
         front: [
-            "HOOH", "HHHH", "    ", "    ", "    ", "    ",
-            "HOOH", "HDDD", "HOOH", "DDDD", "HH  ", "    "
+            "HOOH", "HOOH", "    ", "    ", "    ", "    ",
+            "    ", "    ", "HOOH", "DDDD", "    ", "    "
         ],
         left: [
-            "HOOH", "HHHH", "    ", "    ", "    ", "    ",
-            "HOOH", "DDDH", "HOOH", "DDDD", "HH  ", "    "
+            "HOOH", "HOOH", "    ", "    ", "    ", "    ",
+            "    ", "    ", "HOOH", "DDDD", "    ", "    "
         ],
         back: [
-            "HOOH", "HHHH", "    ", "    ", "    ", "    ",
-            "HOOH", "DDDH", "HOOH", "DDDD", "HH  ", "    "
+            "HOOH", "HOOH", "    ", "    ", "    ", "    ",
+            "    ", "    ", "HOOH", "DDDD", "    ", "    "
         ]
     },
 
     // =========================================================================
     // RIGHT LEG BASE (u:0, v:16, 4x12x4)
-    // Faded slate-denim skater cargo pants, frayed knee tear, & chunky high-tops.
+    // Clean, vertical-shaded black trousers & monochrome footwear (like #12 & #16)
     // =========================================================================
     rightLegBase: {
         top: ["PPPP", "PPPP", "PPPP", "PPPP"],
-        bottom: ["wwww", "wBBw", "wBBw", "wwww"],
+        bottom: ["BBBB", "BBBB", "BBBB", "BBBB"],
         right: [
-            "dPPp", "dPPp", "dPpp", "dPPp", "dPPd",
-            "dfff", // Distressed fray above knee
-            "dsss", // Pale knee skin showing through rip
-            "dfff", // Lower fray
-            "dPPd",
-            "kkkk", // Black athletic crew sock
-            "BBBB", // High-top canvas sneaker upper
-            "wwww"  // Crisp white platform sole
+            "dPPp", "dPPp", "dPPp", "dPPp", "dPPp", "dPPp",
+            "dPPp", "dPPp", "dPPp",
+            "dddd",
+            "BBBB",
+            "BBBB"
         ],
         front: [
-            "pPPd", "pPPd", "ppPd", "pPPd", "Pppd",
-            "fffd", // Frayed white/slate denim threads
-            "ssSd", // Exposed pale skin at knee rip
-            "fffd",
-            "PPPd",
-            "BWWB", // Sneaker tongue + criss-cross white laces
-            "BkkB", // Black canvas vamp + contrast stitching
-            "wwww"  // White rubber toe cap & foxing tape
+            "pPPd", "pPPd", "pPPd", "pPPd", "pPPd", "pPPd",
+            "pPPd", "pPPd", "pPPd",
+            "dddd",
+            "BwwB", // Subtle lace highlight
+            "BBBB"
         ],
         left: [
-            "ppPd", "ppPd", "ppPd", "ppPd", "ppPd",
-            "PPPd", "PPPd", "PPPd", "PPPd",
-            "kkkk",
+            "ppPd", "ppPd", "ppPd", "ppPd", "ppPd", "ppPd",
+            "ppPd", "ppPd", "ppPd",
+            "dddd",
             "BBBB",
-            "wwww"
+            "BBBB"
         ],
         back: [
-            "dPPd", "dppd", "dppd", "dPPd", "dddd",
-            "dPPd", "dPPd", "dddd", "dPPd",
-            "kkkk",
+            "dPPd", "dPPd", "dPPd", "dPPd", "dPPd", "dPPd",
+            "dPPd", "dPPd", "dPPd",
+            "dddd",
             "BBBB",
-            "wwww"
+            "BBBB"
         ]
     },
 
     // =========================================================================
     // RIGHT LEG OVERLAY (u:0, v:32, 4x12x4)
-    // 3D utility carabiner on right hip, side cargo pocket, and chunky shoe collar.
+    // Clean coat tail overhang at top + subtle 3D shoe cuff at bottom.
     // =========================================================================
     rightLegOverlay: {
         top: blank(4, 4),
         bottom: blank(4, 4),
         right: [
-            "  x ", // Silver utility carabiner clip on belt loop
-            "  B ", // Dangling black utility strap
-            "  B ",
-            "pppp", // 3D Cargo pocket flap
-            "dddd",
-            "pPPp", // 3D Cargo pocket volume
-            "pPPp",
-            "dddd",
-            "    ",
-            "BBBB", // 3D Oversized sneaker collar
-            "BWWB",
-            "wwww"
+            "DDDD", "    ", "    ", "    ", "    ", "    ",
+            "    ", "    ", "    ", "    ", "BBBB", "    "
         ],
         front: [
-            "  x ",
-            "  B ",
-            "    ",
-            "p   ",
-            "d   ",
-            "p   ",
-            "    ",
-            "    ",
-            "    ",
-            "BWWB", // 3D Chunky laces & high-top strap
-            "wBBw",
-            "wwww"
+            "DDD ", "    ", "    ", "    ", "    ", "    ",
+            "    ", "    ", "    ", "    ", "BwwB", "    "
         ],
         left: [
             "    ", "    ", "    ", "    ", "    ", "    ",
-            "    ", "    ", "    ",
-            "BBBB", "BBBB", "wwww"
+            "    ", "    ", "    ", "    ", "BBBB", "    "
         ],
         back: [
-            "    ", "    ", "    ", "    ", "    ", "    ",
-            "    ", "    ", "    ",
-            "BBBB", "BBBB", "wwww"
+            "DDDD", "    ", "    ", "    ", "    ", "    ",
+            "    ", "    ", "    ", "    ", "BBBB", "    "
         ]
     },
 
     // =========================================================================
     // LEFT LEG BASE (u:16, v:48, 4x12x4)
-    // Faded slate-denim skater cargo pants, asymmetrical knee tear, & high-tops.
     // =========================================================================
     leftLegBase: {
         top: ["PPPP", "PPPP", "PPPP", "PPPP"],
-        bottom: ["wwww", "wBBw", "wBBw", "wwww"],
+        bottom: ["BBBB", "BBBB", "BBBB", "BBBB"],
         right: [
-            "dPpp", "dPpp", "dPpp", "dPpp", "dPpp",
-            "dPPP", "dPPP", "dPPP", "dPPP",
-            "kkkk",
+            "dPpp", "dPpp", "dPpp", "dPpp", "dPpp", "dPpp",
+            "dPpp", "dPpp", "dPpp",
+            "dddd",
             "BBBB",
-            "wwww"
+            "BBBB"
         ],
         front: [
-            "dPPp", "dPPp", "dPpp", "dPPp",
-            "dfff", // Asymmetrical higher knee rip on left leg
-            "dSss", // Exposed knee skin
-            "dfff",
-            "dPPp", "dPPP",
-            "BWWB", // High-top sneaker laces
-            "BkkB",
-            "wwww"
+            "dPPp", "dPPp", "dPPp", "dPPp", "dPPp", "dPPp",
+            "dPPp", "dPPp", "dPPp",
+            "dddd",
+            "BwwB",
+            "BBBB"
         ],
         left: [
-            "pPPd", "pPPd", "ppPd", "pPPd",
-            "fffd",
-            "ssSd",
-            "fffd",
-            "pPPd", "dPPd",
-            "kkkk",
+            "pPPd", "pPPd", "pPPd", "pPPd", "pPPd", "pPPd",
+            "pPPd", "pPPd", "pPPd",
+            "dddd",
             "BBBB",
-            "wwww"
+            "BBBB"
         ],
         back: [
-            "dPPd", "dppd", "dppd", "dPPd", "dddd",
-            "dPPd", "dPPd", "dddd", "dPPd",
-            "kkkk",
+            "dPPd", "dPPd", "dPPd", "dPPd", "dPPd", "dPPd",
+            "dPPd", "dPPd", "dPPd",
+            "dddd",
             "BBBB",
-            "wwww"
+            "BBBB"
         ]
     },
 
     // =========================================================================
     // LEFT LEG OVERLAY (u:0, v:48, 4x12x4)
-    // Multi-tiered silver wallet chain looping from front-left hip to back pocket.
+    // Subtle silver hip chain on left side + shoe cuff.
     // =========================================================================
     leftLegOverlay: {
         top: blank(4, 4),
         bottom: blank(4, 4),
         right: [
             "    ", "    ", "    ", "    ", "    ", "    ",
-            "    ", "    ", "    ",
-            "BBBB", "BBBB", "wwww"
+            "    ", "    ", "    ", "    ", "BBBB", "    "
         ],
         front: [
-            "  x ", // Wallet chain clasp on left belt loop
-            "  X ",
-            "   x", // Upper chain sweep
-            "   X", // Lower chain sweep
-            "    ", "    ", "    ", "    ", "    ",
-            "BWWB", // 3D Chunky sneaker front
-            "wBBw",
-            "wwww"
+            " DDD", "  x ", "   X", "    ", "    ", "    ",
+            "    ", "    ", "    ", "    ", "BwwB", "    "
         ],
         left: [
-            "x  x", // Chain front & back anchor points
-            "X  X", // Double chain drop
-            "xddx", // Upper chain loop
-            "pppp", // 3D Cargo pocket flap
-            "xXXx", // Lower heavy wallet chain loop
-            "pPPp", // 3D Cargo pocket body
-            "pPPp",
-            "dddd",
-            "    ",
-            "BBBB",
-            "BWWB",
-            "wwww"
+            "DDDD", "x  x", "XxxX", "    ", "    ", "    ",
+            "    ", "    ", "    ", "    ", "BBBB", "    "
         ],
         back: [
-            "x   ", // Chain entering back-left pocket
-            "X   ",
-            "    ", "    ", "    ", "    ", "    ", "    ", "    ",
-            "BBBB", "BBBB", "wwww"
+            "DDDD", "x   ", "    ", "    ", "    ", "    ",
+            "    ", "    ", "    ", "    ", "BBBB", "    "
         ]
     }
 };
@@ -781,6 +741,287 @@ const skinCanvas = document.createElement('canvas');
 skinCanvas.width = 64;
 skinCanvas.height = 64;
 const ctx = skinCanvas.getContext('2d', { willReadFrequently: true });
+
+function drawFace(u, v, w, h, data, pal) {
+    if (!data) return;
+    for (let r = 0; r < h; r++) {
+        const row = data[r];
+        if (!row) continue;
+        for (let c = 0; c < w; c++) {
+            const ch = row[c];
+            if (ch && pal[ch]) {
+                ctx.fillStyle = pal[ch];
+                ctx.fillRect(u + c, v + r, 1, 1);
+            }
+        }
+    }
+}
+
+function renderSkinData() {
+    const pal = getPalette(currentStyle);
+    ctx.clearRect(0, 0, 64, 64);
+
+    const parts = [
+        { key: 'headBase',        u: 0,  v: 0,  w: 8, h: 8,  d: 8 },
+        { key: 'headOverlay',     u: 32, v: 0,  w: 8, h: 8,  d: 8 },
+        { key: 'torsoBase',       u: 16, v: 16, w: 8, h: 12, d: 4 },
+        { key: 'torsoOverlay',    u: 16, v: 32, w: 8, h: 12, d: 4 },
+        { key: 'rightArmBase',    u: 40, v: 16, w: 4, h: 12, d: 4 },
+        { key: 'rightArmOverlay', u: 40, v: 32, w: 4, h: 12, d: 4 },
+        { key: 'leftArmBase',     u: 32, v: 48, w: 4, h: 12, d: 4 },
+        { key: 'leftArmOverlay',  u: 48, v: 48, w: 4, h: 12, d: 4 },
+        { key: 'rightLegBase',    u: 0,  v: 16, w: 4, h: 12, d: 4 },
+        { key: 'rightLegOverlay', u: 0,  v: 32, w: 4, h: 12, d: 4 },
+        { key: 'leftLegBase',     u: 16, v: 48, w: 4, h: 12, d: 4 },
+        { key: 'leftLegOverlay',  u: 0,  v: 48, w: 4, h: 12, d: 4 }
+    ];
+
+    parts.forEach(p => {
+        const d = SkinData[p.key];
+        drawFace(p.u + p.d,               p.v,       p.w, p.d, d.top, pal);
+        drawFace(p.u + p.d + p.w,         p.v,       p.w, p.d, d.bottom, pal);
+        drawFace(p.u,                     p.v + p.d, p.d, p.h, d.right, pal);
+        drawFace(p.u + p.d,               p.v + p.d, p.w, p.h, d.front, pal);
+        drawFace(p.u + p.d + p.w,         p.v + p.d, p.d, p.h, d.left, pal);
+        drawFace(p.u + p.d + p.w + p.d,   p.v + p.d, p.w, p.h, d.back, pal);
+    });
+
+    // Update 2D Inspector Canvases
+    const uvPreview = document.getElementById('uvPreviewCanvas').getContext('2d');
+    uvPreview.clearRect(0, 0, 64, 64);
+    uvPreview.drawImage(skinCanvas, 0, 0);
+
+    const facePreview = document.getElementById('facePreviewCanvas').getContext('2d');
+    facePreview.clearRect(0, 0, 8, 8);
+    facePreview.drawImage(skinCanvas, 8, 8, 8, 8, 0, 0, 8, 8);
+    facePreview.drawImage(skinCanvas, 40, 8, 8, 8, 0, 0, 8, 8);
+
+    if (window.skinTexture) {
+        window.skinTexture.needsUpdate = true;
+    }
+}
+
+// Style Switcher
+window.setSkinStyle = function(style) {
+    currentStyle = style;
+    renderSkinData();
+
+    const titles = { split: 'v_mpire_split', vmpire: 'v_mpire', ash: 'nvura_eboy' };
+    document.getElementById('cardTitle').textContent = titles[style] || 'v_mpire';
+
+    ['split', 'vmpire', 'ash'].forEach(s => {
+        const btn = document.getElementById('style-' + s);
+        if (s === style) {
+            btn.className = 'border-2 border-zinc-900 bg-zinc-900 text-white text-xs font-semibold py-2 px-2.5 rounded transition';
+        } else {
+            btn.className = 'border border-gray-200 bg-gray-50 hover:bg-gray-100 text-gray-800 text-xs font-medium py-2 px-2.5 rounded transition';
+        }
+    });
+};
+
+// Download 64x64 PNG Handler
+document.getElementById('downloadBtn').addEventListener('click', () => {
+    const link = document.createElement('a');
+    link.download = `${currentStyle}_eboy_64x64.png`;
+    link.href = skinCanvas.toDataURL('image/png');
+    link.click();
+});
+
+/**
+ * PART 2: THREE.JS NAMEMC-STYLE 3D STUDIO RENDERER
+ * Framed at Z=55 so the full head and shoes fit comfortably with generous margin.
+ */
+
+const container = document.getElementById('canvas-container');
+const scene = new THREE.Scene();
+
+const camera = new THREE.PerspectiveCamera(34, container.clientWidth / container.clientHeight, 0.1, 1000);
+camera.position.set(0, 0.5, 56);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+renderer.setSize(container.clientWidth, container.clientHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setClearColor(0x000000, 0);
+renderer.domElement.classList.add('skin-shadow');
+container.appendChild(renderer.domElement);
+
+// Crisp NameMC Studio Lighting (Bright front/left light, gentle side shading)
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.84);
+scene.add(ambientLight);
+
+const keyLight = new THREE.DirectionalLight(0xffffff, 0.34);
+keyLight.position.set(-16, 26, 36);
+scene.add(keyLight);
+
+// Crisp Nearest-Neighbor Pixel Texture
+const skinTexture = new THREE.CanvasTexture(skinCanvas);
+skinTexture.magFilter = THREE.NearestFilter;
+skinTexture.minFilter = THREE.NearestFilter;
+skinTexture.generateMipmaps = false;
+window.skinTexture = skinTexture;
+
+renderSkinData();
+
+const materialBase = new THREE.MeshLambertMaterial({
+    map: skinTexture,
+    transparent: false
+});
+
+const materialOverlay = new THREE.MeshLambertMaterial({
+    map: skinTexture,
+    transparent: true,
+    alphaTest: 0.5,
+    side: THREE.DoubleSide
+});
+
+const playerGroup = new THREE.Group();
+playerGroup.position.y = 0.5;
+scene.add(playerGroup);
+
+function setCrispPlaneUV(geometry, u, v, tw, th) {
+    const eps = 0.0015;
+    const uvs = geometry.attributes.uv;
+    const u0 = (u + eps) / 64;
+    const v0 = 1 - (v + eps) / 64;
+    const u1 = (u + tw - eps) / 64;
+    const v1 = 1 - (v + th - eps) / 64;
+
+    uvs.setXY(0, u0, v0);
+    uvs.setXY(1, u1, v0);
+    uvs.setXY(2, u0, v1);
+    uvs.setXY(3, u1, v1);
+    uvs.needsUpdate = true;
+}
+
+const overlayMeshes = [];
+
+function buildMCBox(u, v, w, h, d, inflate = 0) {
+    const group = new THREE.Group();
+    const isOverlay = inflate > 0;
+    const mat = isOverlay ? materialOverlay : materialBase;
+
+    const pw = w + inflate * 2;
+    const ph = h + inflate * 2;
+    const pd = d + inflate * 2;
+
+    const faces = [
+        { geom: new THREE.PlaneGeometry(pw, ph), pos: [0, 0, pd / 2],  rot: [0, 0, 0],            uv: [u + d, v + d, w, h] },
+        { geom: new THREE.PlaneGeometry(pw, ph), pos: [0, 0, -pd / 2], rot: [0, Math.PI, 0],      uv: [u + d + w + d, v + d, w, h] },
+        { geom: new THREE.PlaneGeometry(pd, ph), pos: [-pw / 2, 0, 0], rot: [0, -Math.PI / 2, 0], uv: [u, v + d, d, h] },
+        { geom: new THREE.PlaneGeometry(pd, ph), pos: [pw / 2, 0, 0],  rot: [0, Math.PI / 2, 0],  uv: [u + d + w, v + d, d, h] },
+        { geom: new THREE.PlaneGeometry(pw, pd), pos: [0, ph / 2, 0],  rot: [-Math.PI / 2, 0, 0], uv: [u + d, v, w, d] },
+        { geom: new THREE.PlaneGeometry(pw, pd), pos: [0, -ph / 2, 0], rot: [Math.PI / 2, 0, 0],  uv: [u + d + w, v, w, d] }
+    ];
+
+    faces.forEach(f => {
+        setCrispPlaneUV(f.geom, f.uv[0], f.uv[1], f.uv[2], f.uv[3]);
+        const mesh = new THREE.Mesh(f.geom, mat);
+        mesh.position.set(...f.pos);
+        mesh.rotation.set(...f.rot);
+        group.add(mesh);
+    });
+
+    if (isOverlay) overlayMeshes.push(group);
+    return group;
+}
+
+// Assemble Hierarchical Steve Skeleton Centered Around Y = 0
+const headGroup = new THREE.Group();
+headGroup.position.set(0, 8, 0);
+const headBase = buildMCBox(0, 0, 8, 8, 8, 0);
+headBase.position.y = 4;
+const headOverlay = buildMCBox(32, 0, 8, 8, 8, 0.42);
+headOverlay.position.y = 4;
+headGroup.add(headBase, headOverlay);
+playerGroup.add(headGroup);
+
+const torsoGroup = new THREE.Group();
+torsoGroup.position.set(0, 2, 0);
+const torsoBase = buildMCBox(16, 16, 8, 12, 4, 0);
+const torsoOverlay = buildMCBox(16, 32, 8, 12, 4, 0.26);
+torsoGroup.add(torsoBase, torsoOverlay);
+playerGroup.add(torsoGroup);
+
+const rightArmGroup = new THREE.Group();
+rightArmGroup.position.set(-6, 6, 0);
+const rightArmBase = buildMCBox(40, 16, 4, 12, 4, 0);
+rightArmBase.position.y = -4;
+const rightArmOverlay = buildMCBox(40, 32, 4, 12, 4, 0.26);
+rightArmOverlay.position.y = -4;
+rightArmGroup.add(rightArmBase, rightArmOverlay);
+playerGroup.add(rightArmGroup);
+
+const leftArmGroup = new THREE.Group();
+leftArmGroup.position.set(6, 6, 0);
+const leftArmBase = buildMCBox(32, 48, 4, 12, 4, 0);
+leftArmBase.position.y = -4;
+const leftArmOverlay = buildMCBox(48, 48, 4, 12, 4, 0.26);
+leftArmOverlay.position.y = -4;
+leftArmGroup.add(leftArmBase, leftArmOverlay);
+playerGroup.add(leftArmGroup);
+
+const rightLegGroup = new THREE.Group();
+rightLegGroup.position.set(-2, -4, 0);
+const rightLegBase = buildMCBox(0, 16, 4, 12, 4, 0);
+rightLegBase.position.y = -6;
+const rightLegOverlay = buildMCBox(0, 32, 4, 12, 4, 0.26);
+rightLegOverlay.position.y = -6;
+rightLegGroup.add(rightLegBase, rightLegOverlay);
+playerGroup.add(rightLegGroup);
+
+const leftLegGroup = new THREE.Group();
+leftLegGroup.position.set(2, -4, 0);
+const leftLegBase = buildMCBox(16, 48, 4, 12, 4, 0);
+leftLegBase.position.y = -6;
+const leftLegOverlay = buildMCBox(0, 48, 4, 12, 4, 0.26);
+leftLegOverlay.position.y = -6;
+leftLegGroup.add(leftLegBase, leftLegOverlay);
+playerGroup.add(leftLegGroup);
+
+// Apply Exact NameMC Card Pose (Matches Image 2)
+let currentPose = 'walk';
+let autoSpin = false;
+
+function applyPose(poseType) {
+    if (poseType === 'walk') {
+        headGroup.rotation.set(0.04, 0.08, 0);
+        rightArmGroup.rotation.set(-0.32, 0, 0.03);
+        leftArmGroup.rotation.set(0.32, 0, -0.03);
+        rightLegGroup.rotation.set(0.30, 0, -0.01);
+        leftLegGroup.rotation.set(-0.30, 0, 0.01);
+    } else {
+        headGroup.rotation.set(0, 0, 0);
+        rightArmGroup.rotation.set(0, 0, 0.02);
+        leftArmGroup.rotation.set(0, 0, -0.02);
+        rightLegGroup.rotation.set(0, 0, 0);
+        leftLegGroup.rotation.set(0, 0, 0);
+    }
+}
+
+window.setViewAngle = function(angle) {
+    if (angle === 'namemc') {
+        playerGroup.rotation.set(0.18, 0.42, 0);
+    } else if (angle === 'front') {
+        playerGroup.rotation.set(0.05, 0, 0);
+    } else if (angle === 'back') {
+        playerGroup.rotation.set(0.08, Math.PI, 0);
+    }
+};
+
+applyPose('walk');
+setViewAngle('namemc');
+
+// UI Button Listeners
+document.getElementById('poseBtn').addEventListener('click', (e) => {
+    currentPose = currentPose === 'walk' ? 'stand' : 'walk';
+    applyPose(currentPose);
+    e.target.textContent = `Pose: ${currentPose === 'walk' ? 'Walk' : 'Stand'}`;
+});
+
+document.getElementById('spinBtn').addEventListener('click', (e) => {
+    autoSpin = !autoSpin;
+    e.target.textContent = `Turntable: ${autoSpin ? 'On' : 'Off'}`;
+});
 
 function drawFace(u, v, w, h, data) {
     if (!data) return;
