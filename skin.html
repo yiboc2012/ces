@@ -3,892 +3,489 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NameMC Style — Minecraft Boy Skin Studio</title>
+    <title>E-Boy Skin 3D Render & Generator</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
-        body { background-color: #f0f2f5; color: #334155; font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        canvas { display: block; outline: none; }
-        .color-picker { -webkit-appearance: none; border: none; width: 34px; height: 34px; border-radius: 4px; cursor: pointer; padding: 0; background: transparent; }
-        .color-picker::-webkit-color-swatch-wrapper { padding: 0; }
-        .color-picker::-webkit-color-swatch { border: 1px solid #cbd5e1; border-radius: 4px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
-        .pixelated { image-rendering: pixelated; image-rendering: crisp-edges; }
-        /* NameMC Light style scrollbars */
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: #f8fafc; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-        .namemc-card { background: #ffffff; border: 1px solid #e2e8f0; }
-        .namemc-card:hover { border-color: #93c5fd; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
-        .checkerboard {
-            background-image: linear-gradient(45deg, #f3f4f6 25%, transparent 25%, transparent 75%, #f3f4f6 75%, #f3f4f6),
-                              linear-gradient(45deg, #f3f4f6 25%, transparent 25%, transparent 75%, #f3f4f6 75%, #f3f4f6);
-            background-size: 16px 16px;
-            background-position: 0 0, 8px 8px;
-            background-color: #ffffff;
+        body { margin: 0; overflow: hidden; background-color: #1A1A1D; font-family: 'Inter', sans-serif; }
+        #canvas-container { width: 100%; height: 100vh; cursor: grab; }
+        #canvas-container:active { cursor: grabbing; }
+        .ui-panel {
+            background: linear-gradient(145deg, #24252A, #18191C);
+            border: 1px solid #333;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
+        canvas.pixelated {
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+        }
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #121214; }
+        ::-webkit-scrollbar-thumb { background: #3A3B45; border-radius: 3px; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col bg-[#f0f2f5] text-slate-800 select-none">
-    <!-- NameMC Header -->
-    <header class="bg-white border-b border-slate-200 sticky top-0 z-50 px-4 md:px-8 py-3 flex items-center justify-between shadow-sm">
-        <div class="flex items-center space-x-3">
-            <div class="w-9 h-9 bg-[#1c7ed6] rounded flex items-center justify-center font-black text-lg text-white shadow-sm">N</div>
-            <div>
-                <h1 class="font-bold text-sm md:text-base text-slate-900 tracking-wide flex items-center space-x-2">
-                    <span>NameMC Skin Studio</span>
-                </h1>
-                <p class="text-[11px] text-slate-500 hidden sm:block">Explore trending community skins & customize in 3D</p>
-            </div>
-        </div>
-        <div class="flex items-center space-x-3">
-            <button id="view-texture-btn" class="bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold px-3.5 py-2 rounded border border-slate-300 transition flex items-center space-x-1.5 shadow-sm">
-                <svg class="w-4 h-4 text-[#1c7ed6]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                <span>Texture Map</span>
-            </button>
-            <button id="download-btn" class="bg-[#1c7ed6] hover:bg-[#1971c2] active:scale-95 text-white font-bold px-4 py-2 rounded shadow-sm transition-all flex items-center space-x-2 text-xs md:text-sm">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                <span>Download Skin</span>
-            </button>
-        </div>
-    </header>
+<body class="text-gray-200 antialiased flex flex-col md:flex-row h-screen w-full">
 
-    <!-- Main Workspace -->
-    <main class="flex-1 flex flex-col lg:flex-row h-[calc(100vh-61px)] overflow-hidden">
-        <!-- 3D Preview Canvas Area (NameMC Style Light Chamber) -->
-        <div class="flex-1 relative bg-[radial-gradient(circle_at_center,_#ffffff_0%,_#e2e8f0_100%)] flex flex-col items-center justify-center overflow-hidden">
-            <div id="canvas-container" class="w-full h-full cursor-grab active:cursor-grabbing"></div>
-            
-            <!-- Controls Floating Bar -->
-            <div class="absolute bottom-5 left-5 right-5 sm:right-auto bg-white/90 backdrop-blur-md border border-slate-200 p-2 rounded-md flex flex-wrap items-center gap-2 shadow-lg z-10">
-                <button id="rotate-toggle" class="px-3 py-1.5 rounded bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold transition flex items-center space-x-1.5 border border-slate-200 shadow-sm">
-                    <svg class="w-3.5 h-3.5 text-[#1c7ed6]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                    <span id="rotate-text">Rotate: On</span>
-                </button>
-                <button id="pose-toggle" class="px-3 py-1.5 rounded bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold transition flex items-center space-x-1.5 border border-slate-200 shadow-sm">
-                    <svg class="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                    <span id="pose-text">Walk Animation</span>
-                </button>
-                <button id="reset-view" class="px-3 py-1.5 rounded bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold transition border border-slate-200 shadow-sm">
-                    Reset Camera
-                </button>
+    <!-- UI Overlay Panel -->
+    <div class="absolute md:relative z-10 w-full md:w-96 h-auto md:h-full max-h-[50vh] md:max-h-full bottom-0 md:bottom-auto ui-panel p-6 flex flex-col overflow-y-auto rounded-t-3xl md:rounded-none md:border-r border-gray-700 transition-all duration-300">
+        <h1 class="text-2xl font-bold text-white mb-1 tracking-tight">Modern E-Boy</h1>
+        <p class="text-sm text-gray-400 mb-6">64x64 Dual-Layer UV Texture</p>
+
+        <div class="space-y-4 flex-grow">
+            <!-- 2D Texture Preview -->
+            <div class="bg-[#121214] p-3 rounded-xl border border-gray-800 flex flex-col items-center">
+                <span class="text-xs font-semibold text-gray-500 mb-2 uppercase tracking-wider w-full text-left">UV Map Preview</span>
+                <canvas id="preview2d" width="256" height="256" class="pixelated w-48 h-48 bg-gray-900 rounded-lg shadow-inner"></canvas>
             </div>
 
-            <!-- Hint overlay -->
-            <div class="absolute top-4 left-4 pointer-events-none bg-white/80 backdrop-blur border border-slate-200 px-3 py-1.5 rounded text-[11px] text-slate-500 shadow-sm">
-                Drag to Rotate &bull; Scroll to Zoom &bull; Right-Click to Pan
+            <!-- Detail Breakdown -->
+            <div class="bg-[#1a1b1f] p-4 rounded-xl border border-gray-800 text-xs text-gray-300 space-y-2">
+                <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-[#FFFDF0]"></div> Split-dye hair & hardware</div>
+                <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-[#1E1E24]"></div> Slate ribbed thermal base</div>
+                <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-[#202024]"></div> Washed-black hoodie overlay</div>
+                <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-[#3B424C]"></div> Denim cargo skater trousers</div>
+                <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-[#8D99AE]"></div> Icy steel eyes & mauve shading</div>
             </div>
         </div>
 
-        <!-- Customization & Trending Gallery Sidebar -->
-        <div class="w-full lg:w-[440px] bg-slate-50 border-t lg:border-t-0 lg:border-l border-slate-200 flex flex-col h-[480px] lg:h-full shadow-2xl z-20">
-            <!-- Tabs -->
-            <div class="flex border-b border-slate-200 bg-white">
-                <button onclick="switchTab('trending')" id="tab-trending" class="flex-1 py-3 text-xs font-bold text-[#1c7ed6] border-b-2 border-[#1c7ed6] transition">Trending Grid</button>
-                <button onclick="switchTab('edit')" id="tab-edit" class="flex-1 py-3 text-xs font-semibold text-slate-500 hover:text-slate-800 transition">Custom Studio</button>
-            </div>
+        <button id="downloadBtn" class="mt-6 w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-xl transition-colors shadow-lg shadow-indigo-500/20 active:scale-[0.98]">
+            Download 64x64 Skin
+        </button>
+        <p class="text-[10px] text-gray-500 text-center mt-3">Ready for standard Classic (Steve) model</p>
+    </div>
 
-            <!-- Tab Content Area -->
-            <div class="flex-1 overflow-y-auto p-4 space-y-4">
-                <!-- Trending Grid Tab (NameMC style card gallery) -->
-                <div id="content-trending" class="space-y-3">
-                    <div id="trending-grid" class="grid grid-cols-3 gap-2 pb-4">
-                        <!-- Populated dynamically via JS script -->
-                    </div>
-                </div>
-
-                <!-- Custom Studio Tab -->
-                <div id="content-edit" class="space-y-6 hidden">
-                    <div class="space-y-4 bg-white p-4 rounded border border-slate-200 shadow-sm">
-                        <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Model Geometry</h4>
-                        <div class="grid grid-cols-2 gap-2">
-                            <button onclick="setModelType('classic')" id="model-classic" class="py-2 px-3 rounded border border-[#1c7ed6] bg-blue-50 text-[#1c7ed6] text-xs font-bold text-center transition">Classic (4px)</button>
-                            <button onclick="setModelType('slim')" id="model-slim" class="py-2 px-3 rounded border border-slate-200 bg-slate-50 text-slate-600 text-xs font-semibold text-center transition hover:bg-slate-100">Slim (3px Alex)</button>
-                        </div>
-                    </div>
-
-                    <div class="space-y-4 bg-white p-4 rounded border border-slate-200 shadow-sm">
-                        <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Hair & Hat</h4>
-                        <div class="grid grid-cols-3 gap-2">
-                            <button onclick="setHairStyle('messy')" class="hair-btn py-2 px-2 rounded border border-[#1c7ed6] bg-blue-50 text-[#1c7ed6] text-xs font-semibold">Messy</button>
-                            <button onclick="setHairStyle('short')" class="hair-btn py-2 px-2 rounded border border-slate-200 bg-slate-50 text-slate-600 text-xs font-medium hover:bg-slate-100">Side Part</button>
-                            <button onclick="setHairStyle('spiky')" class="hair-btn py-2 px-2 rounded border border-slate-200 bg-slate-50 text-slate-600 text-xs font-medium hover:bg-slate-100">Spiky</button>
-                        </div>
-                        <div class="flex items-center justify-between pt-2 border-t border-slate-100">
-                            <span class="text-xs text-slate-600 font-medium">Hair Color</span>
-                            <input type="color" id="hair-color-picker" value="#3b2219" class="color-picker" onchange="updateHairColor(this.value)">
-                        </div>
-                    </div>
-
-                    <div class="space-y-4 bg-white p-4 rounded border border-slate-200 shadow-sm">
-                        <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Outfit & Colors</h4>
-                        <div class="grid grid-cols-3 gap-2">
-                            <button onclick="setOutfitStyle('hoodie')" class="outfit-btn py-2 px-2 rounded border border-[#1c7ed6] bg-blue-50 text-[#1c7ed6] text-xs font-semibold">Hoodie</button>
-                            <button onclick="setOutfitStyle('tshirt')" class="outfit-btn py-2 px-2 rounded border border-slate-200 bg-slate-50 text-slate-600 text-xs font-medium hover:bg-slate-100">T-Shirt</button>
-                            <button onclick="setOutfitStyle('jacket')" class="outfit-btn py-2 px-2 rounded border border-slate-200 bg-slate-50 text-slate-600 text-xs font-medium hover:bg-slate-100">Jacket</button>
-                        </div>
-                        <div class="flex items-center justify-between pt-2 border-t border-slate-100">
-                            <span class="text-xs text-slate-600 font-medium">Shirt Color</span>
-                            <input type="color" id="shirt-color-picker" value="#2563eb" class="color-picker" onchange="updateShirtColor(this.value)">
-                        </div>
-                        <div class="flex items-center justify-between pt-2 border-t border-slate-100">
-                            <span class="text-xs text-slate-600 font-medium">Pants Color</span>
-                            <input type="color" id="pants-color-picker" value="#1e293b" class="color-picker" onchange="updatePantsColor(this.value)">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Footer Help -->
-            <div class="p-3.5 bg-white border-t border-slate-200 text-xs text-slate-500 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
-                <span class="text-slate-800 font-semibold">Tip:</span> Download PNG & upload directly in official Minecraft Launcher &rarr; Skins.
-            </div>
-        </div>
-    </main>
-
-    <!-- Texture Map Modal -->
-    <div id="texture-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white border border-slate-200 rounded-lg max-w-sm w-full p-6 shadow-2xl flex flex-col items-center">
-            <h3 class="font-bold text-sm text-slate-900 mb-1">64x64 Skin Texture Map</h3>
-            <p class="text-xs text-slate-500 text-center mb-4">Official Java Edition format with transparency layers.</p>
-            <div class="p-3 bg-slate-50 border border-slate-200 rounded mb-4 flex justify-center shadow-inner checkerboard">
-                <canvas id="preview-texture-canvas" width="256" height="256" class="pixelated border border-slate-300 rounded shadow-sm bg-white/50"></canvas>
-            </div>
-            <button onclick="document.getElementById('texture-modal').classList.add('hidden')" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold rounded transition border border-slate-300">
-                Close
-            </button>
+    <!-- 3D Viewport -->
+    <div id="canvas-container" class="flex-grow relative">
+        <div class="absolute top-4 right-4 text-xs font-medium text-gray-400 bg-black/40 px-3 py-1.5 rounded-full backdrop-blur-md border border-white/10">
+            Drag to Rotate • Auto-Turntable
         </div>
     </div>
 
-    <script>
-        // --- State Management ---
-        const skinState = {
-            model: 'classic',
-            hairStyle: 'messy',
-            hairColor: '#3b2219',
-            accessory: 'none',
-            outfitStyle: 'hoodie',
-            shirtColor: '#2563eb',
-            pantsColor: '#1e293b',
-            skinColor: '#f5c49b',
-            eyeColor: '#38bdf8',
-            shoeColor: '#ffffff'
-        };
+<script>
+/**
+ * PART 1: TEXTURE GENERATION
+ * Procedurally generates the exact 64x64 texture based on the detailed prompt.
+ */
 
-        // --- Trending Community Skins Dataset (NameMC style) ---
-        const trendingSkins = [
-            { id: 7, name: "TheD3monHunter", rank: "#7", time: "6.7小时", stars: "3★", hair: "#d8b4fe", hairStyle: "messy", shirt: "#4c1d95", pants: "#1e1b4b", skin: "#fde2cc", acc: "none", model: "classic" },
-            { id: 8, name: "nvura", rank: "#8", time: "20小时", stars: "5★", hair: "#94a3b8", hairStyle: "short", shirt: "#0f172a", pants: "#020617", skin: "#f5c49b", acc: "headphones", model: "slim" },
-            { id: 9, name: "windy_223", rank: "#9", time: "7.5小时", stars: "3★", hair: "#451a03", hairStyle: "spiky", shirt: "#3d2817", pants: "#271c12", skin: "#d49b6a", acc: "none", model: "classic" },
-            { id: 10, name: "kanthall", rank: "#10", time: "1.1日", stars: "11★", hair: "#e2e8f0", hairStyle: "messy", shirt: "#94a3b8", pants: "#475569", skin: "#f1f5f9", acc: "hood", model: "classic" },
-            { id: 11, name: "Vipen66", rank: "#11", time: "15小时", stars: "6★", hair: "#1e40af", hairStyle: "short", shirt: "#2563eb", pants: "#1d4ed8", skin: "#93c5fd", acc: "cap", model: "classic" },
-            { id: 12, name: "v_mpire", rank: "#12", time: "1.6日", stars: "12★", hair: "#09090b", hairStyle: "spiky", shirt: "#18181b", pants: "#09090b", skin: "#fde2cc", acc: "none", model: "slim" },
-            { id: 13, name: "catclientoct", rank: "#13", time: "3.2分", stars: "1★", hair: "#38220f", hairStyle: "messy", shirt: "#14532d", pants: "#450a0a", skin: "#d49b6a", acc: "none", model: "classic" },
-            { id: 14, name: "Dkvlzm19", rank: "#15", time: "40分", stars: "1★", hair: "#0f172a", hairStyle: "spiky", shirt: "#09090b", pants: "#18181b", skin: "#334155", acc: "headphones", model: "slim" }
-        ];
+const PALETTE = {
+    ' ': null,          // Transparent
+    // Skin (Pale Ivory to Mauve shadow)
+    's': '#E3D0C0', 'S': '#D2B5A5', 'h': '#F5E6DA', 'm': '#B0989B',
+    // Hair (Black Side)
+    '0': '#121214', '1': '#24252A', '2': '#0B0B0C',
+    // Hair (Blonde Side)
+    '3': '#FFFDF0', '4': '#EAE0C8', '5': '#DCD3BE',
+    // Eyes & Face Features
+    'e': '#2B2D42', // Charcoal top eye
+    'E': '#8D99AE', // Steel bottom eye
+    'W': '#FFFFFF', // Pure white specular
+    'L': '#C5B9CD', // Lavender under-eye
+    'r': '#800000', // Micro-heart tattoo
+    'x': '#B0B5B9', // Silver piercings/hardware
+    'X': '#7A8288', // Dark silver shadow
+    // Torso Base (Thermal)
+    't': '#1E1E24', // Slate
+    'T': '#3A3B45', // Ash gray
+    // Torso Overlay (Washed Hoodie)
+    'H': '#202024', 'D': '#151518', 'O': '#2A2A2E',
+    'g': '#E0E0E0', 'G': '#909090', // Back graphic
+    // Legs (Slate Denim)
+    'p': '#3B424C', 'P': '#2E343D', 'd': '#22272E',
+    // Footwear / Ink
+    'k': '#111111', 'K': '#1A1A1A', // Black details, ink, socks
+    'w': '#F2F2F2',                 // Foxing tape
+    'C': '#8899A6',                 // Carabiner
+    'B': '#101010'                  // Belt
+};
 
-        function renderTrendingGrid() {
-            const grid = document.getElementById('trending-grid');
-            grid.innerHTML = trendingSkins.map(s => `
-                <div onclick="loadCommunitySkin(${s.id})" class="namemc-card flex flex-col rounded-[4px] cursor-pointer hover:shadow-md transition duration-200 h-52">
-                    <!-- Header -->
-                    <div class="text-center py-1.5 border-b border-slate-100 relative">
-                        <span class="text-[10px] text-slate-400 absolute left-1.5 top-1.5">${s.rank}</span>
-                        <span class="text-[11px] font-medium text-[#1c7ed6] hover:underline truncate px-4 block">${s.name}</span>
-                    </div>
-                    <!-- Body (Checkerboard + 2D proxy) -->
-                    <div class="flex-1 checkerboard flex items-center justify-center relative overflow-hidden">
-                        <!-- CSS 2D Character Front Preview -->
-                        <div class="flex flex-col items-center scale-[1.3] drop-shadow-md">
-                            <!-- Head -->
-                            <div class="w-6 h-6 border-[0.5px] border-black/10 relative" style="background-color: ${s.skin};">
-                                <div class="absolute inset-0 opacity-85" style="background-color: ${s.hair}; clip-path: polygon(0 0, 100% 0, 100% 30%, 80% 30%, 80% 20%, 20% 20%, 20% 40%, 0 40%);"></div>
-                                <div class="absolute top-[40%] left-[15%] w-[20%] h-[15%] bg-white"><div class="w-[50%] h-full float-right" style="background-color: #3b82f6;"></div></div>
-                                <div class="absolute top-[40%] right-[15%] w-[20%] h-[15%] bg-white"><div class="w-[50%] h-full float-left" style="background-color: #3b82f6;"></div></div>
-                            </div>
-                            <!-- Torso & Arms -->
-                            <div class="flex border-[0.5px] border-black/10 mt-[0.5px]">
-                                <div class="w-2 h-7" style="background-color: ${s.shirt};"></div>
-                                <div class="w-6 h-7 mx-[0.5px] relative" style="background-color: ${s.shirt};">
-                                    ${s.acc === 'hood' ? '<div class="absolute top-1 left-2 w-0.5 h-3 bg-white/50"></div><div class="absolute top-1 right-2 w-0.5 h-3 bg-white/50"></div>' : ''}
-                                </div>
-                                <div class="w-2 h-7" style="background-color: ${s.shirt};"></div>
-                            </div>
-                            <!-- Legs -->
-                            <div class="flex border-[0.5px] border-black/10 mt-[0.5px] gap-[0.5px]">
-                                <div class="w-[11.5px] h-7" style="background-color: ${s.pants};"></div>
-                                <div class="w-[11.5px] h-7" style="background-color: ${s.pants};"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Footer -->
-                    <div class="flex justify-between items-center px-1.5 py-1 text-[10px] text-slate-500 border-t border-slate-100 bg-white">
-                        <span>${s.time}</span>
-                        <span>${s.stars}</span>
-                    </div>
-                </div>
-            `).join('');
-        }
+// Helpers for array generation
+const rep = (str, n) => Array(n).fill(str);
+const alt = (s1, s2, n) => Array.from({length: n}, (_, i) => i % 2 === 0 ? s1 : s2);
+const blank = (w, h) => rep(rep(' ', w).join(''), h);
 
-        function loadCommunitySkin(id) {
-            const skin = trendingSkins.find(s => s.id === id);
-            if (!skin) return;
-            skinState.hairColor = skin.hair;
-            skinState.hairStyle = skin.hairStyle;
-            skinState.shirtColor = skin.shirt;
-            skinState.pantsColor = skin.pants;
-            skinState.skinColor = skin.skin;
-            skinState.accessory = skin.acc;
-            skinState.model = skin.model;
+const SkinData = {
+    headBase: { // u:0, v:0, w:8, h:8, d:8
+        top: [
+            "00003333", "01004333", "00203533", "01003333",
+            "00003343", "02003533", "00003333", "00103333"
+        ],
+        bottom: rep("SSSSSSSS", 8),
+        right: [ // Char's right (Black)
+            "10010000", "00100200", "00ssshss", "0sssssss",
+            "00sSssss", "00ssSsss", "00ssssss", "000sssss"
+        ],
+        front: [
+            "10003343", // Messy fringe top
+            "00103533", // Fringe low
+            "0ssshsss", // Skin highlight
+            "s0SssS0s", // Eyebrows (charcoal '0'). Slit left brow at x=6
+            "seWssWeS", // Eyes Top + Inner Specular 'W'
+            "sEsmmsEs", // Eyes Bottom + Mauve bags 'm'
+            "ssrsssss", // Micro-heart 'r' at x=2
+            "ssssssxs"  // Labret ring 'x' at x=6
+        ],
+        left: [ // Char's left (Blonde)
+            "34335333", "33433353", "33ssssss", "3sssssss",
+            "3ssSssss", "3sssSsss", "3sssssss", "33ssssss"
+        ],
+        back: alt("00003333", "01003433", 8)
+    },
+    headOverlay: { // u:32, v:0, w:8, h:8, d:8
+        top: blank(8,8), bottom: blank(8,8), back: blank(8,8),
+        front: [
+            "        ", "        ", "10    43", "0      3",
+            "        ", "        ", "        ", "        "
+        ],
+        right: ["        ", "        ", "        ", "        ", "        ", "        ", "    k   ", "        "], // Black plug (x=4)
+        left:  ["        ", "        ", "        ", "        ", "        ", "        ", "   x    ", "   x    "]  // Silver cross (x=3)
+    },
+    torsoBase: { // u:16, v:16, w:8, h:12, d:4
+        top: rep("TTTTTTTT", 4), bottom: rep("tttttttt", 4),
+        right: alt("TTTT", "tttt", 12),
+        front: alt("TTTTTTTT", "tttttttt", 12),
+        left: alt("TTTT", "tttt", 12),
+        back: alt("TTTTTTTT", "tttttttt", 12)
+    },
+    torsoOverlay: { // u:16, v:32, w:8, h:12, d:4
+        top: rep("HHHHHHHH", 4), bottom: rep("HH    HH", 4),
+        right: rep("HHHH", 12), left: rep("HHHH", 12),
+        front: [
+            "HO  OHHH", // Unzipped front
+            "H x  x H", // Collar chain
+            "H      H", 
+            "H XX X H", // Lower chain
+            "H X    H", // Padlock
+            "HO    OH",
+            "H      H", "H      H", "HO    OH", "H      H", "H      H", "HO    OH"
+        ],
+        back: [
+            "HHHHHHHH", "HHgHggHH", "HHgGggHH", "HHHHHHHH",
+            "HgggGggH", "HHGgGgHH", "HgggGggH", "HHHHHHHH",
+            "HHgGggHH", "HHGgGgHH", "HHHHHHHH", "HHHHHHHH"
+        ]
+    },
+    rightArmBase: { // u:40, v:16, w:4, h:12, d:4
+        top: rep("TTTT", 4), bottom: rep("ssss", 4),
+        right: [...alt("TTTT", "tttt", 6), "ssss", "sSss", "kskk", "kkxk", "ssss", "ssss"], // Tattoo
+        front: [...alt("TTTT", "tttt", 6), "ssss", "sSss", "kskk", "kkxk", "ssss", "ssss"],
+        left:  [...alt("TTTT", "tttt", 6), "ssss", "sSss", "kskk", "kkxk", "ssss", "ssss"],
+        back:  [...alt("TTTT", "tttt", 6), "ssss", "sSss", "kskk", "kkxk", "ssss", "ssss"]
+    },
+    rightArmOverlay: { // u:40, v:32, w:4, h:12, d:4 (Pushed up sleeve)
+        top: rep("HHHH", 4), bottom: blank(4,4),
+        right: ["HHHH", "HHOH", "HHDH", "HHHH", "HDDH", "HOOH", ...blank(4,6)],
+        front: ["HHHH", "HHOH", "HHDH", "HHHH", "HDDH", "HOOH", ...blank(4,6)],
+        left:  ["HHHH", "HHOH", "HHDH", "HHHH", "HDDH", "HOOH", ...blank(4,6)],
+        back:  ["HHHH", "HHOH", "HHDH", "HHHH", "HDDH", "HOOH", ...blank(4,6)]
+    },
+    leftArmBase: { // u:32, v:48, w:4, h:12, d:4
+        top: rep("TTTT", 4), bottom: rep("ssss", 4),
+        right: [...alt("TTTT", "tttt", 8), "ssss", "ssss", "xsxs", "ssss"], // Rings
+        front: [...alt("TTTT", "tttt", 8), "ssss", "ssss", "xsxs", "ssss"],
+        left:  [...alt("TTTT", "tttt", 8), "ssss", "ssss", "xsxs", "ssss"],
+        back:  [...alt("TTTT", "tttt", 8), "ssss", "ssss", "xsxs", "ssss"]
+    },
+    leftArmOverlay: { // u:48, v:48, w:4, h:12, d:4 (Oversized thumb-hole sleeve)
+        top: rep("HHHH", 4), bottom: blank(4,4),
+        right: [...rep("HHHH", 5), "HHDH", "HHOH", "HHHH", "DDHH", "HHDH", "HHHH", "    "],
+        front: [...rep("HHHH", 5), "HHDH", "HHOH", "HHHH", "DDHH", "HHDH", "H  H", "    "], // Thumbhole
+        left:  [...rep("HHHH", 5), "HHDH", "HHOH", "HHHH", "DDHH", "HHDH", "HHHH", "    "],
+        back:  [...rep("HHHH", 5), "HHDH", "HHOH", "HHHH", "DDHH", "HHDH", "HHHH", "    "]
+    },
+    rightLegBase: { // u:0, v:16, w:4, h:12, d:4
+        top: rep("pppp", 4), bottom: rep("KkkK", 4),
+        right: ["pppp", "pddp", "PppP", "pppp", "pddp", "PppP", "ssss", "ssSs", "PppP", "KKKK", "KKwK", "KkkK"], // Tears & Socks
+        front: ["pppp", "pddp", "PppP", "pppp", "pddp", "PppP", "ssss", "ssSs", "PppP", "KKKK", "KKwK", "KkkK"],
+        left:  ["pppp", "pddp", "PppP", "pppp", "pddp", "PppP", "ssss", "ssSs", "PppP", "KKKK", "KKwK", "KkkK"],
+        back:  ["pppp", "pddp", "PppP", "pppp", "pddp", "PppP", "PppP", "pddp", "PppP", "KKKK", "KKwK", "KkkK"] // No tear on back
+    },
+    rightLegOverlay: { // u:0, v:32, w:4, h:12, d:4
+        top: blank(4,4), bottom: rep("wwww", 4),
+        right: ["    ", "  C ", "    ", "ppPp", "pPpp", "ppPp", ...blank(4,2), "KKKK", "WkWW", "KkkK", "wwww"], // Carabiner 'C' + Cargo + Shoes
+        front: ["BBCB", "    ", "    ", "ppPp", "pPpp", "ppPp", ...blank(4,2), "KKKK", "WkWW", "KkkK", "wwww"],
+        left:  ["    ", "    ", "    ", "    ", "    ", "    ", ...blank(4,2), "KKKK", "WkWW", "KkkK", "wwww"],
+        back:  ["BBBB", "    ", "    ", "    ", "    ", "    ", ...blank(4,2), "KKKK", "WkWW", "KkkK", "wwww"]
+    },
+    leftLegBase: { // u:16, v:48, w:4, h:12, d:4
+        top: rep("pppp", 4), bottom: rep("KkkK", 4),
+        right: ["pppp", "pddp", "PppP", "pppp", "pddp", "PppP", "ssss", "ssSs", "PppP", "KKKK", "KKwK", "KkkK"],
+        front: ["pppp", "pddp", "PppP", "pppp", "pddp", "PppP", "ssss", "ssSs", "PppP", "KKKK", "KKwK", "KkkK"],
+        left:  ["pppp", "pddp", "PppP", "pppp", "pddp", "PppP", "ssss", "ssSs", "PppP", "KKKK", "KKwK", "KkkK"],
+        back:  ["pppp", "pddp", "PppP", "pppp", "pddp", "PppP", "PppP", "pddp", "PppP", "KKKK", "KKwK", "KkkK"]
+    },
+    leftLegOverlay: { // u:0, v:48, w:4, h:12, d:4
+        top: blank(4,4), bottom: rep("wwww", 4),
+        right: ["    ", "    ", "    ", "    ", "    ", "    ", ...blank(4,2), "KKKK", "WkWW", "KkkK", "wwww"],
+        front: ["xBBB", "x   ", "X   ", "x   ", "    ", "    ", ...blank(4,2), "KKKK", "WkWW", "KkkK", "wwww"], // Wallet chain start
+        left:  ["    ", " xXX", "X   ", " xXX", "pPpp", "ppPp", ...blank(4,2), "KKKK", "WkWW", "KkkK", "wwww"], // Chain loop + Cargo
+        back:  ["BBBB", "    ", "    ", "    ", "    ", "    ", ...blank(4,2), "KKKK", "WkWW", "KkkK", "wwww"]
+    }
+};
 
-            syncPickers();
-            updateAllButtonsUI();
-            setModelType(skin.model);
-            rebuildSkinCanvas();
+// Canvas Setup
+const skinCanvas = document.createElement('canvas');
+skinCanvas.width = 64;
+skinCanvas.height = 64;
+const ctx = skinCanvas.getContext('2d', { willReadFrequently: true });
 
-            // Switch to edit tab to show feedback
-            switchTab('edit');
-        }
-
-        // --- Tabs Navigation ---
-        function switchTab(tabId) {
-            ['trending', 'edit'].forEach(t => {
-                document.getElementById(`content-${t}`).classList.add('hidden');
-                document.getElementById(`tab-${t}`).className = "flex-1 py-3 text-xs font-semibold text-slate-500 hover:text-slate-800 transition";
-            });
-            document.getElementById(`content-${tabId}`).classList.remove('hidden');
-            document.getElementById(`tab-${tabId}`).className = "flex-1 py-3 text-xs font-bold text-[#1c7ed6] border-b-2 border-[#1c7ed6] transition";
-        }
-
-        function setModelType(type) {
-            skinState.model = type;
-            const classicBtn = document.getElementById('model-classic');
-            const slimBtn = document.getElementById('model-slim');
-            if (classicBtn && slimBtn) {
-                classicBtn.className = type === 'classic' 
-                    ? "py-2 px-3 rounded border border-[#1c7ed6] bg-blue-50 text-[#1c7ed6] text-xs font-bold text-center transition" 
-                    : "py-2 px-3 rounded border border-slate-200 bg-slate-50 text-slate-600 text-xs font-semibold text-center transition hover:bg-slate-100";
-                slimBtn.className = type === 'slim' 
-                    ? "py-2 px-3 rounded border border-[#1c7ed6] bg-blue-50 text-[#1c7ed6] text-xs font-bold text-center transition" 
-                    : "py-2 px-3 rounded border border-slate-200 bg-slate-50 text-slate-600 text-xs font-semibold text-center transition hover:bg-slate-100";
-            }
-            buildCharacterModel();
-            rebuildSkinCanvas();
-        }
-
-        function setHairStyle(style) {
-            skinState.hairStyle = style;
-            updateAllButtonsUI();
-            rebuildSkinCanvas();
-        }
-
-        function setAccessory(acc) {
-            skinState.accessory = acc;
-            updateAllButtonsUI();
-            rebuildSkinCanvas();
-        }
-
-        function setOutfitStyle(style) {
-            skinState.outfitStyle = style;
-            updateAllButtonsUI();
-            rebuildSkinCanvas();
-        }
-
-        function updateHairColor(v) { skinState.hairColor = v; rebuildSkinCanvas(); }
-        function updateShirtColor(v) { skinState.shirtColor = v; rebuildSkinCanvas(); }
-        function updatePantsColor(v) { skinState.pantsColor = v; rebuildSkinCanvas(); }
-        function updateSkinColor(v) { skinState.skinColor = v; rebuildSkinCanvas(); }
-        function updateEyeColor(v) { skinState.eyeColor = v; rebuildSkinCanvas(); }
-        function updateShoeColor(v) { skinState.shoeColor = v; rebuildSkinCanvas(); }
-
-        function syncPickers() {
-            const h = document.getElementById('hair-color-picker');
-            const s = document.getElementById('shirt-color-picker');
-            const p = document.getElementById('pants-color-picker');
-            if(h) h.value = skinState.hairColor;
-            if(s) s.value = skinState.shirtColor;
-            if(p) p.value = skinState.pantsColor;
-        }
-
-        function updateAllButtonsUI() {
-            document.querySelectorAll('.hair-btn').forEach(btn => {
-                const match = (skinState.hairStyle === 'messy' && btn.textContent.includes('Messy')) ||
-                              (skinState.hairStyle === 'short' && btn.textContent.includes('Side')) ||
-                              (skinState.hairStyle === 'spiky' && btn.textContent.includes('Spiky'));
-                btn.className = match
-                    ? "hair-btn py-2 px-2 rounded border border-[#1c7ed6] bg-blue-50 text-[#1c7ed6] text-xs font-semibold"
-                    : "hair-btn py-2 px-2 rounded border border-slate-200 bg-slate-50 text-slate-600 text-xs font-medium hover:bg-slate-100";
-            });
-
-            document.querySelectorAll('.outfit-btn').forEach(btn => {
-                const match = (skinState.outfitStyle === 'hoodie' && btn.textContent.includes('Hoodie')) ||
-                              (skinState.outfitStyle === 'tshirt' && btn.textContent.includes('T-Shirt')) ||
-                              (skinState.outfitStyle === 'jacket' && btn.textContent.includes('Jacket'));
-                btn.className = match
-                    ? "outfit-btn py-2 px-2 rounded border border-[#1c7ed6] bg-blue-50 text-[#1c7ed6] text-xs font-semibold"
-                    : "outfit-btn py-2 px-2 rounded border border-slate-200 bg-slate-50 text-slate-600 text-xs font-medium hover:bg-slate-100";
-            });
-        }
-
-        // --- Advanced Skin Texturing Engine (NameMC Trending Style) ---
-        function hexToRgb(hex) {
-            let bigint = parseInt(hex.replace("#",""), 16);
-            return [(bigint >> 16) & 255, (bigint >> 8) & 255, bigint & 255];
-        }
-        function rgbToHex(r, g, b) {
-            return "#" + (1 << 24 | r << 16 | g << 8 | b).toString(16).padStart(6, '0');
-        }
-        function shade(hex, percent) {
-            let rgb = hexToRgb(hex);
-            let t = percent < 0 ? 0 : 255;
-            let p = percent < 0 ? percent * -1 : percent;
-            return rgbToHex(
-                Math.max(0, Math.min(255, Math.round((t - rgb[0]) * p) + rgb[0])),
-                Math.max(0, Math.min(255, Math.round((t - rgb[1]) * p) + rgb[1])),
-                Math.max(0, Math.min(255, Math.round((t - rgb[2]) * p) + rgb[2]))
-            );
-        }
-
-        const skinCanvas = document.createElement('canvas');
-        skinCanvas.width = 64;
-        skinCanvas.height = 64;
-        const skinCtx = skinCanvas.getContext('2d');
-        skinCtx.imageSmoothingEnabled = false;
-
-        function fill(x, y, w, h, col) {
-            if (!col) return;
-            skinCtx.fillStyle = col;
-            skinCtx.fillRect(x, y, w, h);
-        }
-
-        // Bayer Matrix for Authentic Minecraft Pixel Dithering
-        const bayer = [
-            [ 0,  8,  2, 10],
-            [12,  4, 14,  6],
-            [ 3, 11,  1,  9],
-            [15,  7, 13,  5]
-        ];
-
-        // Core rendering function: Applies gradient shading + dithering noise
-        function drawSurface(x, y, w, h, baseColor, gradientStrength = 0.15, textureStrength = 0.08) {
-            for (let i = 0; i < w; i++) {
-                for (let j = 0; j < h; j++) {
-                    // Vertical Gradient (Lighter at top, darker at bottom)
-                    let g = h > 1 ? (j / (h - 1)) : 0;
-                    let gradMod = (0.5 - g) * gradientStrength * 2; 
-                    
-                    // Bayer Dithering Texture
-                    let b = bayer[(x + i) % 4][(y + j) % 4];
-                    let texMod = ((b / 15) - 0.5) * textureStrength * 2;
-                    
-                    let finalMod = gradMod + texMod;
-                    fill(x + i, y + j, 1, 1, shade(baseColor, finalMod));
-                }
+function drawFace(u, v, w, h, data) {
+    if (!data) return;
+    for (let r = 0; r < h; r++) {
+        let row = data[r];
+        if (!row) continue;
+        for (let c = 0; c < w; c++) {
+            let char = row[c];
+            if (char && PALETTE[char]) {
+                ctx.fillStyle = PALETTE[char];
+                ctx.fillRect(u + c, v + r, 1, 1);
             }
         }
-        
-        function applyShadow(x, y, w, h, opacity) {
-            skinCtx.fillStyle = `rgba(0,0,0,${opacity})`;
-            skinCtx.fillRect(x, y, w, h);
-        }
-
-        function rebuildSkinCanvas() {
-            skinCtx.clearRect(0, 0, 64, 64);
-
-            const skin = skinState.skinColor;
-            const hair = skinState.hairColor;
-            const shirt = skinState.shirtColor;
-            const pants = skinState.pantsColor;
-            const shoe = skinState.shoeColor;
-            const eye = skinState.eyeColor;
-            
-            const skinDark = shade(skin, -0.2);
-            const hairDark = shade(hair, -0.2);
-            const shirtDark = shade(shirt, -0.2);
-
-            // ==================== 1. HEAD BASE ====================
-            drawSurface(8, 0, 8, 8, hair, 0.1, 0.1);         // Top (Hair)
-            drawSurface(16, 0, 8, 8, skinDark, 0.1, 0.05);   // Bottom (Neck Shadow)
-            drawSurface(0, 8, 8, 8, skin, 0.15, 0.05);       // Right
-            drawSurface(8, 8, 8, 8, skin, 0.1, 0.05);        // Front
-            drawSurface(16, 8, 8, 8, skin, 0.15, 0.05);      // Left
-            drawSurface(24, 8, 8, 8, skinDark, 0.15, 0.05);  // Back
-
-            // Face Details (NameMC E-boy Aesthetic)
-            fill(8, 13, 2, 1, shade(skin, -0.15)); // Left Blush
-            fill(14, 13, 2, 1, shade(skin, -0.15)); // Right Blush
-            
-            // 2x2 Modern Eyes
-            // Left Eye
-            fill(9, 12, 1, 2, '#ffffff'); // Sclera
-            fill(10, 12, 1, 1, eye);      // Iris Top
-            fill(10, 13, 1, 1, shade(eye, -0.6)); // Pupil Bottom
-            // Right Eye
-            fill(14, 12, 1, 2, '#ffffff'); // Sclera
-            fill(13, 12, 1, 1, eye);       // Iris Top
-            fill(13, 13, 1, 1, shade(eye, -0.6)); // Pupil Bottom
-
-            // Mouth
-            fill(11, 14, 2, 1, shade(skin, -0.3));
-
-            // ==================== 2. HEAD OVERLAY (Hair Layers) ====================
-            // Base Outer Texturing
-            drawSurface(40, 0, 8, 8, hair, 0.15, 0.1); // Top Layer
-            drawSurface(48, 0, 8, 8, hairDark, 0.1, 0.1); // Bottom
-            drawSurface(32, 8, 8, 8, hair, 0.2, 0.1); // Right Outer
-            drawSurface(48, 8, 8, 8, hair, 0.2, 0.1); // Left Outer
-            drawSurface(56, 8, 8, 8, hairDark, 0.2, 0.1); // Back Outer
-
-            // Clear the front overlay to custom-draw the 3D Bangs
-            skinCtx.clearRect(40, 8, 8, 8); 
-
-            // Bangs (Overlap the face)
-            if (skinState.hairStyle === 'messy') {
-                drawSurface(40, 8, 8, 2, hair, 0.1, 0.1); // Top band
-                drawSurface(40, 10, 2, 2, hair, 0.1, 0.1); // Left droop
-                drawSurface(46, 10, 2, 3, hair, 0.1, 0.1); // Right long droop
-                fill(42, 10, 1, 2, hair); // Middle tufts
-                fill(44, 10, 1, 1, hair);
-            } else if (skinState.hairStyle === 'short') {
-                drawSurface(40, 8, 8, 2, hair, 0.1, 0.1);
-                drawSurface(40, 10, 3, 2, hair, 0.1, 0.1); // Left sweep
-                drawSurface(45, 10, 3, 3, hair, 0.1, 0.1); // Right sweep
-            } else if (skinState.hairStyle === 'spiky') {
-                drawSurface(40, 8, 8, 2, shade(hair, 0.1), 0.1, 0.1);
-                fill(41, 10, 1, 2, hair);
-                fill(43, 10, 2, 1, hair);
-                fill(46, 10, 1, 2, shade(hair, -0.1));
-            }
-
-            // Head Accessories
-            if (skinState.accessory === 'hood') {
-                drawSurface(40, 0, 8, 8, shirt, 0.15, 0.05); // Top
-                drawSurface(32, 8, 8, 8, shirt, 0.2, 0.05); // Right
-                drawSurface(48, 8, 8, 8, shirt, 0.2, 0.05); // Left
-                drawSurface(56, 8, 8, 8, shirtDark, 0.2, 0.05); // Back
-                drawSurface(40, 8, 8, 2, shirtDark, 0.1, 0.05); // Front Rim Top
-                drawSurface(40, 10, 1, 6, shirtDark, 0.1, 0.05); // Rim L
-                drawSurface(47, 10, 1, 6, shirtDark, 0.1, 0.05); // Rim R
-            } else if (skinState.accessory === 'headphones') {
-                fill(40, 0, 8, 2, '#1e293b'); // Band
-                drawSurface(34, 10, 4, 4, '#0f172a', 0.1, 0.0); // Cup L
-                fill(35, 11, 2, 2, '#38bdf8'); // LED L
-                drawSurface(58, 10, 4, 4, '#0f172a', 0.1, 0.0); // Cup R
-                fill(59, 11, 2, 2, '#38bdf8'); // LED R
-            }
-
-            // ==================== 3. TORSO ====================
-            drawSurface(20, 16, 8, 4, shirt, 0.1, 0.08); // Top
-            drawSurface(28, 16, 8, 4, shirtDark, 0.1, 0.08); // Bottom
-            drawSurface(16, 20, 4, 12, shirtDark, 0.2, 0.08); // Right
-            drawSurface(28, 20, 4, 12, shirtDark, 0.2, 0.08); // Left
-            drawSurface(32, 20, 8, 12, shirt, 0.2, 0.08); // Back
-            drawSurface(20, 20, 8, 12, shirt, 0.2, 0.08); // Front
-
-            // Ambient Occlusion under head
-            applyShadow(20, 20, 8, 1, 0.25);
-            applyShadow(20, 21, 8, 1, 0.1);
-
-            if (skinState.outfitStyle === 'hoodie') {
-                fill(23, 21, 1, 4, '#f1f5f9'); // String L
-                fill(24, 21, 1, 4, '#f1f5f9'); // String R
-                drawSurface(21, 27, 6, 4, shirtDark, 0.1, 0.05); // Pocket
-                applyShadow(21, 27, 6, 1, 0.15); // Pocket depth
-            } else if (skinState.outfitStyle === 'tshirt') {
-                drawSurface(23, 20, 2, 2, skin, 0.1, 0.05); // Neck expose
-                applyShadow(23, 20, 2, 1, 0.2); // Neck shadow
-                fill(23, 24, 2, 2, '#fbbf24'); // Chest Logo
-            } else if (skinState.outfitStyle === 'jacket') {
-                drawSurface(23, 20, 2, 12, '#ffffff', 0.1, 0.05); // Undershirt
-                applyShadow(23, 20, 2, 1, 0.2); 
-                applyShadow(22, 20, 1, 12, 0.2); // Jacket flap L
-                applyShadow(25, 20, 1, 12, 0.2); // Jacket flap R
-            }
-
-            // ==================== 4. ARMS ====================
-            const isSlim = skinState.model === 'slim';
-            const armW = isSlim ? 3 : 4;
-
-            // Right Arm Base
-            drawSurface(44, 16, armW, 4, shirt, 0.1, 0.08);
-            drawSurface(48, 16, armW, 4, skinDark, 0.1, 0.08);
-            drawSurface(40, 20, 16, 12, shirtDark, 0.2, 0.08);
-            drawSurface(44, 20, armW, 12, shirt, 0.2, 0.08); // Front
-            applyShadow(44, 20, armW, 1, 0.2); // Shoulder shadow
-
-            // Left Arm Base
-            drawSurface(36, 48, armW, 4, shirt, 0.1, 0.08);
-            drawSurface(40, 48, armW, 4, skinDark, 0.1, 0.08);
-            drawSurface(32, 52, 16, 12, shirtDark, 0.2, 0.08);
-            drawSurface(36, 52, armW, 12, shirt, 0.2, 0.08); // Front
-            applyShadow(36, 52, armW, 1, 0.2);
-
-            // Sleeves vs Skin
-            if (skinState.outfitStyle === 'tshirt') {
-                // Expose forearms
-                drawSurface(40, 25, 16, 7, skinDark, 0.15, 0.05); // R arm skin
-                drawSurface(44, 25, armW, 7, skin, 0.15, 0.05);
-                applyShadow(40, 25, 16, 1, 0.2); // R sleeve drop shadow
-                
-                drawSurface(32, 57, 16, 7, skinDark, 0.15, 0.05); // L arm skin
-                drawSurface(36, 57, armW, 7, skin, 0.15, 0.05);
-                applyShadow(32, 57, 16, 1, 0.2); // L sleeve drop shadow
-            } else {
-                // Long sleeves (expose hands only)
-                drawSurface(40, 29, 16, 3, skinDark, 0.1, 0.05); // R hand
-                drawSurface(44, 29, armW, 3, skin, 0.1, 0.05);
-                applyShadow(40, 29, 16, 1, 0.2); 
-                
-                drawSurface(32, 61, 16, 3, skinDark, 0.1, 0.05); // L hand
-                drawSurface(36, 61, armW, 3, skin, 0.1, 0.05);
-                applyShadow(32, 61, 16, 1, 0.2); 
-            }
-
-            // ==================== 5. LEGS & SHOES ====================
-            // Right Leg (Pants)
-            drawSurface(4, 16, 4, 4, pantsDark, 0.1, 0.08);
-            drawSurface(8, 16, 4, 4, shoeDark, 0.1, 0.08);
-            drawSurface(0, 20, 16, 12, pantsDark, 0.2, 0.08);
-            drawSurface(4, 20, 4, 12, pants, 0.2, 0.08); // Front
-            applyShadow(0, 20, 16, 1, 0.3); // Waist shadow
-
-            // Left Leg (Pants)
-            drawSurface(20, 48, 4, 4, pantsDark, 0.1, 0.08);
-            drawSurface(24, 48, 4, 4, shoeDark, 0.1, 0.08);
-            drawSurface(16, 52, 16, 12, pantsDark, 0.2, 0.08);
-            drawSurface(20, 52, 4, 12, pants, 0.2, 0.08); // Front
-            applyShadow(16, 52, 16, 1, 0.3);
-
-            // Detailed Sneakers
-            // Right Shoe (y: 28 to 32 on the leg texture map, front is x:4 w:4)
-            drawSurface(0, 28, 16, 4, shoe, 0.1, 0.0); // Base color
-            fill(4, 28, 4, 2, shoeDark); // Tongue
-            fill(4, 31, 4, 1, '#ffffff'); // White sole front
-            fill(5, 29, 2, 2, '#e2e8f0'); // Laces
-            
-            // Left Shoe
-            drawSurface(16, 60, 16, 4, shoe, 0.1, 0.0);
-            fill(20, 60, 4, 2, shoeDark);
-            fill(20, 63, 4, 1, '#ffffff'); // White sole front
-            fill(21, 61, 2, 2, '#e2e8f0'); // Laces
-
-            if (canvasTexture) {
-                canvasTexture.needsUpdate = true;
-            }
-            updatePreviewSheet();
-        }
-
-        function updatePreviewSheet() {
-            const previewCanvas = document.getElementById('preview-texture-canvas');
-            if (!previewCanvas) return;
-            const pctx = previewCanvas.getContext('2d');
-            pctx.imageSmoothingEnabled = false;
-            pctx.clearRect(0, 0, 256, 256);
-            pctx.drawImage(skinCanvas, 0, 0, 256, 256);
-        }
-
-        let scene, camera, renderer, characterGroup;
-        let isAutoRotating = true;
-        let isWalking = false;
-        let walkTime = 0;
-        let canvasTexture;
-        let headMesh, headLayerMesh, bodyMesh, rightArmGroup, leftArmGroup, rightLegGroup, leftLegGroup;
-
-        function createMinecraftBoxGeometry(w, h, d, u, v, mirror = false) {
-            const geom = new THREE.BoxGeometry(w, h, d);
-            const uvAttr = geom.attributes.uv;
-            const tw = 64, th = 64;
-
-            const faces = [
-                { x: u + (mirror ? 0 : d + w), y: v + d, w: d, h: h },
-                { x: u + (mirror ? d + w : 0), y: v + d, w: d, h: h },
-                { x: u + d,                   y: v,     w: w, h: d },
-                { x: u + d + w,               y: v,     w: w, h: d },
-                { x: u + d,                   y: v + d, w: w, h: h },
-                { x: u + d * 2 + w,           y: v + d, w: w, h: h }
-            ];
-
-            for (let f = 0; f < 6; f++) {
-                const face = faces[f];
-                let u0 = face.x / tw;
-                let v0 = (th - (face.y + face.h)) / th;
-                let u1 = (face.x + face.w) / tw;
-                let v1 = (th - face.y) / th;
-
-                uvAttr.setXY(f * 4 + 0, u0, v1);
-                uvAttr.setXY(f * 4 + 1, u1, v1);
-                uvAttr.setXY(f * 4 + 2, u0, v0);
-                uvAttr.setXY(f * 4 + 3, u1, v0);
-            }
-            uvAttr.needsUpdate = true;
-            return geom;
-        }
-
-        function initThree() {
-            const container = document.getElementById('canvas-container');
-            scene = new THREE.Scene();
-
-            camera = new THREE.PerspectiveCamera(40, container.clientWidth / container.clientHeight, 0.1, 1000);
-            camera.position.set(0, 15, 55);
-
-            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
-            renderer.setSize(container.clientWidth, container.clientHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            renderer.shadowMap.enabled = true;
-            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-            container.appendChild(renderer.domElement);
-
-            const ambient = new THREE.AmbientLight(0xffffff, 0.9);
-            scene.add(ambient);
-
-            const dirLight = new THREE.DirectionalLight(0xffffff, 0.9); 
-            dirLight.position.set(20, 35, 25);
-            dirLight.castShadow = true;
-            dirLight.shadow.mapSize.width = 1024;
-            dirLight.shadow.mapSize.height = 1024;
-            dirLight.shadow.camera.near = 0.5;
-            dirLight.shadow.camera.far = 100;
-            dirLight.shadow.camera.left = -25;
-            dirLight.shadow.camera.right = 25;
-            dirLight.shadow.camera.top = 25;
-            dirLight.shadow.camera.bottom = -25;
-            dirLight.shadow.bias = -0.001;
-            scene.add(dirLight);
-
-            const backLight = new THREE.DirectionalLight(0xa5b4fc, 0.4); 
-            backLight.position.set(-20, 10, -20);
-            scene.add(backLight);
-
-            const gridHelper = new THREE.GridHelper(50, 20, 0x94a3b8, 0xcbd5e1);
-            gridHelper.position.y = -22.1;
-            gridHelper.material.opacity = 0.5;
-            gridHelper.material.transparent = true;
-            scene.add(gridHelper);
-
-            canvasTexture = new THREE.CanvasTexture(skinCanvas);
-            canvasTexture.magFilter = THREE.NearestFilter;
-            canvasTexture.minFilter = THREE.NearestFilter;
-            canvasTexture.generateMipmaps = false;
-
-            buildCharacterModel();
-            renderTrendingGrid();
-            rebuildSkinCanvas();
-
-            let isDragging = false;
-            let isPanning = false;
-            let mouseX = 0, mouseY = 0;
-
-            container.addEventListener('contextmenu', e => e.preventDefault());
-
-            container.addEventListener('mousedown', (e) => {
-                if (e.button === 2) isPanning = true;
-                else isDragging = true;
-                mouseX = e.clientX;
-                mouseY = e.clientY;
-            });
-
-            window.addEventListener('mousemove', (e) => {
-                if (!isDragging && !isPanning) return;
-                const dx = e.clientX - mouseX;
-                const dy = e.clientY - mouseY;
-
-                if (isDragging && characterGroup) {
-                    characterGroup.rotation.y += dx * 0.008;
-                    characterGroup.rotation.x += dy * 0.008;
-                    characterGroup.rotation.x = Math.max(-0.6, Math.min(0.6, characterGroup.rotation.x));
-                } else if (isPanning) {
-                    camera.position.x -= dx * 0.04;
-                    camera.position.y += dy * 0.04;
-                }
-
-                mouseX = e.clientX;
-                mouseY = e.clientY;
-            });
-
-            window.addEventListener('mouseup', () => {
-                isDragging = false;
-                isPanning = false;
-            });
-
-            let touchX = 0, touchY = 0;
-            container.addEventListener('touchstart', (e) => {
-                if (e.touches.length === 1) {
-                    touchX = e.touches[0].clientX;
-                    touchY = e.touches[0].clientY;
-                }
-            }, { passive: true });
-
-            container.addEventListener('touchmove', (e) => {
-                if (e.touches.length === 1 && characterGroup) {
-                    const dx = e.touches[0].clientX - touchX;
-                    const dy = e.touches[0].clientY - touchY;
-                    characterGroup.rotation.y += dx * 0.01;
-                    characterGroup.rotation.x += dy * 0.01;
-                    characterGroup.rotation.x = Math.max(-0.6, Math.min(0.6, characterGroup.rotation.x));
-                    touchX = e.touches[0].clientX;
-                    touchY = e.touches[0].clientY;
-                }
-            }, { passive: true });
-
-            container.addEventListener('wheel', (e) => {
-                e.preventDefault();
-                camera.position.z += e.deltaY * 0.04;
-                camera.position.z = Math.max(22, Math.min(85, camera.position.z));
-            }, { passive: false });
-
-            window.addEventListener('resize', onWindowResize);
-
-            document.getElementById('rotate-toggle').addEventListener('click', () => {
-                isAutoRotating = !isAutoRotating;
-                document.getElementById('rotate-text').textContent = `Rotate: ${isAutoRotating ? 'On' : 'Off'}`;
-            });
-
-            document.getElementById('pose-toggle').addEventListener('click', () => {
-                isWalking = !isWalking;
-                document.getElementById('pose-text').textContent = isWalking ? 'Pose: Walk' : 'Pose: Static';
-                if (!isWalking) {
-                    if (rightArmGroup) rightArmGroup.rotation.x = 0;
-                    if (leftArmGroup) leftArmGroup.rotation.x = 0;
-                    if (rightLegGroup) rightLegGroup.rotation.x = 0;
-                    if (leftLegGroup) leftLegGroup.rotation.x = 0;
-                    if (headMesh) headMesh.rotation.y = 0;
-                }
-            });
-
-            document.getElementById('reset-view').addEventListener('click', () => {
-                if (characterGroup) {
-                    characterGroup.rotation.set(0, 0, 0);
-                }
-                camera.position.set(0, 15, 55);
-            });
-
-            document.getElementById('view-texture-btn').addEventListener('click', () => {
-                updatePreviewSheet();
-                document.getElementById('texture-modal').classList.remove('hidden');
-            });
-
-            animate();
-        }
-
-        function onWindowResize() {
-            const container = document.getElementById('canvas-container');
-            if (!container || !renderer || !camera) return;
-            camera.aspect = container.clientWidth / container.clientHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(container.clientWidth, container.clientHeight);
-        }
-
-        function buildCharacterModel() {
-            if (characterGroup) scene.remove(characterGroup);
-            characterGroup = new THREE.Group();
-            scene.add(characterGroup);
-
-            const matBase = new THREE.MeshStandardMaterial({
-                map: canvasTexture,
-                roughness: 0.85,
-                metalness: 0.05
-            });
-
-            const matTransparent = new THREE.MeshStandardMaterial({
-                map: canvasTexture,
-                transparent: true,
-                alphaTest: 0.1,
-                roughness: 0.85,
-                metalness: 0.05,
-                side: THREE.DoubleSide
-            });
-
-            const armW = skinState.model === 'slim' ? 3 : 4;
-            const armOffset = skinState.model === 'slim' ? 5.5 : 6;
-
-            const headGeom = createMinecraftBoxGeometry(8, 8, 8, 0, 0);
-            headMesh = new THREE.Mesh(headGeom, matBase);
-            headMesh.position.y = 28;
-
-            const hatGeom = createMinecraftBoxGeometry(9, 9, 9, 32, 0);
-            headLayerMesh = new THREE.Mesh(hatGeom, matTransparent);
-            headMesh.add(headLayerMesh);
-            characterGroup.add(headMesh);
-
-            const bodyGeom = createMinecraftBoxGeometry(8, 12, 4, 16, 16);
-            bodyMesh = new THREE.Mesh(bodyGeom, matBase);
-            bodyMesh.position.y = 18;
-            characterGroup.add(bodyMesh);
-
-            rightArmGroup = new THREE.Group();
-            rightArmGroup.position.set(-armOffset, 23, 0);
-            const rightArmGeom = createMinecraftBoxGeometry(armW, 12, 4, 40, 16);
-            const rightArmMesh = new THREE.Mesh(rightArmGeom, matBase);
-            rightArmMesh.position.y = -5;
-            rightArmGroup.add(rightArmMesh);
-            characterGroup.add(rightArmGroup);
-
-            leftArmGroup = new THREE.Group();
-            leftArmGroup.position.set(armOffset, 23, 0);
-            const leftArmGeom = createMinecraftBoxGeometry(armW, 12, 4, 32, 48);
-            const leftArmMesh = new THREE.Mesh(leftArmGeom, matBase);
-            leftArmMesh.position.y = -5;
-            leftArmGroup.add(leftArmMesh);
-            characterGroup.add(leftArmGroup);
-
-            rightLegGroup = new THREE.Group();
-            rightLegGroup.position.set(-2, 12, 0);
-            const rightLegGeom = createMinecraftBoxGeometry(4, 12, 4, 0, 16);
-            const rightLegMesh = new THREE.Mesh(rightLegGeom, matBase);
-            rightLegMesh.position.y = -6;
-            rightLegGroup.add(rightLegMesh);
-            characterGroup.add(rightLegGroup);
-
-            leftLegGroup = new THREE.Group();
-            leftLegGroup.position.set(2, 12, 0);
-            const leftLegGeom = createMinecraftBoxGeometry(4, 12, 4, 16, 48);
-            const leftLegMesh = new THREE.Mesh(leftLegGeom, matBase);
-            leftLegMesh.position.y = -6;
-            leftLegGroup.add(leftLegMesh);
-            characterGroup.add(leftLegGroup);
-
-            characterGroup.traverse((child) => {
-                if (child.isMesh) {
-                    child.castShadow = true;
-                    child.receiveShadow = true;
-                }
-            });
-
-            characterGroup.position.y = -9;
-        }
-
-        function animate() {
-            requestAnimationFrame(animate);
-
-            if (isAutoRotating && characterGroup) {
-                characterGroup.rotation.y += 0.007;
-            }
-
-            if (isWalking && rightArmGroup && leftArmGroup && rightLegGroup && leftLegGroup) {
-                walkTime += 0.06;
-                const swing = Math.sin(walkTime) * 0.55;
-                rightArmGroup.rotation.x = -swing;
-                leftArmGroup.rotation.x = swing;
-                rightLegGroup.rotation.x = swing;
-                leftLegGroup.rotation.x = -swing;
-                if (headMesh) {
-                    headMesh.rotation.y = Math.sin(walkTime * 0.5) * 0.08;
-                }
-            }
-
-            renderer.render(scene, camera);
-        }
-
-        document.getElementById('download-btn').addEventListener('click', () => {
-            const link = document.createElement('a');
-            link.download = `namemc_boy_skin_${skinState.model}.png`;
-            link.href = skinCanvas.toDataURL('image/png');
-            link.click();
-        });
-
-        window.onload = () => {
-            initThree();
-        };
-    </script>
+    }
+}
+
+function renderSkinData() {
+    ctx.clearRect(0, 0, 64, 64);
+    
+    const parts = [
+        { key: 'headBase', u: 0, v: 0, w: 8, h: 8, d: 8 },
+        { key: 'headOverlay', u: 32, v: 0, w: 8, h: 8, d: 8 },
+        { key: 'torsoBase', u: 16, v: 16, w: 8, h: 12, d: 4 },
+        { key: 'torsoOverlay', u: 16, v: 32, w: 8, h: 12, d: 4 },
+        { key: 'rightArmBase', u: 40, v: 16, w: 4, h: 12, d: 4 },
+        { key: 'rightArmOverlay', u: 40, v: 32, w: 4, h: 12, d: 4 },
+        { key: 'leftArmBase', u: 32, v: 48, w: 4, h: 12, d: 4 },
+        { key: 'leftArmOverlay', u: 48, v: 48, w: 4, h: 12, d: 4 },
+        { key: 'rightLegBase', u: 0, v: 16, w: 4, h: 12, d: 4 },
+        { key: 'rightLegOverlay', u: 0, v: 32, w: 4, h: 12, d: 4 },
+        { key: 'leftLegBase', u: 16, v: 48, w: 4, h: 12, d: 4 },
+        { key: 'leftLegOverlay', u: 0, v: 48, w: 4, h: 12, d: 4 }
+    ];
+
+    parts.forEach(p => {
+        const data = SkinData[p.key];
+        drawFace(p.u + p.d, p.v, p.w, p.d, data.top);
+        drawFace(p.u + p.d + p.w, p.v, p.w, p.d, data.bottom);
+        drawFace(p.u, p.v + p.d, p.d, p.h, data.right);
+        drawFace(p.u + p.d, p.v + p.d, p.w, p.h, data.front);
+        drawFace(p.u + p.d + p.w, p.v + p.d, p.d, p.h, data.left);
+        drawFace(p.u + p.d + p.w + p.d, p.v + p.d, p.w, p.h, data.back);
+    });
+
+    // Update 2D Preview UI
+    const previewCtx = document.getElementById('preview2d').getContext('2d');
+    previewCtx.clearRect(0,0,256,256);
+    previewCtx.drawImage(skinCanvas, 0, 0, 256, 256);
+}
+
+renderSkinData();
+
+// Download Handler
+document.getElementById('downloadBtn').addEventListener('click', () => {
+    const link = document.createElement('a');
+    link.download = 'modern_eboy_skin_64x64.png';
+    link.href = skinCanvas.toDataURL('image/png');
+    link.click();
+});
+
+/**
+ * PART 2: THREE.JS 3D RENDERER
+ * Maps the generated 2D canvas exactly to a 3D dual-layer Steve model.
+ */
+
+const container = document.getElementById('canvas-container');
+const scene = new THREE.Scene();
+scene.background = new THREE.Color('#1A1A1D');
+// Subtle grid for professional studio feel
+const grid = new THREE.GridHelper(100, 100, 0x333333, 0x222222);
+grid.position.y = -12;
+scene.add(grid);
+
+const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+camera.position.set(0, 10, 45);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+renderer.setSize(container.clientWidth, container.clientHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+container.appendChild(renderer.domElement);
+
+// Lighting
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+scene.add(ambientLight);
+const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+dirLight.position.set(20, 30, 20);
+scene.add(dirLight);
+const fillLight = new THREE.DirectionalLight(0xaaccff, 0.3);
+fillLight.position.set(-20, 10, -20);
+scene.add(fillLight);
+
+// Texture Setup
+const skinTexture = new THREE.CanvasTexture(skinCanvas);
+skinTexture.magFilter = THREE.NearestFilter;
+skinTexture.minFilter = THREE.NearestFilter;
+skinTexture.colorSpace = THREE.SRGBColorSpace;
+
+const materialBase = new THREE.MeshLambertMaterial({ 
+    map: skinTexture, 
+    transparent: true, 
+    alphaTest: 0.5,
+    side: THREE.DoubleSide
+});
+const materialOverlay = materialBase.clone();
+// Overlay gets slight depth bias to prevent Z-fighting, though scaling mostly fixes it.
+
+// Model Construction
+const playerGroup = new THREE.Group();
+playerGroup.position.y = -12; // Center model in view
+scene.add(playerGroup);
+
+// Helper to precisely set UVs on PlaneGeometry to match standard MC mapping without rotation hacks
+function updatePlaneUVs(geometry, u, v, tw, th) {
+    const uvs = geometry.attributes.uv;
+    const u0 = u / 64, v0 = 1 - v / 64;
+    const u1 = (u + tw) / 64, v1 = 1 - (v + th) / 64;
+    // Indices: 0: top-left, 1: top-right, 2: bottom-left, 3: bottom-right
+    uvs.setXY(0, u0, v0);
+    uvs.setXY(1, u1, v0);
+    uvs.setXY(2, u0, v1);
+    uvs.setXY(3, u1, v1);
+    uvs.needsUpdate = true;
+}
+
+// Builds a Minecraft body part out of 6 planes for absolute UV control
+function buildMCBox(u, v, w, h, d, isOverlay = false) {
+    const group = new THREE.Group();
+    const scale = isOverlay ? 1.07 : 1.0; // Slightly larger for outer layer
+    const mat = isOverlay ? materialOverlay : materialBase;
+
+    const planes = [
+        // Front (+z)
+        { geom: new THREE.PlaneGeometry(w, h), pos: [0, 0, d/2], rot: [0, 0, 0], uv: [u+d, v+d, w, h] },
+        // Back (-z)
+        { geom: new THREE.PlaneGeometry(w, h), pos: [0, 0, -d/2], rot: [0, Math.PI, 0], uv: [u+d+w+d, v+d, w, h] },
+        // Right (-x) - Character's right, Viewer's left
+        { geom: new THREE.PlaneGeometry(d, h), pos: [-w/2, 0, 0], rot: [0, -Math.PI/2, 0], uv: [u, v+d, d, h] },
+        // Left (+x) - Character's left, Viewer's right
+        { geom: new THREE.PlaneGeometry(d, h), pos: [w/2, 0, 0], rot: [0, Math.PI/2, 0], uv: [u+d+w, v+d, d, h] },
+        // Top (+y)
+        { geom: new THREE.PlaneGeometry(w, d), pos: [0, h/2, 0], rot: [-Math.PI/2, 0, 0], uv: [u+d, v, w, d] },
+        // Bottom (-y)
+        { geom: new THREE.PlaneGeometry(w, d), pos: [0, -h/2, 0], rot: [Math.PI/2, 0, 0], uv: [u+d+w, v, w, d] }
+    ];
+
+    planes.forEach(p => {
+        updatePlaneUVs(p.geom, p.uv[0], p.uv[1], p.uv[2], p.uv[3]);
+        const mesh = new THREE.Mesh(p.geom, mat);
+        mesh.position.set(...p.pos);
+        mesh.rotation.set(...p.rot);
+        group.add(mesh);
+    });
+
+    group.scale.set(scale, scale, scale);
+    return group;
+}
+
+// Assemble Body Parts
+const head = new THREE.Group(); head.position.set(0, 24, 0);
+const headBaseMesh = buildMCBox(0, 0, 8, 8, 8); headBaseMesh.position.y = 4;
+const headOverlayMesh = buildMCBox(32, 0, 8, 8, 8, true); headOverlayMesh.position.y = 4;
+head.add(headBaseMesh, headOverlayMesh);
+playerGroup.add(head);
+
+const torso = new THREE.Group(); torso.position.set(0, 18, 0); // Center of 12-high torso
+const torsoBaseMesh = buildMCBox(16, 16, 8, 12, 4);
+const torsoOverlayMesh = buildMCBox(16, 32, 8, 12, 4, true);
+torso.add(torsoBaseMesh, torsoOverlayMesh);
+playerGroup.add(torso);
+
+const rightArm = new THREE.Group(); rightArm.position.set(-6, 22, 0);
+const rightArmBaseMesh = buildMCBox(40, 16, 4, 12, 4); rightArmBaseMesh.position.y = -4;
+const rightArmOverlayMesh = buildMCBox(40, 32, 4, 12, 4, true); rightArmOverlayMesh.position.y = -4;
+rightArm.add(rightArmBaseMesh, rightArmOverlayMesh);
+playerGroup.add(rightArm);
+
+const leftArm = new THREE.Group(); leftArm.position.set(6, 22, 0);
+const leftArmBaseMesh = buildMCBox(32, 48, 4, 12, 4); leftArmBaseMesh.position.y = -4;
+const leftArmOverlayMesh = buildMCBox(48, 48, 4, 12, 4, true); leftArmOverlayMesh.position.y = -4;
+leftArm.add(leftArmBaseMesh, leftArmOverlayMesh);
+playerGroup.add(leftArm);
+
+const rightLeg = new THREE.Group(); rightLeg.position.set(-2, 12, 0);
+const rightLegBaseMesh = buildMCBox(0, 16, 4, 12, 4); rightLegBaseMesh.position.y = -6;
+const rightLegOverlayMesh = buildMCBox(0, 32, 4, 12, 4, true); rightLegOverlayMesh.position.y = -6;
+rightLeg.add(rightLegBaseMesh, rightLegOverlayMesh);
+playerGroup.add(rightLeg);
+
+const leftLeg = new THREE.Group(); leftLeg.position.set(2, 12, 0);
+const leftLegBaseMesh = buildMCBox(16, 48, 4, 12, 4); leftLegBaseMesh.position.y = -6;
+const leftLegOverlayMesh = buildMCBox(0, 48, 4, 12, 4, true); leftLegOverlayMesh.position.y = -6;
+leftLeg.add(leftLegBaseMesh, leftLegOverlayMesh);
+playerGroup.add(leftLeg);
+
+// Interaction & Animation
+let isDragging = false;
+let previousMousePosition = { x: 0, y: 0 };
+let autoRotate = true;
+let time = 0;
+
+const startDrag = (x, y) => { isDragging = true; autoRotate = false; previousMousePosition = { x, y }; };
+const moveDrag = (x, y) => {
+    if (isDragging) {
+        const deltaX = x - previousMousePosition.x;
+        const deltaY = y - previousMousePosition.y;
+        playerGroup.rotation.y += deltaX * 0.01;
+        playerGroup.rotation.x += deltaY * 0.01;
+        // Clamp vertical rotation
+        playerGroup.rotation.x = Math.max(-0.5, Math.min(0.5, playerGroup.rotation.x));
+        previousMousePosition = { x, y };
+    }
+};
+const endDrag = () => { isDragging = false; };
+
+// Mouse Events
+container.addEventListener('mousedown', (e) => startDrag(e.offsetX, e.offsetY));
+window.addEventListener('mousemove', (e) => moveDrag(e.offsetX, e.offsetY));
+window.addEventListener('mouseup', endDrag);
+// Touch Events
+container.addEventListener('touchstart', (e) => startDrag(e.touches[0].clientX, e.touches[0].clientY), {passive: false});
+window.addEventListener('touchmove', (e) => moveDrag(e.touches[0].clientX, e.touches[0].clientY), {passive: false});
+window.addEventListener('touchend', endDrag);
+
+// Resize handler
+window.addEventListener('resize', () => {
+    camera.aspect = container.clientWidth / container.clientHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(container.clientWidth, container.clientHeight);
+});
+
+// Render Loop
+function animate() {
+    requestAnimationFrame(animate);
+    
+    time += 0.02;
+    
+    if (autoRotate) {
+        playerGroup.rotation.y -= 0.01;
+    }
+
+    // Subtle idle breathing animation
+    torso.position.y = 18 + Math.sin(time) * 0.2;
+    head.position.y = 24 + Math.sin(time) * 0.2;
+    rightArm.position.y = 22 + Math.sin(time) * 0.2;
+    leftArm.position.y = 22 + Math.sin(time) * 0.2;
+    
+    // Subtle arm swing
+    rightArm.rotation.x = Math.sin(time * 0.5) * 0.1;
+    leftArm.rotation.x = -Math.sin(time * 0.5) * 0.1;
+
+    renderer.render(scene, camera);
+}
+
+// Initial positioning to show off front-left three-quarter angle
+playerGroup.rotation.y = -Math.PI / 4;
+
+animate();
+</script>
 </body>
 </html>
